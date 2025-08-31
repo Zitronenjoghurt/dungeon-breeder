@@ -14,7 +14,8 @@ pub struct AppState {
 
 impl AppState {
     pub fn update(&mut self, ctx: &egui::Context) {
-        self.settings.update(ctx)
+        self.game.update();
+        self.settings.update(ctx);
     }
 
     pub fn current_view(&self) -> ViewID {

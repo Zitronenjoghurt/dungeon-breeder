@@ -10,3 +10,7 @@ pub fn random_normalized() -> f32 {
     let value: f32 = normal.sample(&mut rng);
     value.clamp(0.0, 1.0)
 }
+
+pub fn random_normalized_fusion(a: f32, b: f32) -> f32 {
+    ((a * random_normalized()) + (b * random_normalized())).clamp(0.0, 1.0)
+}

@@ -1,21 +1,27 @@
-use crate::creature::library::CreatureLibrary;
-use crate::creature::Creature;
+use crate::actions::GameActions;
+use crate::data::GameData;
 use crate::state::GameState;
 use serde::{Deserialize, Serialize};
 
+pub mod actions;
 pub mod creature;
-mod state;
+pub mod data;
+pub mod state;
 mod utils;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Game {
     pub state: GameState,
     #[serde(skip, default)]
-    creature_library: CreatureLibrary,
+    pub data: GameData,
+    #[serde(skip, default)]
+    pub actions: GameActions,
 }
 
 impl Game {
-    pub fn get_creature_by_id(&self, id: u16) -> Option<&Creature> {
-        self.creature_library.get_by_id(id)
+    pub fn update(&mut self) {
+        for action in self.actions.take_actions() {
+            self.state.handle_action(action);
+        }
     }
 }

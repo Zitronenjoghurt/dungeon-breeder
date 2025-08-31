@@ -1,24 +1,31 @@
 use crate::components::Component;
 use dungeon_breeder_core::creature::specimen::Specimen;
-use dungeon_breeder_core::Game;
+use dungeon_breeder_core::data::GameData;
 use eframe::emath::Align;
 use egui::{Layout, ProgressBar, Ui, Widget};
 use egui_extras::{Column, TableBuilder};
 
-pub struct SpecimenTable<'a> {
-    game: &'a Game,
-    specimen: &'a [Specimen],
+pub struct SpecimenTable<'a, I> {
+    data: &'a GameData,
+    specimen: I,
 }
 
-impl<'a> SpecimenTable<'a> {
-    pub fn new(game: &'a Game, specimen: &'a [Specimen]) -> Self {
-        Self { game, specimen }
+impl<'a, I> SpecimenTable<'a, I>
+where
+    I: IntoIterator<Item = &'a Specimen>,
+{
+    pub fn new(data: &'a GameData, specimen: I) -> Self {
+        Self { data, specimen }
     }
 }
 
-impl Component for SpecimenTable<'_> {
+impl<'a, I> Component for SpecimenTable<'a, I>
+where
+    I: IntoIterator<Item = &'a Specimen>,
+{
     fn ui(self, ui: &mut Ui) {
         let text_height = ui.text_style_height(&egui::TextStyle::Body);
+        let specimen = self.specimen.into_iter().collect::<Vec<_>>();
 
         TableBuilder::new(ui)
             .striped(true)
@@ -31,7 +38,7 @@ impl Component for SpecimenTable<'_> {
             .column(Column::auto().at_least(30.0))
             .header(text_height, |mut header| {
                 header.col(|ui| {
-                    ui.label("Index");
+                    ui.label("ID");
                 });
 
                 header.col(|ui| {
@@ -55,13 +62,13 @@ impl Component for SpecimenTable<'_> {
                 });
             })
             .body(|body| {
-                body.rows(text_height, self.specimen.len(), |mut row| {
+                body.rows(text_height, specimen.len(), |mut row| {
                     let index = row.index();
-                    let specimen = &self.specimen[index];
-                    let creature = self.game.get_creature_by_id(specimen.creature_id);
+                    let specimen = specimen[index];
+                    let creature = self.data.creatures.get_by_id(specimen.creature_id);
 
                     row.col(|ui| {
-                        ui.label(format!("{}", index));
+                        ui.label(format!("{}", specimen.id));
                     });
 
                     row.col(|ui| {

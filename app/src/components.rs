@@ -4,6 +4,7 @@ pub mod specimen;
 pub mod window_button;
 pub mod window_renderer;
 
+pub use specimen::*;
 pub use window_button::*;
 pub use window_renderer::*;
 
