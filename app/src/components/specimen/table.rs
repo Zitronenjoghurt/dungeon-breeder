@@ -1,5 +1,5 @@
 use crate::components::Component;
-use dungeon_breeder_core::creature::specimen::Specimen;
+use dungeon_breeder_core::state::specimen::Specimen;
 use eframe::emath::Align;
 use egui::{Layout, ProgressBar, Ui, Widget};
 use egui_extras::{Column, TableBuilder};

@@ -1,6 +1,6 @@
-use crate::config::CONFIG;
-use crate::creature::id::CreatureID;
-use crate::creature::specimen::{NewSpecimen, Specimen};
+use crate::data::config::CONFIG;
+use crate::data::creature::id::CreatureID;
+use crate::state::specimen::{NewSpecimen, Specimen};
 use crate::utils::random::{random_normal, random_normal_exp_bias, random_normalized};
 use strum::IntoEnumIterator;
 

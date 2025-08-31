@@ -3,9 +3,7 @@ use crate::state::GameState;
 use serde::{Deserialize, Serialize};
 
 pub mod actions;
-mod config;
-pub mod creature;
-mod item;
+pub mod data;
 pub mod state;
 mod systems;
 mod utils;

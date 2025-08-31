@@ -1,6 +1,6 @@
 use crate::actions::action::GameAction;
-use crate::creature::id::CreatureID;
-use crate::creature::specimen::SpecimenId;
+use crate::data::creature::id::CreatureID;
+use crate::state::specimen::SpecimenId;
 use std::cell::RefCell;
 
 pub mod action;

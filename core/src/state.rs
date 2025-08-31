@@ -1,15 +1,18 @@
 use crate::actions::action::GameAction;
-use crate::creature::id::CreatureID;
-use crate::creature::specimen::{NewSpecimen, SpecimenId};
-use crate::state::specimen::SpecimenCollection;
+use crate::data::creature::id::CreatureID;
+use crate::state::item::collection::ItemCollection;
 use crate::systems::breeding::breed_specimen;
 use crate::systems::fusion::fuse_specimen;
 use serde::{Deserialize, Serialize};
+use specimen::collection::SpecimenCollection;
+use specimen::{NewSpecimen, SpecimenId};
 
+mod item;
 pub mod specimen;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct GameState {
+    pub items: ItemCollection,
     pub specimen: SpecimenCollection,
 }
 
@@ -19,6 +22,7 @@ impl GameState {
             GameAction::Breed((sp_a, sp_b)) => self.handle_breed(sp_a, sp_b),
             GameAction::Fuse((sp_a, sp_b)) => self.handle_fuse(sp_a, sp_b),
             GameAction::RandomSpecimen(creature_id) => self.handle_random_specimen(creature_id),
+            GameAction::Slay(specimen_id) => self.handle_slay(specimen_id),
         }
     }
 }
@@ -60,5 +64,14 @@ impl GameState {
         };
 
         self.specimen.add_new(new_specimen);
+    }
+
+    fn handle_slay(&mut self, specimen_id: SpecimenId) {
+        let Some(specimen) = self.specimen.get_by_id(specimen_id) else {
+            return;
+        };
+
+        let dropped_items = specimen.generate_drops();
+        self.items.add_new_batch(&dropped_items);
     }
 }

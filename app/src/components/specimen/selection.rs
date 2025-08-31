@@ -1,6 +1,6 @@
 use crate::components::Component;
-use dungeon_breeder_core::creature::specimen::{Specimen, SpecimenId};
-use dungeon_breeder_core::state::specimen::SpecimenCollection;
+use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
+use dungeon_breeder_core::state::specimen::{Specimen, SpecimenId};
 use egui::Ui;
 
 pub struct SpecimenSelection<'a> {

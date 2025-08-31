@@ -2,8 +2,8 @@ use crate::components::*;
 use crate::state::AppState;
 use crate::views::View;
 use crate::windows::settings::SettingsWindow;
-use dungeon_breeder_core::creature::id::CreatureID;
-use dungeon_breeder_core::creature::specimen::SpecimenId;
+use dungeon_breeder_core::data::creature::id::CreatureID;
+use dungeon_breeder_core::state::specimen::SpecimenId;
 use egui::{CentralPanel, Context, ScrollArea, TopBottomPanel};
 use serde::{Deserialize, Serialize};
 

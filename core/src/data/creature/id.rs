@@ -1,5 +1,5 @@
-use crate::creature::data::*;
-use crate::creature::def::CreatureDefinition;
+use crate::data::creature::data::*;
+use crate::data::creature::def::CreatureDefinition;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;

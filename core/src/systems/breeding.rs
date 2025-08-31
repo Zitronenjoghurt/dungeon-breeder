@@ -1,4 +1,4 @@
-use crate::creature::specimen::{NewSpecimen, Specimen};
+use crate::state::specimen::{NewSpecimen, Specimen};
 use crate::utils::random::random_normal_combination_01;
 
 pub fn breed_specimen(specimen_a: &Specimen, specimen_b: &Specimen) -> Option<NewSpecimen> {
