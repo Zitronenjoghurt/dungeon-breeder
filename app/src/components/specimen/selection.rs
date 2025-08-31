@@ -42,7 +42,7 @@ impl<'a> SpecimenSelection<'a> {
         format!(
             "{} ({})",
             creature.map(|c| c.name).unwrap_or_default(),
-            specimen.power()
+            specimen.proficiency()
         )
     }
 }

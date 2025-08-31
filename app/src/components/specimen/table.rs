@@ -36,6 +36,7 @@ where
             .column(Column::auto().at_least(30.0))
             .column(Column::auto().at_least(30.0))
             .column(Column::auto().at_least(30.0))
+            .column(Column::auto().at_least(30.0))
             .header(text_height, |mut header| {
                 header.col(|ui| {
                     ui.label("ID");
@@ -59,6 +60,10 @@ where
 
                 header.col(|ui| {
                     ui.label("Agility");
+                });
+
+                header.col(|ui| {
+                    ui.label("Proficiency");
                 });
             })
             .body(|body| {
@@ -106,6 +111,15 @@ where
 
                     row.col(|ui| {
                         ProgressBar::new(specimen.agility)
+                            .desired_height(text_height)
+                            .corner_radius(0.0)
+                            .show_percentage()
+                            .corner_radius(2.0)
+                            .ui(ui);
+                    });
+
+                    row.col(|ui| {
+                        ProgressBar::new(specimen.proficiency())
                             .desired_height(text_height)
                             .corner_radius(0.0)
                             .show_percentage()

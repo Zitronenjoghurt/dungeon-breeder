@@ -1,6 +1,7 @@
 use crate::actions::action::GameAction;
 use crate::creature::specimen::{NewSpecimen, SpecimenId};
 use crate::creature::CreatureId;
+use crate::data::GameData;
 use crate::state::specimen::SpecimenCollection;
 use serde::{Deserialize, Serialize};
 
@@ -12,9 +13,10 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn handle_action(&mut self, action: GameAction) {
+    pub fn handle_action(&mut self, data: &GameData, action: GameAction) {
         match action {
             GameAction::Breed((sp_a, sp_b)) => self.handle_breed(sp_a, sp_b),
+            GameAction::Fuse((sp_a, sp_b)) => self.handle_fuse(data, sp_a, sp_b),
             GameAction::RandomSpecimen(creature_id) => self.handle_random_specimen(creature_id),
         }
     }
@@ -37,6 +39,27 @@ impl GameState {
         };
 
         let Some(new_specimen) = specimen_a.breed_with(specimen_b) else {
+            return;
+        };
+
+        self.specimen.add_new(new_specimen);
+    }
+
+    fn handle_fuse(
+        &mut self,
+        data: &GameData,
+        specimen_a_id: SpecimenId,
+        specimen_b_id: SpecimenId,
+    ) {
+        let Some(specimen_a) = self.specimen.get_by_id(specimen_a_id) else {
+            return;
+        };
+
+        let Some(specimen_b) = self.specimen.get_by_id(specimen_b_id) else {
+            return;
+        };
+
+        let Some(new_specimen) = specimen_a.fuse_with(specimen_b, data) else {
             return;
         };
 

@@ -21,7 +21,7 @@ pub struct Game {
 impl Game {
     pub fn update(&mut self) {
         for action in self.actions.take_actions() {
-            self.state.handle_action(action);
+            self.state.handle_action(&self.data, action);
         }
     }
 }

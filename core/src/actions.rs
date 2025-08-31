@@ -32,4 +32,8 @@ impl GameActions {
     pub fn breed(&self, specimen_a: SpecimenId, specimen_b: SpecimenId) {
         self.push_action(GameAction::Breed((specimen_a, specimen_b)))
     }
+
+    pub fn fuse(&self, specimen_a: SpecimenId, specimen_b: SpecimenId) {
+        self.push_action(GameAction::Fuse((specimen_a, specimen_b)))
+    }
 }

@@ -3,7 +3,7 @@ use crate::state::AppState;
 use crate::views::View;
 use crate::windows::settings::SettingsWindow;
 use dungeon_breeder_core::creature::specimen::SpecimenId;
-use egui::{CentralPanel, Context, TopBottomPanel};
+use egui::{CentralPanel, Context, ScrollArea, TopBottomPanel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
@@ -31,8 +31,6 @@ impl View for GameView {
         let game_data = &state.game().data;
         let game_state = &state.game().state;
         CentralPanel::default().show(ctx, |ui| {
-            SpecimenTable::new(&state.game().data, state.game().state.specimen.iter()).ui(ui);
-
             SpecimenSelection::new(
                 game_data,
                 &game_state.specimen,
@@ -55,6 +53,17 @@ impl View for GameView {
                     .actions
                     .breed(self.selected_specimen_id_a, self.selected_specimen_id_b);
             }
+
+            if ui.button("Fuse").clicked() {
+                state
+                    .game()
+                    .actions
+                    .fuse(self.selected_specimen_id_a, self.selected_specimen_id_b);
+            }
+
+            ScrollArea::vertical().show(ui, |ui| {
+                SpecimenTable::new(&state.game().data, state.game().state.specimen.iter()).ui(ui);
+            });
         });
     }
 }
