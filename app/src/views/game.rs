@@ -2,6 +2,7 @@ use crate::components::*;
 use crate::state::AppState;
 use crate::views::View;
 use crate::windows::settings::SettingsWindow;
+use dungeon_breeder_core::creature::id::CreatureID;
 use dungeon_breeder_core::creature::specimen::SpecimenId;
 use egui::{CentralPanel, Context, ScrollArea, TopBottomPanel};
 use serde::{Deserialize, Serialize};
@@ -23,29 +24,20 @@ impl View for GameView {
             ui.horizontal(|ui| {
                 WindowButton::new(&mut self.settings_window, " 🛠 ").ui(ui);
                 if ui.button("Random Gonk").clicked() {
-                    state.game().actions.random_specimen(0);
+                    state.game().actions.random_specimen(CreatureID::Gonk);
                 }
             });
         });
 
-        let game_data = &state.game().data;
         let game_state = &state.game().state;
         CentralPanel::default().show(ctx, |ui| {
-            SpecimenSelection::new(
-                game_data,
-                &game_state.specimen,
-                &mut self.selected_specimen_id_a,
-            )
-            .id("select_specimen_a")
-            .ui(ui);
+            SpecimenSelection::new(&game_state.specimen, &mut self.selected_specimen_id_a)
+                .id("select_specimen_a")
+                .ui(ui);
 
-            SpecimenSelection::new(
-                game_data,
-                &game_state.specimen,
-                &mut self.selected_specimen_id_b,
-            )
-            .id("select_specimen_b")
-            .ui(ui);
+            SpecimenSelection::new(&game_state.specimen, &mut self.selected_specimen_id_b)
+                .id("select_specimen_b")
+                .ui(ui);
 
             if ui.button("Breed").clicked() {
                 state
@@ -62,7 +54,7 @@ impl View for GameView {
             }
 
             ScrollArea::vertical().show(ui, |ui| {
-                SpecimenTable::new(&state.game().data, state.game().state.specimen.iter()).ui(ui);
+                SpecimenTable::new(state.game().state.specimen.iter()).ui(ui);
             });
         });
     }

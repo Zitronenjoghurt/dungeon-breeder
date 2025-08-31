@@ -7,3 +7,5 @@ edition = "2024"
 rand = { workspace = true }
 rand_distr = { workspace = true }
 serde = { workspace = true }
+strum = { workspace = true }
+strum_macros = { workspace = true }

@@ -1,25 +1,23 @@
 use crate::components::Component;
 use dungeon_breeder_core::creature::specimen::Specimen;
-use dungeon_breeder_core::data::GameData;
 use eframe::emath::Align;
 use egui::{Layout, ProgressBar, Ui, Widget};
 use egui_extras::{Column, TableBuilder};
 
-pub struct SpecimenTable<'a, I> {
-    data: &'a GameData,
+pub struct SpecimenTable<I> {
     specimen: I,
 }
 
-impl<'a, I> SpecimenTable<'a, I>
+impl<'a, I> SpecimenTable<I>
 where
     I: IntoIterator<Item = &'a Specimen>,
 {
-    pub fn new(data: &'a GameData, specimen: I) -> Self {
-        Self { data, specimen }
+    pub fn new(specimen: I) -> Self {
+        Self { specimen }
     }
 }
 
-impl<'a, I> Component for SpecimenTable<'a, I>
+impl<'a, I> Component for SpecimenTable<I>
 where
     I: IntoIterator<Item = &'a Specimen>,
 {
@@ -70,16 +68,14 @@ where
                 body.rows(text_height, specimen.len(), |mut row| {
                     let index = row.index();
                     let specimen = specimen[index];
-                    let creature = self.data.creatures.get_by_id(specimen.creature_id);
+                    let creature = specimen.creature_def();
 
                     row.col(|ui| {
                         ui.label(format!("{}", specimen.id));
                     });
 
                     row.col(|ui| {
-                        if let Some(creature) = creature {
-                            ui.label(creature.name);
-                        }
+                        ui.label(creature.name);
                     });
 
                     row.col(|ui| {

@@ -6,12 +6,8 @@ pub struct Config {
     pub fusion_power_ratio_exp_bias: f32,
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            fusion_candidates_min_power_factor: 0.5,
-            fusion_candidates_max_power_factor: 2.0,
-            fusion_power_ratio_exp_bias: 0.1,
-        }
-    }
-}
+pub static CONFIG: Config = Config {
+    fusion_candidates_min_power_factor: 0.5,
+    fusion_candidates_max_power_factor: 2.0,
+    fusion_power_ratio_exp_bias: 0.1,
+};

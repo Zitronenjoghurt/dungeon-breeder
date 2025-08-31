@@ -1,6 +1,6 @@
 use crate::actions::action::GameAction;
+use crate::creature::id::CreatureID;
 use crate::creature::specimen::SpecimenId;
-use crate::creature::CreatureId;
 use std::cell::RefCell;
 
 pub mod action;
@@ -25,7 +25,7 @@ impl GameActions {
         }
     }
 
-    pub fn random_specimen(&self, creature_id: CreatureId) {
+    pub fn random_specimen(&self, creature_id: CreatureID) {
         self.push_action(GameAction::RandomSpecimen(creature_id))
     }
 

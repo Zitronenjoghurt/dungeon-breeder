@@ -1,11 +1,9 @@
 use crate::components::Component;
 use dungeon_breeder_core::creature::specimen::{Specimen, SpecimenId};
-use dungeon_breeder_core::data::GameData;
 use dungeon_breeder_core::state::specimen::SpecimenCollection;
 use egui::Ui;
 
 pub struct SpecimenSelection<'a> {
-    data: &'a GameData,
     collection: &'a SpecimenCollection,
     selected_id: &'a mut SpecimenId,
     id: &'static str,
@@ -13,13 +11,8 @@ pub struct SpecimenSelection<'a> {
 }
 
 impl<'a> SpecimenSelection<'a> {
-    pub fn new(
-        data: &'a GameData,
-        collection: &'a SpecimenCollection,
-        selected_id: &'a mut SpecimenId,
-    ) -> Self {
+    pub fn new(collection: &'a SpecimenCollection, selected_id: &'a mut SpecimenId) -> Self {
         Self {
-            data,
             collection,
             selected_id,
             id: "specimen_selection",
@@ -38,10 +31,9 @@ impl<'a> SpecimenSelection<'a> {
     }
 
     fn specimen_label(&self, specimen: &Specimen) -> String {
-        let creature = self.data.creatures.get_by_id(specimen.creature_id);
         format!(
             "{} ({})",
-            creature.map(|c| c.name).unwrap_or_default(),
+            specimen.creature_def().name,
             specimen.proficiency()
         )
     }
