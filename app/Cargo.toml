@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = "1.0.99"
 dungeon-breeder-core = { workspace = true }
-eframe = { version = "0.32.1", features = ["persistence"] }
+eframe = { version = "0.32.1", features = ["persistence", "wgpu"] }
 egui = { version = "0.32.1", features = ["persistence"] }
 egui_extras = "0.32.1"
 serde = { workspace = true }

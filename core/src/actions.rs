@@ -40,4 +40,17 @@ impl GameActions {
     pub fn slay(&self, specimen_id: SpecimenId) {
         self.push_action(GameAction::Slay(specimen_id))
     }
+
+    pub fn assign_to_dungeon_layer_slot(
+        &self,
+        layer: usize,
+        slot: usize,
+        specimen: Option<SpecimenId>,
+    ) {
+        self.push_action(GameAction::AssignToDungeonLayerSlot {
+            layer,
+            slot,
+            specimen,
+        })
+    }
 }

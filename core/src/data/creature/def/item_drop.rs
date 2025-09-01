@@ -17,7 +17,7 @@ impl CreatureItemDrop {
         }
 
         let chance_roll = rng.random_range(0.0..1.0);
-        if chance_roll < self.drop_chance {
+        if chance_roll > self.drop_chance {
             return None;
         }
 

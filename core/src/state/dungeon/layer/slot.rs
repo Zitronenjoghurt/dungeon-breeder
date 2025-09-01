@@ -35,16 +35,24 @@ impl DungeonLayerSlot {
         items.add_new_batch(&dropped_items);
     }
 
-    pub fn get_assigned_specimen(&self) -> Option<SpecimenId> {
+    pub fn get_assigned_specimen_id(&self) -> Option<SpecimenId> {
         self.assigned_specimen
     }
 
-    pub fn set_assigned_specimen(&mut self, specimen_id: Option<SpecimenId>) {
+    pub fn set_assigned_specimen_id(&mut self, specimen_id: Option<SpecimenId>) {
         self.timer.reset();
         self.assigned_specimen = specimen_id;
     }
 
     pub fn progress(&self) -> f32 {
         self.timer.progress(self.slay_duration_secs)
+    }
+
+    pub fn format_time_left(&self) -> String {
+        self.timer.format_time_left(self.slay_duration_secs)
+    }
+
+    pub fn slay_duration_secs(&self) -> u64 {
+        self.slay_duration_secs
     }
 }

@@ -11,7 +11,7 @@ pub struct Config {
 
 pub static CONFIG: Config = Config {
     ticks_per_second: 1,
-    slay_duration_power_exponent: 2.0,
+    slay_duration_power_exponent: 1.5,
     fusion_candidates_min_power_factor: 0.5,
     fusion_candidates_max_power_factor: 2.0,
     fusion_power_ratio_exp_bias: 0.1,

@@ -10,7 +10,7 @@ pub enum ViewID {
     Game,
 }
 
-pub trait View: Default {
+pub trait View {
     fn render(&mut self, ctx: &Context, state: &mut AppState);
 }
 

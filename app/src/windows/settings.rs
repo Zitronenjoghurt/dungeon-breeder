@@ -1,15 +1,19 @@
-use crate::state::settings::UIScale;
-use crate::state::AppState;
+use crate::state::settings::{SettingsState, UIScale};
 use crate::windows::ViewWindow;
 use egui::{Id, Ui, WidgetText};
-use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default, Serialize, Deserialize)]
-pub struct SettingsWindow {
-    open: bool,
+pub struct SettingsWindow<'a> {
+    is_open: &'a mut bool,
+    settings: &'a mut SettingsState,
 }
 
-impl ViewWindow for SettingsWindow {
+impl<'a> SettingsWindow<'a> {
+    pub fn new(is_open: &'a mut bool, settings: &'a mut SettingsState) -> Self {
+        Self { is_open, settings }
+    }
+}
+
+impl ViewWindow for SettingsWindow<'_> {
     fn id(&self) -> Id {
         Id::new("settings_window")
     }
@@ -19,15 +23,15 @@ impl ViewWindow for SettingsWindow {
     }
 
     fn is_open(&self) -> bool {
-        self.open
+        *self.is_open
     }
 
     fn set_open(&mut self, open: bool) {
-        self.open = open;
+        *self.is_open = open;
     }
 
-    fn render_content(&mut self, ui: &mut Ui, state: &mut AppState) {
-        let mut ui_scale = state.settings_mut().get_ui_scale();
+    fn render_content(&mut self, ui: &mut Ui) {
+        let mut ui_scale = self.settings.get_ui_scale();
         egui::ComboBox::from_id_salt("ui_scale")
             .selected_text(ui_scale.to_string())
             .show_ui(ui, |ui| {
@@ -39,6 +43,6 @@ impl ViewWindow for SettingsWindow {
                 ui.selectable_value(&mut ui_scale, UIScale::XL, UIScale::XL.to_string());
                 ui.selectable_value(&mut ui_scale, UIScale::XXL, UIScale::XXL.to_string());
             });
-        state.settings_mut().set_ui_scale(ui_scale);
+        self.settings.set_ui_scale(ui_scale);
     }
 }

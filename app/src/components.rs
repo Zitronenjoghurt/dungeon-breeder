@@ -1,12 +1,14 @@
 use egui::Ui;
 
+pub mod dungeon;
+pub mod item;
 pub mod specimen;
-pub mod window_button;
-pub mod window_renderer;
+pub mod toggle_button;
 
+pub use dungeon::*;
+pub use item::*;
 pub use specimen::*;
-pub use window_button::*;
-pub use window_renderer::*;
+pub use toggle_button::*;
 
 pub trait Component: Sized {
     fn ui(self, ui: &mut Ui);

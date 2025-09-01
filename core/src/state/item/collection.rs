@@ -1,11 +1,11 @@
 use crate::data::item::id::ItemID;
 use crate::state::item::NewItem;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct ItemCollection {
-    collection: HashMap<ItemID, u64>,
+    collection: BTreeMap<ItemID, u64>,
 }
 
 impl ItemCollection {
@@ -24,5 +24,13 @@ impl ItemCollection {
 
     pub fn iter(&self) -> impl Iterator<Item = (&ItemID, &u64)> {
         self.collection.iter()
+    }
+
+    pub fn len(&self) -> usize {
+        self.collection.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.collection.is_empty()
     }
 }

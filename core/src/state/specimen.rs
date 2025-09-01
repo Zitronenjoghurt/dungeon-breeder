@@ -36,6 +36,10 @@ impl Specimen {
         self.power().powf(CONFIG.slay_duration_power_exponent) as u64
     }
 
+    pub fn name_with_id(&self) -> String {
+        format!("{} [{}]", self.creature_def().name, self.id)
+    }
+
     pub fn from_new_specimen(id: SpecimenId, new_specimen: NewSpecimen) -> Specimen {
         Specimen {
             id,

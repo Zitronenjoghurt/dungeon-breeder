@@ -11,8 +11,8 @@ use specimen::collection::SpecimenCollection;
 use specimen::{NewSpecimen, SpecimenId};
 
 mod clock;
-mod dungeon;
-mod item;
+pub mod dungeon;
+pub mod item;
 pub mod specimen;
 mod timer;
 
@@ -39,6 +39,11 @@ impl GameState {
 
     pub fn handle_action(&mut self, action: GameAction) {
         match action {
+            GameAction::AssignToDungeonLayerSlot {
+                layer,
+                slot,
+                specimen,
+            } => self.handle_assign_to_dungeon_layer_slot(layer, slot, specimen),
             GameAction::Breed((sp_a, sp_b)) => self.handle_breed(sp_a, sp_b),
             GameAction::Fuse((sp_a, sp_b)) => self.handle_fuse(sp_a, sp_b),
             GameAction::RandomSpecimen(creature_id) => self.handle_random_specimen(creature_id),
@@ -93,5 +98,22 @@ impl GameState {
 
         let dropped_items = specimen.generate_drops();
         self.items.add_new_batch(&dropped_items);
+    }
+
+    fn handle_assign_to_dungeon_layer_slot(
+        &mut self,
+        layer_index: usize,
+        slot_index: usize,
+        specimen_id: Option<SpecimenId>,
+    ) {
+        let Some(layer) = self.dungeon.get_layer_mut(layer_index) else {
+            return;
+        };
+
+        let Some(slot) = layer.get_slot_mut(slot_index) else {
+            return;
+        };
+
+        slot.set_assigned_specimen_id(specimen_id);
     }
 }

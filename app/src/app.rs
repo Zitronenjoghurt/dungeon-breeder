@@ -1,7 +1,7 @@
 use crate::state::AppState;
 use crate::views::{View, ViewManager};
+use anyhow::anyhow;
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct DBApp {
@@ -10,16 +10,28 @@ pub struct DBApp {
 }
 
 impl DBApp {
-    pub fn new(cc: &eframe::CreationContext) -> Self {
-        cc.storage
-            .and_then(|storage| eframe::get_value::<Self>(storage, eframe::APP_KEY))
-            .unwrap_or_default()
+    pub fn new(cc: &eframe::CreationContext) -> anyhow::Result<Self> {
+        match cc.storage {
+            Some(storage) => match eframe::get_value::<Self>(storage, eframe::APP_KEY) {
+                Some(app) => Ok(app),
+                None => {
+                    if storage.get_string(eframe::APP_KEY).is_some() {
+                        Err(anyhow!(
+                            "Failed to deserialize app state - corrupted or incompatible format"
+                        ))
+                    } else {
+                        Ok(Self::default())
+                    }
+                }
+            },
+            None => Ok(Self::default()),
+        }
     }
 }
 
 impl eframe::App for DBApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        ctx.request_repaint_after(Duration::from_millis(50));
+        ctx.request_repaint();
         self.view_manager.render(ctx, &mut self.state);
         self.state.update(ctx);
     }
