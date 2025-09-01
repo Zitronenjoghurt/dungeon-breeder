@@ -1,3 +1,4 @@
+use crate::data::config::CONFIG;
 use crate::data::creature::def::CreatureDefinition;
 use crate::data::creature::id::CreatureID;
 use crate::state::item::NewItem;
@@ -27,8 +28,12 @@ impl Specimen {
         (self.strength + self.intelligence + self.vitality + self.agility) / 4.0
     }
 
-    pub fn power(&self, max_power: u64) -> f32 {
-        self.proficiency() * max_power as f32
+    pub fn power(&self) -> f32 {
+        self.proficiency() * self.creature_def().max_power as f32
+    }
+
+    pub fn slay_duration_secs(&self) -> u64 {
+        self.power().powf(CONFIG.slay_duration_power_exponent) as u64
     }
 
     pub fn from_new_specimen(id: SpecimenId, new_specimen: NewSpecimen) -> Specimen {

@@ -1,6 +1,7 @@
 use crate::state::AppState;
 use crate::views::{View, ViewManager};
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct DBApp {
@@ -18,6 +19,7 @@ impl DBApp {
 
 impl eframe::App for DBApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        ctx.request_repaint_after(Duration::from_millis(50));
         self.view_manager.render(ctx, &mut self.state);
         self.state.update(ctx);
     }

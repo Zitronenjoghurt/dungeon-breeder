@@ -36,4 +36,8 @@ impl GameActions {
     pub fn fuse(&self, specimen_a: SpecimenId, specimen_b: SpecimenId) {
         self.push_action(GameAction::Fuse((specimen_a, specimen_b)))
     }
+
+    pub fn slay(&self, specimen_id: SpecimenId) {
+        self.push_action(GameAction::Slay(specimen_id))
+    }
 }

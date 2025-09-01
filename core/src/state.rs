@@ -1,5 +1,8 @@
 use crate::actions::action::GameAction;
+use crate::data::config::CONFIG;
 use crate::data::creature::id::CreatureID;
+use crate::state::clock::Clock;
+use crate::state::dungeon::Dungeon;
 use crate::state::item::collection::ItemCollection;
 use crate::systems::breeding::breed_specimen;
 use crate::systems::fusion::fuse_specimen;
@@ -7,16 +10,33 @@ use serde::{Deserialize, Serialize};
 use specimen::collection::SpecimenCollection;
 use specimen::{NewSpecimen, SpecimenId};
 
+mod clock;
+mod dungeon;
 mod item;
 pub mod specimen;
+mod timer;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct GameState {
+    pub clock: Clock,
+    pub dungeon: Dungeon,
     pub items: ItemCollection,
     pub specimen: SpecimenCollection,
 }
 
 impl GameState {
+    pub fn update(&mut self) {
+        let seconds_passed = self.clock.update();
+        let ticks = seconds_passed * CONFIG.ticks_per_second;
+        for _ in 0..ticks {
+            self.tick();
+        }
+    }
+
+    pub fn tick(&mut self) {
+        self.dungeon.tick(&mut self.specimen, &mut self.items);
+    }
+
     pub fn handle_action(&mut self, action: GameAction) {
         match action {
             GameAction::Breed((sp_a, sp_b)) => self.handle_breed(sp_a, sp_b),

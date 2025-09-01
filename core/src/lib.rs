@@ -20,5 +20,6 @@ impl Game {
         for action in self.actions.take_actions() {
             self.state.handle_action(action);
         }
+        self.state.update();
     }
 }
