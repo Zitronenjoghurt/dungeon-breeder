@@ -18,6 +18,20 @@ impl ItemCollection {
         new_items.iter().for_each(|new_item| self.add_new(new_item));
     }
 
+    pub fn remove_item(&mut self, item_id: ItemID, amount: u64) -> bool {
+        let current_amount = self.collection.entry(item_id).or_insert(0);
+        if *current_amount < amount {
+            return false;
+        }
+
+        *current_amount = current_amount.saturating_sub(amount);
+        if *current_amount == 0 {
+            self.collection.remove(&item_id);
+        }
+
+        true
+    }
+
     pub fn get_count(&self, item_id: ItemID) -> u64 {
         self.collection.get(&item_id).copied().unwrap_or_default()
     }

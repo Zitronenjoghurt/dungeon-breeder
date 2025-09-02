@@ -1,5 +1,6 @@
 use egui::{Context, Id, Ui, WidgetText};
 
+pub mod debug_window;
 pub mod settings;
 
 pub trait ViewWindow: Sized {

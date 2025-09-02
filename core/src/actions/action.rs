@@ -1,4 +1,5 @@
 use crate::data::creature::id::CreatureID;
+use crate::data::item::id::ItemID;
 use crate::state::specimen::SpecimenId;
 
 #[derive(Debug, Clone)]
@@ -11,5 +12,8 @@ pub enum GameAction {
     Breed((SpecimenId, SpecimenId)),
     Fuse((SpecimenId, SpecimenId)),
     RandomSpecimen(CreatureID),
+    SellItem((ItemID, u64)),
     Slay(SpecimenId),
+    UnlockDungeonLayer,
+    UnlockDungeonLayerSlot(usize),
 }

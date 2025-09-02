@@ -7,6 +7,9 @@ pub struct Config {
     pub fusion_candidates_max_power_factor: f32,
     /// Higher values make fused creatures have worse stats compared to fused pair and the power difference
     pub fusion_power_ratio_exp_bias: f32,
+    pub base_dungeon_layer_unlock_costs: &'static [u128],
+    pub base_dungeon_layer_slot_unlock_costs: &'static [u128],
+    pub base_dungeon_layer_slot_unlock_cost_exponent_per_layer: u32,
 }
 
 pub static CONFIG: Config = Config {
@@ -15,4 +18,7 @@ pub static CONFIG: Config = Config {
     fusion_candidates_min_power_factor: 0.5,
     fusion_candidates_max_power_factor: 2.0,
     fusion_power_ratio_exp_bias: 0.1,
+    base_dungeon_layer_unlock_costs: &[0, 1000],
+    base_dungeon_layer_slot_unlock_costs: &[0, 10, 100],
+    base_dungeon_layer_slot_unlock_cost_exponent_per_layer: 2,
 };

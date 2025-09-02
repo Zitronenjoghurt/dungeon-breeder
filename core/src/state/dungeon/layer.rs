@@ -1,21 +1,14 @@
 use crate::state::dungeon::layer::slot::DungeonLayerSlot;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
+use crate::systems::upgrade_costs::dungeon_layer_slot_unlock_cost;
 use serde::{Deserialize, Serialize};
 
 pub mod slot;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct DungeonLayer {
     slots: Vec<DungeonLayerSlot>,
-}
-
-impl Default for DungeonLayer {
-    fn default() -> Self {
-        Self {
-            slots: vec![DungeonLayerSlot::default()],
-        }
-    }
 }
 
 impl DungeonLayer {
@@ -45,7 +38,19 @@ impl DungeonLayer {
         self.slots.iter_mut()
     }
 
-    pub fn add_slot(&mut self) {
+    pub fn unlock_slot(&mut self) {
         self.slots.push(DungeonLayerSlot::default());
+    }
+
+    pub fn next_slot_index(&self) -> usize {
+        self.slots.len()
+    }
+
+    pub fn next_slot_costs(&self, layer_index: usize) -> Option<u128> {
+        dungeon_layer_slot_unlock_cost(layer_index, self.next_slot_index())
+    }
+
+    pub fn has_slot_to_unlock(&self, layer_index: usize) -> bool {
+        self.next_slot_costs(layer_index).is_some()
     }
 }

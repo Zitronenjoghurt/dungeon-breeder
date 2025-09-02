@@ -2,7 +2,7 @@ use crate::components::dungeon::layer_slot::DungeonLayerSlotView;
 use crate::components::Component;
 use dungeon_breeder_core::state::dungeon::layer::DungeonLayer;
 use dungeon_breeder_core::Game;
-use egui::{ScrollArea, Ui};
+use egui::{Frame, ScrollArea, Ui};
 
 pub struct DungeonLayerView<'a> {
     game: &'a Game,
@@ -34,6 +34,16 @@ impl Component for DungeonLayerView<'_> {
                     ui.push_id(slot_index, |ui| {
                         DungeonLayerSlotView::new(self.game, slot, self.layer_index, slot_index)
                             .ui(ui);
+                    });
+                }
+                if let Some(unlock_costs) = self.layer.next_slot_costs(self.layer_index) {
+                    Frame::group(ui.style()).show(ui, |ui| {
+                        ui.label(format!("{}💰", unlock_costs));
+                        if ui.button("Unlock").clicked() {
+                            self.game
+                                .actions
+                                .unlock_dungeon_layer_slot(self.layer_index);
+                        }
                     });
                 }
             });

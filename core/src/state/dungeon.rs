@@ -1,21 +1,14 @@
 use crate::state::dungeon::layer::DungeonLayer;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
+use crate::systems::upgrade_costs::dungeon_layer_unlock_cost;
 use serde::{Deserialize, Serialize};
 
 pub mod layer;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Dungeon {
     layers: Vec<DungeonLayer>,
-}
-
-impl Default for Dungeon {
-    fn default() -> Self {
-        Self {
-            layers: vec![DungeonLayer::default()],
-        }
-    }
 }
 
 impl Dungeon {
@@ -45,7 +38,15 @@ impl Dungeon {
         self.layers.iter_mut()
     }
 
-    pub fn add_layer(&mut self) {
+    pub fn unlock_layer(&mut self) {
         self.layers.push(DungeonLayer::default());
+    }
+
+    pub fn next_layer_index(&self) -> usize {
+        self.layers.len()
+    }
+
+    pub fn next_layer_costs(&self) -> Option<u128> {
+        dungeon_layer_unlock_cost(self.next_layer_index())
     }
 }

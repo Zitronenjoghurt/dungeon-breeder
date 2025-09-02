@@ -783,7 +783,6 @@ dependencies = [
  "eframe",
  "egui",
  "egui_extras",
- "humantime",
  "serde",
 ]
 
