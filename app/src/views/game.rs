@@ -16,7 +16,7 @@ pub struct GameView {
 impl View for GameView {
     fn render(&mut self, ctx: &Context, state: &mut AppState) {
         SettingsWindow::new(&mut self.settings_window_open, state.settings_mut()).show(ctx);
-        DebugWindow::new(state.game(), &mut self.debug_window_state).show(ctx);
+        DebugWindow::new(&mut state.modals, &state.game, &mut self.debug_window_state).show(ctx);
 
         TopBottomPanel::top("game_tab_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
@@ -25,7 +25,7 @@ impl View for GameView {
 
                 ui.separator();
 
-                ui.label(format!("{}💰", state.game().state.treasury.coins()))
+                ui.label(format!("{}💰", state.game.state.treasury.coins()))
             });
         });
 

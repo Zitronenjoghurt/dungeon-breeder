@@ -1,16 +1,22 @@
 use crate::components::{Component, DungeonView};
+use crate::modals::ModalSystem;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::Game;
 use egui::{Id, ScrollArea, Ui, WidgetText};
 
 pub struct DebugDungeonWindow<'a> {
+    modal_system: &'a mut ModalSystem,
     game: &'a Game,
     is_open: &'a mut bool,
 }
 
 impl<'a> DebugDungeonWindow<'a> {
-    pub fn new(game: &'a Game, is_open: &'a mut bool) -> Self {
-        Self { game, is_open }
+    pub fn new(modal_system: &'a mut ModalSystem, game: &'a Game, is_open: &'a mut bool) -> Self {
+        Self {
+            modal_system,
+            game,
+            is_open,
+        }
     }
 }
 
@@ -33,7 +39,7 @@ impl ViewWindow for DebugDungeonWindow<'_> {
 
     fn render_content(&mut self, ui: &mut Ui) {
         ScrollArea::vertical().show(ui, |ui| {
-            DungeonView::new(self.game, &self.game.state.dungeon).ui(ui);
+            DungeonView::new(self.modal_system, self.game, &self.game.state.dungeon).ui(ui);
         });
     }
 }

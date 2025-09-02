@@ -1,22 +1,38 @@
+use crate::state::AppState;
 use egui::{Context, Id, Modal, Ui};
+use serde::{Deserialize, Serialize};
 
-pub trait ViewModal: Sized {
+mod specimen_selection;
+
+pub trait AppModal {
     fn id(&self) -> Id;
     fn is_open(&self) -> bool;
-    fn set_open(&mut self, open: bool);
-    fn render_content(&mut self, ui: &mut Ui);
+    fn close(&mut self);
+    fn update_content(&mut self, ui: &mut Ui, state: &mut AppState);
 
-    fn show(mut self, ctx: &Context) {
+    fn update(&mut self, ctx: &Context, state: &mut AppState) {
         if !self.is_open() {
             return;
         }
 
         let modal_response = Modal::new(self.id()).show(ctx, |ui| {
-            self.render_content(ui);
+            self.update_content(ui, state);
         });
 
         if modal_response.should_close() {
-            self.set_open(false);
+            self.close();
         }
+    }
+}
+
+#[derive(Default, Serialize, Deserialize)]
+pub struct ModalSystem {
+    pub specimen_selection: specimen_selection::SpecimenSelectionModal,
+}
+
+impl ModalSystem {
+    // Will be able to access everything inside AppState besides the ModalSystem itself
+    pub fn update(&mut self, ctx: &Context, state: &mut AppState) {
+        self.specimen_selection.update(ctx, state);
     }
 }

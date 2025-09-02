@@ -1,8 +1,5 @@
-mod dungeon;
-mod items;
-mod specimen;
-
 use crate::components::{Component, ToggleButton};
+use crate::modals::ModalSystem;
 use crate::windows::debug_window::dungeon::DebugDungeonWindow;
 use crate::windows::debug_window::items::DebugItemsWindow;
 use crate::windows::debug_window::specimen::{DebugSpecimenWindow, DebugSpecimenWindowState};
@@ -11,6 +8,10 @@ use dungeon_breeder_core::data::creature::id::CreatureID;
 use dungeon_breeder_core::Game;
 use egui::{Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
+
+mod dungeon;
+mod items;
+mod specimen;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugWindowState {
@@ -21,13 +22,19 @@ pub struct DebugWindowState {
 }
 
 pub struct DebugWindow<'a> {
+    modal_system: &'a mut ModalSystem,
     game: &'a Game,
     state: &'a mut DebugWindowState,
 }
 
 impl<'a> DebugWindow<'a> {
-    pub fn new(game: &'a Game, options: &'a mut DebugWindowState) -> Self {
+    pub fn new(
+        modal_system: &'a mut ModalSystem,
+        game: &'a Game,
+        options: &'a mut DebugWindowState,
+    ) -> Self {
         Self {
+            modal_system,
             game,
             state: options,
         }
@@ -52,7 +59,12 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        DebugDungeonWindow::new(self.game, &mut self.state.dungeon_window_open).show(ui.ctx());
+        DebugDungeonWindow::new(
+            self.modal_system,
+            self.game,
+            &mut self.state.dungeon_window_open,
+        )
+        .show(ui.ctx());
         DebugItemsWindow::new(self.game, &mut self.state.items_window_open).show(ui.ctx());
         DebugSpecimenWindow::new(self.game, &mut self.state.specimen_window_state).show(ui.ctx());
 

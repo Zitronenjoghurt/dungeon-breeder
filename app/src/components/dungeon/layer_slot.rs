@@ -1,9 +1,11 @@
-use crate::components::{Component, SpecimenSelection};
+use crate::components::Component;
+use crate::modals::ModalSystem;
 use dungeon_breeder_core::state::dungeon::layer::slot::DungeonLayerSlot;
 use dungeon_breeder_core::Game;
 use egui::{Frame, ProgressBar, Ui, Widget};
 
 pub struct DungeonLayerSlotView<'a> {
+    modal_system: &'a mut ModalSystem,
     game: &'a Game,
     slot: &'a DungeonLayerSlot,
     layer_index: usize,
@@ -13,12 +15,14 @@ pub struct DungeonLayerSlotView<'a> {
 
 impl<'a> DungeonLayerSlotView<'a> {
     pub fn new(
+        modal_system: &'a mut ModalSystem,
         game: &'a Game,
         slot: &'a DungeonLayerSlot,
         layer_index: usize,
         slot_index: usize,
     ) -> Self {
         Self {
+            modal_system,
             game,
             slot,
             layer_index,
@@ -56,16 +60,16 @@ impl Component for DungeonLayerSlotView<'_> {
                             .text(self.slot.format_time_left())
                             .ui(ui);
                     });
-                } else {
-                    let mut selected_id = 0;
-                    SpecimenSelection::new(&self.game.state.specimen, &mut selected_id).ui(ui);
-                    if selected_id != 0 {
-                        self.game.actions.assign_to_dungeon_layer_slot(
-                            self.layer_index,
-                            self.slot_index,
-                            Some(selected_id),
-                        );
-                    }
+                } else if ui.button("Select Specimen").clicked() {
+                    self.modal_system
+                        .specimen_selection
+                        .open(move |specimen_id, state| {
+                            state.game.actions.assign_to_dungeon_layer_slot(
+                                self.layer_index,
+                                self.slot_index,
+                                Some(specimen_id),
+                            );
+                        });
                 }
             });
         });
