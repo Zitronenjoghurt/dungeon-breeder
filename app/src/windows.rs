@@ -1,4 +1,8 @@
+use crate::app::GameApp;
+use crate::windows::debug_window::{DebugWindow, DebugWindowState};
+use crate::windows::settings::SettingsWindow;
 use egui::{Context, Id, Ui, WidgetText};
+use serde::{Deserialize, Serialize};
 
 pub mod debug_window;
 pub mod settings;
@@ -38,5 +42,19 @@ pub trait ViewWindow: Sized {
                 self.render_content(ui);
             });
         self.set_open(is_open)
+    }
+}
+
+#[derive(Default, Serialize, Deserialize)]
+pub struct WindowSystem {
+    pub debug: DebugWindowState,
+    pub settings_open: bool,
+}
+
+impl WindowSystem {
+    // Will be able to access everything inside AppState besides the ModalSystem itself
+    pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
+        DebugWindow::new(&mut app.modals, &app.game, &mut self.debug).show(ctx);
+        SettingsWindow::new(&mut self.settings_open, &mut app.settings).show(ctx);
     }
 }

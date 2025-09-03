@@ -1,31 +1,32 @@
+use crate::app::GameApp;
 use crate::components::*;
-use crate::state::AppState;
 use crate::views::View;
-use crate::windows::debug_window::{DebugWindow, DebugWindowState};
-use crate::windows::settings::SettingsWindow;
-use crate::windows::ViewWindow;
 use egui::{CentralPanel, Context, TopBottomPanel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
-pub struct GameView {
-    settings_window_open: bool,
-    debug_window_state: DebugWindowState,
+pub struct GameViewState;
+
+pub struct GameView<'a> {
+    state: &'a mut GameViewState,
 }
 
-impl View for GameView {
-    fn render(&mut self, ctx: &Context, state: &mut AppState) {
-        SettingsWindow::new(&mut self.settings_window_open, state.settings_mut()).show(ctx);
-        DebugWindow::new(&mut state.modals, &state.game, &mut self.debug_window_state).show(ctx);
+impl<'a> GameView<'a> {
+    pub fn new(state: &'a mut GameViewState) -> Self {
+        Self { state }
+    }
+}
 
+impl View for GameView<'_> {
+    fn render(&mut self, ctx: &Context, app: &mut GameApp) {
         TopBottomPanel::top("game_tab_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ToggleButton::new(&mut self.settings_window_open, " 🛠 ").ui(ui);
-                ToggleButton::new(&mut self.debug_window_state.is_open, " 🐛 ").ui(ui);
+                ToggleButton::new(&mut app.windows.settings_open, " 🛠 ").ui(ui);
+                ToggleButton::new(&mut app.windows.debug.is_open, " 🐛 ").ui(ui);
 
                 ui.separator();
 
-                ui.label(format!("{}💰", state.game.state.treasury.coins()))
+                ui.label(format!("{}💰", app.game.state.treasury.coins()))
             });
         });
 

@@ -42,12 +42,12 @@ impl Display for UIScale {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct SettingsState {
+pub struct SettingsSystem {
     ui_scale: UIScale,
     dirty: bool,
 }
 
-impl Default for SettingsState {
+impl Default for SettingsSystem {
     fn default() -> Self {
         Self {
             ui_scale: UIScale::default(),
@@ -56,7 +56,7 @@ impl Default for SettingsState {
     }
 }
 
-impl SettingsState {
+impl SettingsSystem {
     pub fn update(&mut self, ctx: &egui::Context) {
         if !self.dirty {
             return;

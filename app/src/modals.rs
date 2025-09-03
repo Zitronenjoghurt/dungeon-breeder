@@ -1,4 +1,4 @@
-use crate::state::AppState;
+use crate::app::GameApp;
 use egui::{Context, Id, Modal, Ui};
 use serde::{Deserialize, Serialize};
 
@@ -8,18 +8,21 @@ pub trait AppModal {
     fn id(&self) -> Id;
     fn is_open(&self) -> bool;
     fn close(&mut self);
-    fn update_content(&mut self, ui: &mut Ui, state: &mut AppState);
+    fn before_close(&mut self, ctx: &Context, app: &mut GameApp) {}
 
-    fn update(&mut self, ctx: &Context, state: &mut AppState) {
+    fn update_content(&mut self, ui: &mut Ui, app: &mut GameApp);
+
+    fn update(&mut self, ctx: &Context, app: &mut GameApp) {
         if !self.is_open() {
             return;
         }
 
         let modal_response = Modal::new(self.id()).show(ctx, |ui| {
-            self.update_content(ui, state);
+            self.update_content(ui, app);
         });
 
         if modal_response.should_close() {
+            self.before_close(ctx, app);
             self.close();
         }
     }
@@ -32,7 +35,7 @@ pub struct ModalSystem {
 
 impl ModalSystem {
     // Will be able to access everything inside AppState besides the ModalSystem itself
-    pub fn update(&mut self, ctx: &Context, state: &mut AppState) {
-        self.specimen_selection.update(ctx, state);
+    pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
+        self.specimen_selection.update(ctx, app);
     }
 }

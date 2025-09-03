@@ -1,4 +1,5 @@
-use crate::state::AppState;
+use crate::app::GameApp;
+use crate::views::game::GameView;
 use egui::Context;
 use serde::{Deserialize, Serialize};
 
@@ -11,18 +12,19 @@ pub enum ViewID {
 }
 
 pub trait View {
-    fn render(&mut self, ctx: &Context, state: &mut AppState);
+    fn render(&mut self, ctx: &Context, app: &mut GameApp);
 }
 
 #[derive(Default, Serialize, Deserialize)]
-pub struct ViewManager {
-    game_view: game::GameView,
+pub struct ViewSystem {
+    current_view: ViewID,
+    pub game: game::GameViewState,
 }
 
-impl View for ViewManager {
-    fn render(&mut self, ctx: &Context, state: &mut AppState) {
-        match state.current_view() {
-            ViewID::Game => self.game_view.render(ctx, state),
+impl View for ViewSystem {
+    fn render(&mut self, ctx: &Context, app: &mut GameApp) {
+        match self.current_view {
+            ViewID::Game => GameView::new(&mut self.game).render(ctx, app),
         }
     }
 }

@@ -1,9 +1,9 @@
-use crate::app::DBApp;
+use crate::app::GameApp;
 
 mod app;
 mod components;
 mod modals;
-mod state;
+mod systems;
 mod views;
 mod windows;
 
@@ -20,7 +20,7 @@ fn main() {
     eframe::run_native(
         "Dungeon Breeder",
         native_options,
-        Box::new(|cc| Ok(Box::new(DBApp::new(cc).unwrap()))),
+        Box::new(|cc| Ok(Box::new(GameApp::new(cc).unwrap()))),
     )
     .expect("Failed to run egui application.");
 }

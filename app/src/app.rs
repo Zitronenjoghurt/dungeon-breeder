@@ -1,15 +1,21 @@
-use crate::state::AppState;
-use crate::views::{View, ViewManager};
+use crate::modals::ModalSystem;
+use crate::systems::settings::SettingsSystem;
+use crate::views::{View, ViewSystem};
+use crate::windows::WindowSystem;
 use anyhow::anyhow;
+use dungeon_breeder_core::Game;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
-pub struct DBApp {
-    state: AppState,
-    view_manager: ViewManager,
+pub struct GameApp {
+    pub game: Game,
+    pub settings: SettingsSystem,
+    pub modals: ModalSystem,
+    pub views: ViewSystem,
+    pub windows: WindowSystem,
 }
 
-impl DBApp {
+impl GameApp {
     pub fn new(cc: &eframe::CreationContext) -> anyhow::Result<Self> {
         match cc.storage {
             Some(storage) => match eframe::get_value::<Self>(storage, eframe::APP_KEY) {
@@ -29,11 +35,24 @@ impl DBApp {
     }
 }
 
-impl eframe::App for DBApp {
+impl eframe::App for GameApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint();
-        self.view_manager.render(ctx, &mut self.state);
-        self.state.update(ctx);
+
+        self.game.update();
+        self.settings.update(ctx);
+
+        let mut view_system = std::mem::take(&mut self.views);
+        view_system.render(ctx, self);
+        self.views = view_system;
+
+        let mut modal_system = std::mem::take(&mut self.modals);
+        modal_system.update(ctx, self);
+        self.modals = modal_system;
+
+        let mut window_system = std::mem::take(&mut self.windows);
+        window_system.update(ctx, self);
+        self.windows = window_system;
     }
 
     fn save(&mut self, storage: &mut dyn eframe::Storage) {

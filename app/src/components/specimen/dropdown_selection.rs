@@ -3,14 +3,14 @@ use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::{Specimen, SpecimenId};
 use egui::Ui;
 
-pub struct SpecimenSelection<'a> {
+pub struct SpecimenDropdownSelection<'a> {
     collection: &'a SpecimenCollection,
     selected_id: &'a mut SpecimenId,
     id: &'static str,
     label: &'static str,
 }
 
-impl<'a> SpecimenSelection<'a> {
+impl<'a> SpecimenDropdownSelection<'a> {
     pub fn new(collection: &'a SpecimenCollection, selected_id: &'a mut SpecimenId) -> Self {
         Self {
             collection,
@@ -39,7 +39,7 @@ impl<'a> SpecimenSelection<'a> {
     }
 }
 
-impl Component for SpecimenSelection<'_> {
+impl Component for SpecimenDropdownSelection<'_> {
     fn ui(self, ui: &mut Ui) {
         let current_specimen = self.collection.get_by_id(*self.selected_id);
         let current_name = current_specimen

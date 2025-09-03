@@ -1,14 +1,14 @@
-use crate::state::settings::{SettingsState, UIScale};
+use crate::systems::settings::{SettingsSystem, UIScale};
 use crate::windows::ViewWindow;
 use egui::{Id, Ui, WidgetText};
 
 pub struct SettingsWindow<'a> {
     is_open: &'a mut bool,
-    settings: &'a mut SettingsState,
+    settings: &'a mut SettingsSystem,
 }
 
 impl<'a> SettingsWindow<'a> {
-    pub fn new(is_open: &'a mut bool, settings: &'a mut SettingsState) -> Self {
+    pub fn new(is_open: &'a mut bool, settings: &'a mut SettingsSystem) -> Self {
         Self { is_open, settings }
     }
 }

@@ -16,27 +16,27 @@ mod specimen;
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugWindowState {
     pub is_open: bool,
-    dungeon_window_open: bool,
-    items_window_open: bool,
-    specimen_window_state: DebugSpecimenWindowState,
+    pub dungeon_window_open: bool,
+    pub items_window_open: bool,
+    pub specimen_window: DebugSpecimenWindowState,
 }
 
 pub struct DebugWindow<'a> {
-    modal_system: &'a mut ModalSystem,
+    modals: &'a mut ModalSystem,
     game: &'a Game,
     state: &'a mut DebugWindowState,
 }
 
 impl<'a> DebugWindow<'a> {
     pub fn new(
-        modal_system: &'a mut ModalSystem,
+        modals: &'a mut ModalSystem,
         game: &'a Game,
-        options: &'a mut DebugWindowState,
+        state: &'a mut DebugWindowState,
     ) -> Self {
         Self {
-            modal_system,
+            modals,
             game,
-            state: options,
+            state,
         }
     }
 }
@@ -59,19 +59,16 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        DebugDungeonWindow::new(
-            self.modal_system,
-            self.game,
-            &mut self.state.dungeon_window_open,
-        )
-        .show(ui.ctx());
+        DebugDungeonWindow::new(self.modals, self.game, &mut self.state.dungeon_window_open)
+            .show(ui.ctx());
         DebugItemsWindow::new(self.game, &mut self.state.items_window_open).show(ui.ctx());
-        DebugSpecimenWindow::new(self.game, &mut self.state.specimen_window_state).show(ui.ctx());
+        DebugSpecimenWindow::new(self.modals, self.game, &mut self.state.specimen_window)
+            .show(ui.ctx());
 
         ui.horizontal(|ui| {
             ToggleButton::new(&mut self.state.dungeon_window_open, "Dungeon").ui(ui);
             ToggleButton::new(&mut self.state.items_window_open, "Items").ui(ui);
-            ToggleButton::new(&mut self.state.specimen_window_state.is_open, "Specimen").ui(ui);
+            ToggleButton::new(&mut self.state.specimen_window.is_open, "Specimen").ui(ui);
         });
 
         ui.separator();

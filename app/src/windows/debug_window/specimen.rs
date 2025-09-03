@@ -1,4 +1,5 @@
-use crate::components::{Component, SpecimenSelection, SpecimenTable};
+use crate::components::{Component, SpecimenModalSelection, SpecimenTable};
+use crate::modals::ModalSystem;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::state::specimen::SpecimenId;
 use dungeon_breeder_core::Game;
@@ -8,18 +9,27 @@ use serde::{Deserialize, Serialize};
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugSpecimenWindowState {
     pub is_open: bool,
-    selected_specimen_id_a: SpecimenId,
-    selected_specimen_id_b: SpecimenId,
+    pub selected_specimen_id_a: SpecimenId,
+    pub selected_specimen_id_b: SpecimenId,
 }
 
 pub struct DebugSpecimenWindow<'a> {
+    modals: &'a mut ModalSystem,
     game: &'a Game,
     state: &'a mut DebugSpecimenWindowState,
 }
 
 impl<'a> DebugSpecimenWindow<'a> {
-    pub fn new(game: &'a Game, state: &'a mut DebugSpecimenWindowState) -> Self {
-        Self { game, state }
+    pub fn new(
+        modals: &'a mut ModalSystem,
+        game: &'a Game,
+        state: &'a mut DebugSpecimenWindowState,
+    ) -> Self {
+        Self {
+            modals,
+            game,
+            state,
+        }
     }
 }
 
@@ -41,18 +51,26 @@ impl ViewWindow for DebugSpecimenWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        SpecimenSelection::new(
+        SpecimenModalSelection::new(
+            self.modals,
             &self.game.state.specimen,
-            &mut self.state.selected_specimen_id_a,
+            self.state.selected_specimen_id_a,
+            move |specimen_id, app| {
+                app.windows.debug.specimen_window.selected_specimen_id_a =
+                    specimen_id.unwrap_or_default()
+            },
         )
-        .id("select_specimen_a")
         .ui(ui);
 
-        SpecimenSelection::new(
+        SpecimenModalSelection::new(
+            self.modals,
             &self.game.state.specimen,
-            &mut self.state.selected_specimen_id_b,
+            self.state.selected_specimen_id_b,
+            move |specimen_id, app| {
+                app.windows.debug.specimen_window.selected_specimen_id_b =
+                    specimen_id.unwrap_or_default()
+            },
         )
-        .id("select_specimen_b")
         .ui(ui);
 
         if ui.button("Breed").clicked() {
