@@ -41,8 +41,10 @@ impl Component for DungeonLayerSlotView<'_> {
         ui.set_width(150.0);
         Frame::group(ui.style()).show(ui, |ui| {
             ui.push_id(self.id, |ui| {
-                let specimen_id = self.slot.get_assigned_specimen_id().unwrap_or_default();
-                let specimen = self.game.state.specimen.get_by_id(specimen_id);
+                let specimen_id = self.slot.get_assigned_specimen_id();
+                let specimen = specimen_id
+                    .map(|id| self.game.state.specimen.get_by_id(id))
+                    .unwrap_or_default();
 
                 ui.vertical(|ui| {
                     ui.horizontal(|ui| {

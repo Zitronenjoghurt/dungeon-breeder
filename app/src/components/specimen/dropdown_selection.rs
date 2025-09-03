@@ -5,13 +5,16 @@ use egui::Ui;
 
 pub struct SpecimenDropdownSelection<'a> {
     collection: &'a SpecimenCollection,
-    selected_id: &'a mut SpecimenId,
+    selected_id: &'a mut Option<SpecimenId>,
     id: &'static str,
     label: &'static str,
 }
 
 impl<'a> SpecimenDropdownSelection<'a> {
-    pub fn new(collection: &'a SpecimenCollection, selected_id: &'a mut SpecimenId) -> Self {
+    pub fn new(
+        collection: &'a SpecimenCollection,
+        selected_id: &'a mut Option<SpecimenId>,
+    ) -> Self {
         Self {
             collection,
             selected_id,
@@ -41,7 +44,10 @@ impl<'a> SpecimenDropdownSelection<'a> {
 
 impl Component for SpecimenDropdownSelection<'_> {
     fn ui(self, ui: &mut Ui) {
-        let current_specimen = self.collection.get_by_id(*self.selected_id);
+        let current_specimen = self
+            .selected_id
+            .map(|id| self.collection.get_by_id(id))
+            .unwrap_or_default();
         let current_name = current_specimen
             .map(|s| self.specimen_label(s))
             .unwrap_or_default();
@@ -51,10 +57,10 @@ impl Component for SpecimenDropdownSelection<'_> {
             .width(200.0)
             .show_ui(ui, |ui| {
                 for specimen in self.collection.iter() {
-                    let selected = *self.selected_id == specimen.id;
+                    let selected = *self.selected_id == Some(specimen.id);
                     let label = self.specimen_label(specimen);
                     if ui.selectable_label(selected, label).clicked() {
-                        *self.selected_id = specimen.id;
+                        *self.selected_id = Some(specimen.id);
                     }
                 }
             });

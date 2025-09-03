@@ -1,11 +1,13 @@
 use egui::Ui;
 
 pub mod dungeon;
+pub mod enum_select;
 pub mod item;
 pub mod specimen;
 pub mod toggle_button;
 
 pub use dungeon::*;
+pub use enum_select::*;
 pub use item::*;
 pub use specimen::*;
 pub use toggle_button::*;

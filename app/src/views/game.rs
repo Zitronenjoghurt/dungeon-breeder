@@ -5,19 +5,9 @@ use egui::{CentralPanel, Context, TopBottomPanel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
-pub struct GameViewState;
+pub struct GameView {}
 
-pub struct GameView<'a> {
-    state: &'a mut GameViewState,
-}
-
-impl<'a> GameView<'a> {
-    pub fn new(state: &'a mut GameViewState) -> Self {
-        Self { state }
-    }
-}
-
-impl View for GameView<'_> {
+impl View for GameView {
     fn render(&mut self, ctx: &Context, app: &mut GameApp) {
         TopBottomPanel::top("game_tab_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {

@@ -9,8 +9,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugSpecimenWindowState {
     pub is_open: bool,
-    pub selected_specimen_id_a: SpecimenId,
-    pub selected_specimen_id_b: SpecimenId,
+    pub selected_specimen_id_a: Option<SpecimenId>,
+    pub selected_specimen_id_b: Option<SpecimenId>,
 }
 
 pub struct DebugSpecimenWindow<'a> {
@@ -56,8 +56,7 @@ impl ViewWindow for DebugSpecimenWindow<'_> {
             &self.game.state.specimen,
             self.state.selected_specimen_id_a,
             move |specimen_id, app| {
-                app.windows.debug.specimen_window.selected_specimen_id_a =
-                    specimen_id.unwrap_or_default()
+                app.windows.debug.specimen_window.selected_specimen_id_a = specimen_id
             },
         )
         .ui(ui);
@@ -67,24 +66,23 @@ impl ViewWindow for DebugSpecimenWindow<'_> {
             &self.game.state.specimen,
             self.state.selected_specimen_id_b,
             move |specimen_id, app| {
-                app.windows.debug.specimen_window.selected_specimen_id_b =
-                    specimen_id.unwrap_or_default()
+                app.windows.debug.specimen_window.selected_specimen_id_b = specimen_id
             },
         )
         .ui(ui);
 
-        if ui.button("Breed").clicked() {
-            self.game.actions.breed(
-                self.state.selected_specimen_id_a,
-                self.state.selected_specimen_id_b,
-            );
+        if ui.button("Breed").clicked()
+            && let Some(specimen_id_a) = self.state.selected_specimen_id_a
+            && let Some(specimen_id_b) = self.state.selected_specimen_id_b
+        {
+            self.game.actions.breed(specimen_id_a, specimen_id_b);
         }
 
-        if ui.button("Fuse").clicked() {
-            self.game.actions.fuse(
-                self.state.selected_specimen_id_a,
-                self.state.selected_specimen_id_b,
-            );
+        if ui.button("Fuse").clicked()
+            && let Some(specimen_id_a) = self.state.selected_specimen_id_a
+            && let Some(specimen_id_b) = self.state.selected_specimen_id_b
+        {
+            self.game.actions.fuse(specimen_id_a, specimen_id_b);
         }
 
         ScrollArea::vertical().show(ui, |ui| {
