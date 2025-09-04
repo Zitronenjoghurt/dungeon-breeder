@@ -7,6 +7,10 @@ pub struct Config {
     pub ticks_per_second: u64,
     /// Higher values will make the monsters exponentially harder to slay depending on their power
     pub slay_duration_power_exponent: f32,
+    /// Higher values will make the monster take exponentially longer to regenerate after being slain
+    pub regeneration_duration_power_exponent: f32,
+    /// Higher values will make the monster take exponentially longer to be available for breeding again
+    pub breeding_duration_power_exponent: f32,
     pub fusion_candidates_min_power_factor: f32,
     pub fusion_candidates_max_power_factor: f32,
     /// Higher values make fused creatures have worse stats compared to fused pair and the power difference
@@ -20,6 +24,8 @@ pub struct Config {
 pub static CONFIG: Config = Config {
     ticks_per_second: 1,
     slay_duration_power_exponent: 1.5,
+    regeneration_duration_power_exponent: 1.0,
+    breeding_duration_power_exponent: 1.0,
     fusion_candidates_min_power_factor: 0.5,
     fusion_candidates_max_power_factor: 2.0,
     fusion_power_ratio_exp_bias: 0.1,

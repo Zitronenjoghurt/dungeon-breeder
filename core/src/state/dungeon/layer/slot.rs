@@ -1,3 +1,4 @@
+use crate::error::GameResult;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::SpecimenId;
@@ -23,7 +24,7 @@ impl DungeonLayerSlot {
             return;
         };
 
-        let Some(specimen) = specimen_collection.get_by_id(specimen_id) else {
+        let Some(specimen) = specimen_collection.get_by_id_mut(specimen_id) else {
             self.assigned_specimen = None;
             return;
         };
@@ -47,6 +48,7 @@ impl DungeonLayerSlot {
             self.is_regenerating = true;
             let dropped_items = specimen.generate_drops();
             items.add_new_batch(&dropped_items);
+            specimen.on_slain();
         }
     }
 
@@ -54,9 +56,10 @@ impl DungeonLayerSlot {
         self.assigned_specimen
     }
 
-    pub fn set_assigned_specimen_id(&mut self, specimen_id: Option<SpecimenId>) {
+    pub fn set_assigned_specimen_id(&mut self, specimen_id: Option<SpecimenId>) -> GameResult<()> {
         self.timer.reset();
         self.assigned_specimen = specimen_id;
+        Ok(())
     }
 
     pub fn progress(&self) -> f32 {
@@ -76,6 +79,6 @@ impl DungeonLayerSlot {
     }
 
     pub fn is_regenerating(&self) -> bool {
-        self.is_regenerating
+        self.is_regenerating && self.assigned_specimen.is_some()
     }
 }

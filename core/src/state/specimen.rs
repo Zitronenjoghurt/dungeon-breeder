@@ -3,6 +3,7 @@ use crate::data::creature::def::CreatureDefinition;
 use crate::data::creature::id::CreatureID;
 use crate::state::item::NewItem;
 use crate::utils::random::random_normal;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 pub mod collection;
@@ -13,10 +14,19 @@ pub type SpecimenId = u32;
 pub struct Specimen {
     pub id: SpecimenId,
     pub creature_id: CreatureID,
+    pub obtained_at: DateTime<Utc>,
+    pub nickname: Option<String>,
     pub strength: f32,
     pub intelligence: f32,
     pub vitality: f32,
     pub agility: f32,
+    pub regeneration: f32,
+    pub fertility: f32,
+    pub last_bred: Option<DateTime<Utc>>,
+    pub times_bred: u64,
+    pub times_slain: u64,
+    pub breeding_generation: u64,
+    pub fusion_generation: u64,
 }
 
 impl Specimen {
@@ -36,18 +46,47 @@ impl Specimen {
         self.power().powf(CONFIG.slay_duration_power_exponent) as u64
     }
 
+    pub fn regeneration_duration_secs(&self) -> u64 {
+        (self
+            .power()
+            .powf(CONFIG.regeneration_duration_power_exponent)
+            * (1.0 - self.regeneration)) as u64
+    }
+
+    pub fn breeding_duration_secs(&self) -> u64 {
+        (self.power().powf(CONFIG.breeding_duration_power_exponent) * (1.0 - self.fertility)) as u64
+    }
+
     pub fn name_with_id(&self) -> String {
         format!("{} [{}]", self.creature_def().name, self.id)
+    }
+
+    pub fn can_breed(&self) -> bool {
+        if let Some(last_bred) = self.last_bred {
+            let elapsed = Utc::now() - last_bred;
+            elapsed.num_seconds() as u64 > self.breeding_duration_secs()
+        } else {
+            true
+        }
     }
 
     pub fn from_new_specimen(id: SpecimenId, new_specimen: NewSpecimen) -> Specimen {
         Specimen {
             id,
             creature_id: new_specimen.creature_id,
+            obtained_at: Utc::now(),
+            nickname: None,
             strength: new_specimen.strength,
             intelligence: new_specimen.intelligence,
             vitality: new_specimen.vitality,
             agility: new_specimen.agility,
+            regeneration: new_specimen.regeneration,
+            fertility: new_specimen.fertility,
+            last_bred: None,
+            times_bred: 0,
+            times_slain: 0,
+            breeding_generation: new_specimen.breeding_generation,
+            fusion_generation: new_specimen.fusion_generation,
         }
     }
 
@@ -68,6 +107,18 @@ impl Specimen {
     }
 }
 
+// Events
+impl Specimen {
+    pub fn on_bred(&mut self) {
+        self.last_bred = Some(Utc::now());
+        self.times_bred += 1;
+    }
+
+    pub fn on_slain(&mut self) {
+        self.times_slain += 1;
+    }
+}
+
 #[derive(Debug)]
 pub struct NewSpecimen {
     pub creature_id: CreatureID,
@@ -75,6 +126,10 @@ pub struct NewSpecimen {
     pub intelligence: f32,
     pub vitality: f32,
     pub agility: f32,
+    pub regeneration: f32,
+    pub fertility: f32,
+    pub breeding_generation: u64,
+    pub fusion_generation: u64,
 }
 
 impl NewSpecimen {
@@ -85,6 +140,10 @@ impl NewSpecimen {
             intelligence: random_normal(),
             vitality: random_normal(),
             agility: random_normal(),
+            regeneration: random_normal(),
+            fertility: random_normal(),
+            breeding_generation: 1,
+            fusion_generation: 1,
         }
     }
 }

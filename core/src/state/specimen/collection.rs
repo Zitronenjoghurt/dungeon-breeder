@@ -50,6 +50,14 @@ impl SpecimenCollection {
         self.collection.get(&id)
     }
 
+    pub fn get_by_id_mut(&mut self, id: SpecimenId) -> Option<&mut Specimen> {
+        self.collection.get_mut(&id)
+    }
+
+    pub fn remove_by_id(&mut self, id: SpecimenId) -> Option<Specimen> {
+        self.collection.remove(&id)
+    }
+
     pub fn sorted_ids(&self, sort: &SpecimenCollectionSort) -> Vec<SpecimenId> {
         let mut specimens: Vec<(&SpecimenId, &Specimen)> = self.collection.iter().collect();
 

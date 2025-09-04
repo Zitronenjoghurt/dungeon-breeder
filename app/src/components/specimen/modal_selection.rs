@@ -3,7 +3,7 @@ use crate::components::Component;
 use crate::modals::ModalSystem;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::SpecimenId;
-use egui::Ui;
+use egui::{Button, Ui};
 
 pub struct SpecimenModalSelection<'a, F> {
     modals: &'a mut ModalSystem,
@@ -11,6 +11,7 @@ pub struct SpecimenModalSelection<'a, F> {
     selected_id: Option<SpecimenId>,
     on_change: F,
     id: &'static str,
+    selection_enabled: bool,
 }
 
 impl<'a, F> SpecimenModalSelection<'a, F>
@@ -29,11 +30,17 @@ where
             selected_id,
             on_change,
             id: "specimen_modal_selection",
+            selection_enabled: true,
         }
     }
 
     pub fn id(mut self, id: &'static str) -> Self {
         self.id = id;
+        self
+    }
+
+    pub fn selection_enabled(mut self, selection_enabled: bool) -> Self {
+        self.selection_enabled = selection_enabled;
         self
     }
 }
@@ -52,7 +59,9 @@ where
                     .unwrap_or_default()
                 {
                     ui.horizontal(|ui| {
-                        if ui.button("🔄").clicked() {
+                        let button_response =
+                            ui.add_enabled(self.selection_enabled, Button::new("🔄"));
+                        if button_response.clicked() {
                             self.modals.specimen_selection.open(
                                 self.selected_id,
                                 move |specimen_id, app| {
@@ -62,13 +71,17 @@ where
                         }
                         ui.label(specimen.name_with_id());
                     });
-                } else if ui.button("Select Specimen").clicked() {
-                    self.modals.specimen_selection.open(
-                        self.selected_id,
-                        move |specimen_id, app| {
-                            on_change(specimen_id, app);
-                        },
-                    );
+                } else {
+                    let button_response =
+                        ui.add_enabled(self.selection_enabled, Button::new("Select Specimen"));
+                    if button_response.clicked() {
+                        self.modals.specimen_selection.open(
+                            self.selected_id,
+                            move |specimen_id, app| {
+                                on_change(specimen_id, app);
+                            },
+                        );
+                    }
                 }
             });
         });
