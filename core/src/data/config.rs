@@ -1,3 +1,7 @@
+use crate::data::config::styles::{ConfigStyles, CONFIG_STYLES};
+
+mod styles;
+
 #[derive(Debug)]
 pub struct Config {
     pub ticks_per_second: u64,
@@ -10,6 +14,7 @@ pub struct Config {
     pub base_dungeon_layer_unlock_costs: &'static [u128],
     pub base_dungeon_layer_slot_unlock_costs: &'static [u128],
     pub base_dungeon_layer_slot_unlock_cost_exponent_per_layer: u32,
+    pub styles: &'static ConfigStyles,
 }
 
 pub static CONFIG: Config = Config {
@@ -21,4 +26,5 @@ pub static CONFIG: Config = Config {
     base_dungeon_layer_unlock_costs: &[0, 1000],
     base_dungeon_layer_slot_unlock_costs: &[0, 10, 100],
     base_dungeon_layer_slot_unlock_cost_exponent_per_layer: 2,
+    styles: &CONFIG_STYLES,
 };

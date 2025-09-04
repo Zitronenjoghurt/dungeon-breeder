@@ -6,7 +6,7 @@ pub mod actions;
 pub mod data;
 pub mod state;
 mod systems;
-mod types;
+pub mod types;
 mod utils;
 
 #[derive(Debug, Default, Serialize, Deserialize)]

@@ -1,5 +1,7 @@
 use crate::components::{Component, SpecimenModalSelection};
 use crate::modals::ModalSystem;
+use crate::types::color::ColorConvert;
+use dungeon_breeder_core::data::config::CONFIG;
 use dungeon_breeder_core::state::dungeon::layer::slot::DungeonLayerSlot;
 use dungeon_breeder_core::Game;
 use egui::{Frame, ProgressBar, Ui, Widget};
@@ -64,9 +66,24 @@ impl Component for DungeonLayerSlotView<'_> {
                     });
 
                     if specimen.is_some() {
-                        ProgressBar::new(self.slot.progress())
+                        let is_regenerating = self.slot.is_regenerating();
+                        let progress = if is_regenerating {
+                            self.slot.progress()
+                        } else {
+                            1.0 - self.slot.progress()
+                        };
+
+                        let color = if is_regenerating {
+                            CONFIG.styles.color_specimen_regeneration
+                        } else {
+                            CONFIG.styles.color_specimen_health(progress)
+                        };
+
+                        ProgressBar::new(progress)
                             .corner_radius(1.0)
                             .text(self.slot.format_time_left())
+                            .fill(color.to_egui())
+                            .animate(is_regenerating)
                             .ui(ui);
                     }
                 });

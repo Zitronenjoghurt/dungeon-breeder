@@ -8,7 +8,9 @@ use serde::{Deserialize, Serialize};
 pub struct DungeonLayerSlot {
     assigned_specimen: Option<SpecimenId>,
     slay_duration_secs: u64,
+    regeneration_duration_secs: u64,
     timer: Timer,
+    is_regenerating: bool,
 }
 
 impl DungeonLayerSlot {
@@ -27,12 +29,25 @@ impl DungeonLayerSlot {
         };
 
         self.slay_duration_secs = specimen.slay_duration_secs();
-        if !self.timer.tick(self.slay_duration_secs) {
+        self.regeneration_duration_secs = specimen.slay_duration_secs();
+
+        let max_secs_current = if self.is_regenerating {
+            self.regeneration_duration_secs
+        } else {
+            self.slay_duration_secs
+        };
+
+        if !self.timer.tick(max_secs_current) {
             return;
         }
 
-        let dropped_items = specimen.generate_drops();
-        items.add_new_batch(&dropped_items);
+        if self.is_regenerating {
+            self.is_regenerating = false;
+        } else {
+            self.is_regenerating = true;
+            let dropped_items = specimen.generate_drops();
+            items.add_new_batch(&dropped_items);
+        }
     }
 
     pub fn get_assigned_specimen_id(&self) -> Option<SpecimenId> {
@@ -54,5 +69,13 @@ impl DungeonLayerSlot {
 
     pub fn slay_duration_secs(&self) -> u64 {
         self.slay_duration_secs
+    }
+
+    pub fn regeneration_duration_secs(&self) -> u64 {
+        self.regeneration_duration_secs
+    }
+
+    pub fn is_regenerating(&self) -> bool {
+        self.is_regenerating
     }
 }

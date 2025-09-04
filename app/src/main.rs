@@ -4,6 +4,7 @@ mod app;
 mod components;
 mod modals;
 mod systems;
+mod types;
 mod views;
 mod windows;
 
