@@ -22,6 +22,8 @@ pub struct Game {
 
 impl Game {
     pub fn update(&mut self) -> GameUpdateReport {
+        let now = std::time::Instant::now();
+
         let mut action_report = GameActionReport::default();
         for action in self.actions.take_actions() {
             match self.state.handle_action(action) {
@@ -29,12 +31,14 @@ impl Game {
                 Err(error) => action_report.on_error(error),
             }
         }
-
         let state_report = self.state.update();
+
+        let time_elapsed = now.elapsed();
 
         GameUpdateReport {
             action_report,
             state_report,
+            time_elapsed,
         }
     }
 }

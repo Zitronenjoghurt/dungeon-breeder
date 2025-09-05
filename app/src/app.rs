@@ -42,10 +42,6 @@ impl GameApp {
 
     fn update_game(&mut self) {
         let report = self.game.update();
-        if report.state_report.ticks_elapsed > 0 {
-            println!("{:?}", report.state_report);
-        }
-
         for error in report.action_report.errors {
             self.toasts.error(error.to_string());
         }
