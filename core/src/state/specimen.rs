@@ -2,12 +2,14 @@ use crate::data::config::CONFIG;
 use crate::data::creature::def::CreatureDefinition;
 use crate::data::creature::id::CreatureID;
 use crate::state::item::NewItem;
+use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::timer::Timer;
 use crate::utils::random::random_normal;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 pub mod collection;
+pub mod obtain_method;
 
 pub type SpecimenId = u32;
 
@@ -15,6 +17,7 @@ pub type SpecimenId = u32;
 pub struct Specimen {
     pub id: SpecimenId,
     pub creature_id: CreatureID,
+    pub obtain_method: SpecimenObtainMethod,
     pub obtained_at: DateTime<Utc>,
     pub nickname: Option<String>,
     pub strength: f32,
@@ -77,6 +80,7 @@ impl Specimen {
         Specimen {
             id,
             creature_id: new_specimen.creature_id,
+            obtain_method: new_specimen.obtain_method,
             obtained_at: Utc::now(),
             nickname: None,
             strength: new_specimen.strength,
@@ -127,6 +131,7 @@ impl Specimen {
 #[derive(Debug)]
 pub struct NewSpecimen {
     pub creature_id: CreatureID,
+    pub obtain_method: SpecimenObtainMethod,
     pub strength: f32,
     pub intelligence: f32,
     pub vitality: f32,
@@ -141,6 +146,7 @@ impl NewSpecimen {
     pub fn random_from_creature_id(creature_id: CreatureID) -> NewSpecimen {
         NewSpecimen {
             creature_id,
+            obtain_method: SpecimenObtainMethod::RandomGeneration,
             strength: random_normal(),
             intelligence: random_normal(),
             vitality: random_normal(),

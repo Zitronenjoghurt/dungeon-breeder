@@ -2,6 +2,7 @@ use crate::data::config::CONFIG;
 use crate::data::creature::id::CreatureID;
 use crate::error::{GameError, GameResult};
 use crate::state::specimen::collection::SpecimenCollection;
+use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::utils::random::{random_normal, random_normal_exp_bias, random_normalized};
 use std::cmp::max;
@@ -76,6 +77,7 @@ pub fn fuse_specimen(
 
     let new_specimen = NewSpecimen {
         creature_id: selected_creature_id,
+        obtain_method: SpecimenObtainMethod::Fusion,
         strength: (avg_strength * strength_factor).clamp(0.0, 1.0),
         intelligence: (avg_intelligence * intelligence_factor).clamp(0.0, 1.0),
         vitality: (avg_vitality * vitality_factor).clamp(0.0, 1.0),

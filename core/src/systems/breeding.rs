@@ -1,5 +1,6 @@
 use crate::error::{GameError, GameResult};
 use crate::state::specimen::collection::SpecimenCollection;
+use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::specimen::{NewSpecimen, SpecimenId};
 use crate::utils::random::random_normal_combination_01;
 use std::cmp::max;
@@ -40,6 +41,7 @@ pub fn breed_specimen(
 
     let new_specimen = NewSpecimen {
         creature_id: specimen_a.creature_id,
+        obtain_method: SpecimenObtainMethod::Breeding,
         strength,
         intelligence,
         vitality,
