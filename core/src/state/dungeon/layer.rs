@@ -2,6 +2,7 @@ use crate::state::dungeon::layer::slot::DungeonLayerSlot;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::SpecimenId;
+use crate::state::update_report::GameStateUpdateReport;
 use crate::systems::upgrade_costs::dungeon_layer_slot_unlock_cost;
 use serde::{Deserialize, Serialize};
 
@@ -13,9 +14,14 @@ pub struct DungeonLayer {
 }
 
 impl DungeonLayer {
-    pub fn tick(&mut self, specimen: &mut SpecimenCollection, items: &mut ItemCollection) {
+    pub fn tick(
+        &mut self,
+        report: &mut GameStateUpdateReport,
+        specimen: &mut SpecimenCollection,
+        items: &mut ItemCollection,
+    ) {
         for slot in self.slots.iter_mut() {
-            slot.tick(specimen, items)
+            slot.tick(report, specimen, items)
         }
     }
 
@@ -39,8 +45,10 @@ impl DungeonLayer {
         self.slots.iter_mut()
     }
 
-    pub fn unlock_slot(&mut self) {
+    pub fn unlock_slot(&mut self) -> usize {
+        let index = self.slots.len();
         self.slots.push(DungeonLayerSlot::default());
+        index
     }
 
     pub fn next_slot_index(&self) -> usize {

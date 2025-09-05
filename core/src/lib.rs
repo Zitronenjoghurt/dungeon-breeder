@@ -1,5 +1,7 @@
+use crate::actions::report::GameActionReport;
 use crate::actions::GameActions;
 use crate::state::GameState;
+use crate::update_report::GameUpdateReport;
 use serde::{Deserialize, Serialize};
 
 pub mod actions;
@@ -8,6 +10,7 @@ mod error;
 pub mod state;
 mod systems;
 pub mod types;
+mod update_report;
 mod utils;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -18,13 +21,20 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn update(&mut self) {
+    pub fn update(&mut self) -> GameUpdateReport {
+        let mut action_report = GameActionReport::default();
         for action in self.actions.take_actions() {
-            // ToDo: Give successful + failed messages
-            let _result = self.state.handle_action(action);
+            match self.state.handle_action(action) {
+                Ok(feedback) => action_report.on_feedback(feedback),
+                Err(error) => action_report.on_error(error),
+            }
         }
 
-        // ToDo: Give feedback on what was updated, e.g. for report when starting game after a while
-        self.state.update();
+        let state_report = self.state.update();
+
+        GameUpdateReport {
+            action_report,
+            state_report,
+        }
     }
 }

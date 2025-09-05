@@ -1,4 +1,5 @@
 use crate::actions::action::GameAction;
+use crate::actions::feedback::GameActionFeedback;
 use crate::data::config::CONFIG;
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
@@ -7,6 +8,7 @@ use crate::state::clock::Clock;
 use crate::state::dungeon::Dungeon;
 use crate::state::item::collection::ItemCollection;
 use crate::state::treasury::Treasury;
+use crate::state::update_report::GameStateUpdateReport;
 use crate::systems::breeding::breed_specimen;
 use crate::systems::fusion::fuse_specimen;
 use serde::{Deserialize, Serialize};
@@ -19,6 +21,7 @@ pub mod item;
 pub mod specimen;
 mod timer;
 mod treasury;
+pub mod update_report;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct GameState {
@@ -30,19 +33,26 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn update(&mut self) {
+    pub fn update(&mut self) -> GameStateUpdateReport {
+        let mut update_report = GameStateUpdateReport::default();
+
         let seconds_passed = self.clock.update();
         let ticks = seconds_passed * CONFIG.ticks_per_second;
         for _ in 0..ticks {
-            self.tick();
+            self.tick(&mut update_report);
         }
+
+        update_report
     }
 
-    pub fn tick(&mut self) {
-        self.dungeon.tick(&mut self.specimen, &mut self.items);
+    pub fn tick(&mut self, report: &mut GameStateUpdateReport) {
+        report.on_tick();
+
+        self.dungeon
+            .tick(report, &mut self.specimen, &mut self.items);
     }
 
-    pub fn handle_action(&mut self, action: GameAction) -> GameResult<()> {
+    pub fn handle_action(&mut self, action: GameAction) -> GameResult<GameActionFeedback> {
         match action {
             GameAction::AddCoins(coins) => self.handle_add_coins(coins),
             GameAction::AssignToDungeonLayerSlot {
@@ -54,7 +64,6 @@ impl GameState {
             GameAction::Fuse((sp_a, sp_b)) => self.handle_fuse(sp_a, sp_b),
             GameAction::RandomSpecimen(creature_id) => self.handle_random_specimen(creature_id),
             GameAction::SellItem((item_id, amount)) => self.handle_sell_item(item_id, amount),
-            GameAction::Slay(specimen_id) => self.handle_slay(specimen_id),
             GameAction::UnlockDungeonLayer => self.unlock_dungeon_layer(),
             GameAction::UnlockDungeonLayerSlot(layer) => self.unlock_dungeon_layer_slot(layer),
         }
@@ -63,9 +72,9 @@ impl GameState {
 
 // Game Action Handlers
 impl GameState {
-    fn handle_add_coins(&mut self, coins: u128) -> GameResult<()> {
+    fn handle_add_coins(&mut self, coins: u128) -> GameResult<GameActionFeedback> {
         self.treasury.add_coins(coins);
-        Ok(())
+        Ok(GameActionFeedback::AddedCoins(coins))
     }
 
     fn handle_assign_to_dungeon_layer_slot(
@@ -73,7 +82,7 @@ impl GameState {
         layer_index: usize,
         slot_index: usize,
         specimen_id: Option<SpecimenId>,
-    ) -> GameResult<()> {
+    ) -> GameResult<GameActionFeedback> {
         if let Some(specimen_id) = specimen_id
             && self
                 .dungeon
@@ -94,68 +103,80 @@ impl GameState {
             ));
         };
 
-        slot.set_assigned_specimen_id(specimen_id)
+        slot.set_assigned_specimen_id(specimen_id)?;
+        Ok(GameActionFeedback::assigned_specimen_to_dungeon_layer_slot(
+            specimen_id,
+            layer_index,
+            slot_index,
+        ))
     }
 
     fn handle_breed(
         &mut self,
         specimen_a_id: SpecimenId,
         specimen_b_id: SpecimenId,
-    ) -> GameResult<()> {
+    ) -> GameResult<GameActionFeedback> {
         let new_specimen = breed_specimen(&mut self.specimen, specimen_a_id, specimen_b_id)?;
-        self.specimen.add_new(new_specimen);
-        Ok(())
+        let new_id = self.specimen.add_new(new_specimen);
+        Ok(GameActionFeedback::bred(
+            specimen_a_id,
+            specimen_b_id,
+            new_id,
+        ))
     }
 
     fn handle_fuse(
         &mut self,
         specimen_a_id: SpecimenId,
         specimen_b_id: SpecimenId,
-    ) -> GameResult<()> {
+    ) -> GameResult<GameActionFeedback> {
         let new_specimen = fuse_specimen(&mut self.specimen, specimen_a_id, specimen_b_id)?;
-        self.specimen.add_new(new_specimen);
-        Ok(())
+        let new_id = self.specimen.add_new(new_specimen);
+        Ok(GameActionFeedback::fused(
+            specimen_a_id,
+            specimen_b_id,
+            new_id,
+        ))
     }
 
-    fn handle_random_specimen(&mut self, creature_id: CreatureID) -> GameResult<()> {
+    fn handle_random_specimen(
+        &mut self,
+        creature_id: CreatureID,
+    ) -> GameResult<GameActionFeedback> {
         let new_specimen = NewSpecimen::random_from_creature_id(creature_id);
-        self.specimen.add_new(new_specimen);
-        Ok(())
+        let new_id = self.specimen.add_new(new_specimen);
+        Ok(GameActionFeedback::generate_random_specimen(
+            creature_id,
+            new_id,
+        ))
     }
 
-    fn handle_sell_item(&mut self, item_id: ItemID, amount: u64) -> GameResult<()> {
+    fn handle_sell_item(&mut self, item_id: ItemID, amount: u64) -> GameResult<GameActionFeedback> {
         let success = self.items.remove_item(item_id, amount);
         if success {
             let coins = item_id.def().price as u128 * amount as u128;
             self.treasury.add_coins(coins);
-        };
-        Ok(())
+            Ok(GameActionFeedback::sold_items(item_id, amount, coins))
+        } else {
+            Err(GameError::InsufficientItems)
+        }
     }
 
-    fn handle_slay(&mut self, specimen_id: SpecimenId) -> GameResult<()> {
-        let Some(specimen) = self.specimen.get_by_id(specimen_id) else {
-            return Err(GameError::SpecimenNotFound(specimen_id));
-        };
-
-        let dropped_items = specimen.generate_drops();
-        self.items.add_new_batch(&dropped_items);
-        Ok(())
-    }
-
-    fn unlock_dungeon_layer(&mut self) -> GameResult<()> {
+    fn unlock_dungeon_layer(&mut self) -> GameResult<GameActionFeedback> {
         let Some(costs) = self.dungeon.next_layer_costs() else {
             return Err(GameError::InsufficientCoins);
         };
 
         let success = self.treasury.remove_coins(costs);
         if success {
-            self.dungeon.unlock_layer();
-        };
-
-        Ok(())
+            let layer_index = self.dungeon.unlock_layer();
+            Ok(GameActionFeedback::UnlockDungeonLayer(layer_index))
+        } else {
+            Err(GameError::InsufficientCoins)
+        }
     }
 
-    fn unlock_dungeon_layer_slot(&mut self, layer_index: usize) -> GameResult<()> {
+    fn unlock_dungeon_layer_slot(&mut self, layer_index: usize) -> GameResult<GameActionFeedback> {
         let Some(layer) = self.dungeon.get_layer_mut(layer_index) else {
             return Err(GameError::DungeonLayerNotFound(layer_index));
         };
@@ -166,9 +187,13 @@ impl GameState {
 
         let success = self.treasury.remove_coins(costs);
         if success {
-            layer.unlock_slot();
-        };
-
-        Ok(())
+            let slot_index = layer.unlock_slot();
+            Ok(GameActionFeedback::unlock_dungeon_layer_slot(
+                layer_index,
+                slot_index,
+            ))
+        } else {
+            Err(GameError::InsufficientCoins)
+        }
     }
 }

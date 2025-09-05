@@ -5,6 +5,8 @@ use crate::state::specimen::SpecimenId;
 use std::cell::RefCell;
 
 pub mod action;
+pub mod feedback;
+pub mod report;
 
 #[derive(Debug, Default)]
 pub struct GameActions {
@@ -57,10 +59,6 @@ impl GameActions {
 
     pub fn sell_item(&self, item_id: ItemID, amount: u64) {
         self.push_action(GameAction::SellItem((item_id, amount)))
-    }
-
-    pub fn slay(&self, specimen_id: SpecimenId) {
-        self.push_action(GameAction::Slay(specimen_id))
     }
 
     pub fn unlock_dungeon_layer(&self) {

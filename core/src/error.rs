@@ -21,6 +21,12 @@ pub enum GameError {
     FusionImpossibleSameSpecimen,
     #[error("Insufficient coins")]
     InsufficientCoins,
+    #[error("Insufficient items")]
+    InsufficientItems,
+    #[error("Reached dungeon layer limit")]
+    ReachedDungeonLayerLimit,
+    #[error("Reached dungeon layer slot limit of layer '{0}'")]
+    ReachedDungeonLayerSlotLimit(usize),
     #[error("Specimen with id '{0}' not found")]
     SpecimenNotFound(SpecimenId),
 }

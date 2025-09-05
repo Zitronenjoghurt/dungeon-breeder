@@ -41,10 +41,12 @@ impl SpecimenCollection {
         self.collection.values()
     }
 
-    pub fn add_new(&mut self, new_specimen: NewSpecimen) {
-        let specimen = Specimen::from_new_specimen(self.next_id, new_specimen);
+    pub fn add_new(&mut self, new_specimen: NewSpecimen) -> SpecimenId {
+        let id = self.next_id;
+        let specimen = Specimen::from_new_specimen(id, new_specimen);
         self.collection.insert(self.next_id, specimen);
         self.next_id = self.next_id.saturating_add(1);
+        id
     }
 
     pub fn get_by_id(&self, id: SpecimenId) -> Option<&Specimen> {

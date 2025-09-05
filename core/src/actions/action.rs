@@ -14,7 +14,6 @@ pub enum GameAction {
     Fuse((SpecimenId, SpecimenId)),
     RandomSpecimen(CreatureID),
     SellItem((ItemID, u64)),
-    Slay(SpecimenId),
     UnlockDungeonLayer,
     UnlockDungeonLayerSlot(usize),
 }

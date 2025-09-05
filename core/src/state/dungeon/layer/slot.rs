@@ -3,6 +3,7 @@ use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::{Specimen, SpecimenId};
 use crate::state::timer::Timer;
+use crate::state::update_report::GameStateUpdateReport;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -28,6 +29,7 @@ impl DungeonLayerSlot {
 
     pub fn tick(
         &mut self,
+        report: &mut GameStateUpdateReport,
         specimen_collection: &mut SpecimenCollection,
         items: &mut ItemCollection,
     ) {
@@ -55,9 +57,13 @@ impl DungeonLayerSlot {
             specimen.is_regenerating = false;
         } else {
             specimen.is_regenerating = true;
+
             let dropped_items = specimen.generate_drops();
             items.add_new_batch(&dropped_items);
+            report.on_items_obtained(&dropped_items);
+
             specimen.on_slain();
+            report.on_specimen_slain();
         }
 
         self.update_state(specimen);
