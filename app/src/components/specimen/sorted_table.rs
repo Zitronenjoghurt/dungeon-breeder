@@ -28,6 +28,7 @@ impl<'a> SortedSpecimenTable<'a> {
 impl Component for SortedSpecimenTable<'_> {
     fn ui(self, ui: &mut Ui) {
         let text_height = ui.text_style_height(&egui::TextStyle::Body);
+        ui.style_mut().interaction.selectable_labels = false;
 
         ScrollArea::vertical().max_height(200.0).show(ui, |ui| {
             TableBuilder::new(ui)

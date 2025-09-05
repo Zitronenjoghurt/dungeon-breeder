@@ -1,5 +1,6 @@
 use crate::modals::ModalSystem;
 use crate::systems::settings::SettingsSystem;
+use crate::systems::textures::TextureSystem;
 use crate::views::{View, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::anyhow;
@@ -10,6 +11,8 @@ use serde::{Deserialize, Serialize};
 pub struct GameApp {
     pub game: Game,
     pub settings: SettingsSystem,
+    #[serde(skip, default)]
+    pub textures: TextureSystem,
     pub modals: ModalSystem,
     pub views: ViewSystem,
     pub windows: WindowSystem,

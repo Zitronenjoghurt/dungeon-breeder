@@ -9,6 +9,9 @@ use strum_macros::EnumIter;
 )]
 pub enum ItemID {
     Gonkball,
+    GonkCrystal,
+    GonkSoul,
+    SlimyJelly,
 }
 
 impl ItemID {
@@ -19,6 +22,9 @@ impl ItemID {
     pub const fn def(self) -> &'static ItemDefinition {
         match self {
             Self::Gonkball => &ITEM_GONKBALL,
+            Self::GonkCrystal => &ITEM_GONK_CRYSTAL,
+            Self::GonkSoul => &ITEM_GONK_SOUL,
+            Self::SlimyJelly => &ITEM_SLIMY_JELLY,
         }
     }
 }

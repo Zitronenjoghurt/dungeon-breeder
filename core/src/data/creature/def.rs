@@ -10,4 +10,5 @@ pub struct CreatureDefinition {
     pub max_power: u64,
     pub tier: CreatureTier,
     pub item_drops: &'static [CreatureItemDrop],
+    pub sprite_png: &'static [u8],
 }
