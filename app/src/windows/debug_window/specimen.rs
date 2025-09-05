@@ -59,6 +59,7 @@ impl ViewWindow for DebugSpecimenWindow<'_> {
                 app.windows.debug.specimen_window.selected_specimen_id_a = specimen_id
             },
         )
+        .exclude_on_breeding_cooldown(true)
         .ui(ui);
 
         SpecimenModalSelection::new(
@@ -69,6 +70,7 @@ impl ViewWindow for DebugSpecimenWindow<'_> {
                 app.windows.debug.specimen_window.selected_specimen_id_b = specimen_id
             },
         )
+        .exclude_on_breeding_cooldown(true)
         .ui(ui);
 
         if ui.button("Breed").clicked()

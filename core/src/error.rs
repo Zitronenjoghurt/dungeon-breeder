@@ -15,6 +15,8 @@ pub enum GameError {
     DungeonLayerNotFound(usize),
     #[error("Dungeon layer slot at layer '{layer}' and index '{slot}' not found")]
     DungeonLayerSlotNotFound { layer: usize, slot: usize },
+    #[error("Specimen is already assigned to a different dungeon layer slot")]
+    DungeonLayerSlotSpecimenAlreadyAssigned,
     #[error("Fusing the same specimen with itself is impossible")]
     FusionImpossibleSameSpecimen,
     #[error("Insufficient coins")]

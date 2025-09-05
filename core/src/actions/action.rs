@@ -4,6 +4,7 @@ use crate::state::specimen::SpecimenId;
 
 #[derive(Debug, Clone)]
 pub enum GameAction {
+    AddCoins(u128),
     AssignToDungeonLayerSlot {
         layer: usize,
         slot: usize,

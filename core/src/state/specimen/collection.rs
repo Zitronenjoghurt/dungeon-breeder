@@ -1,7 +1,7 @@
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::types::sort_direction::SortDirection;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Display;
 use strum_macros::EnumIter;
 
@@ -27,6 +27,7 @@ impl Display for SpecimenCollectionSortField {
 pub struct SpecimenCollectionSort {
     pub sort_field: SpecimenCollectionSortField,
     pub sort_direction: SortDirection,
+    pub excluded_ids: HashSet<SpecimenId>,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -61,6 +62,8 @@ impl SpecimenCollection {
     pub fn sorted_ids(&self, sort: &SpecimenCollectionSort) -> Vec<SpecimenId> {
         let mut specimens: Vec<(&SpecimenId, &Specimen)> = self.collection.iter().collect();
 
+        specimens.retain(|(id, _)| !sort.excluded_ids.contains(id));
+
         specimens.sort_by(|a, b| {
             let ordering = match sort.sort_field {
                 SpecimenCollectionSortField::Id => a.0.cmp(b.0),
@@ -78,5 +81,9 @@ impl SpecimenCollection {
         });
 
         specimens.into_iter().map(|(id, _)| *id).collect()
+    }
+
+    pub fn iter_on_breeding_cooldown(&self) -> impl Iterator<Item = &Specimen> {
+        self.iter().filter(|specimen| !specimen.can_breed())
     }
 }

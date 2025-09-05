@@ -2,7 +2,7 @@ use crate::app::GameApp;
 use egui::{Context, Id, Modal, Ui};
 use serde::{Deserialize, Serialize};
 
-mod specimen_selection;
+pub mod specimen_selection;
 
 pub trait AppModal {
     fn id(&self) -> Id;

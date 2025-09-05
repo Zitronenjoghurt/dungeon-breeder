@@ -1,6 +1,7 @@
 use crate::state::dungeon::layer::DungeonLayer;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
+use crate::state::specimen::SpecimenId;
 use crate::systems::upgrade_costs::dungeon_layer_unlock_cost;
 use serde::{Deserialize, Serialize};
 
@@ -48,5 +49,11 @@ impl Dungeon {
 
     pub fn next_layer_costs(&self) -> Option<u128> {
         dungeon_layer_unlock_cost(self.next_layer_index())
+    }
+
+    pub fn iter_layer_slot_assigned_specimen(&self) -> impl Iterator<Item = SpecimenId> {
+        self.layers
+            .iter()
+            .flat_map(|layer| layer.iter_slot_assigned_specimen())
     }
 }

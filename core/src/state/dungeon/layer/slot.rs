@@ -1,20 +1,31 @@
 use crate::error::GameResult;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
-use crate::state::specimen::SpecimenId;
+use crate::state::specimen::{Specimen, SpecimenId};
 use crate::state::timer::Timer;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct DungeonLayerSlot {
     assigned_specimen: Option<SpecimenId>,
-    slay_duration_secs: u64,
-    regeneration_duration_secs: u64,
+    #[serde(skip, default)]
     timer: Timer,
+    #[serde(skip, default)]
     is_regenerating: bool,
+    #[serde(skip, default)]
+    slay_duration_secs: u64,
+    #[serde(skip, default)]
+    regen_duration_secs: u64,
 }
 
 impl DungeonLayerSlot {
+    fn update_state(&mut self, specimen: &Specimen) {
+        self.is_regenerating = specimen.is_regenerating;
+        self.timer = specimen.slay_regen_timer;
+        self.slay_duration_secs = specimen.slay_duration_secs();
+        self.regen_duration_secs = specimen.regeneration_duration_secs();
+    }
+
     pub fn tick(
         &mut self,
         specimen_collection: &mut SpecimenCollection,
@@ -29,27 +40,27 @@ impl DungeonLayerSlot {
             return;
         };
 
-        self.slay_duration_secs = specimen.slay_duration_secs();
-        self.regeneration_duration_secs = specimen.slay_duration_secs();
-
-        let max_secs_current = if self.is_regenerating {
-            self.regeneration_duration_secs
+        let max_secs_current = if specimen.is_regenerating {
+            specimen.regeneration_duration_secs()
         } else {
-            self.slay_duration_secs
+            specimen.slay_duration_secs()
         };
 
-        if !self.timer.tick(max_secs_current) {
+        if !specimen.slay_regen_timer.tick(max_secs_current) {
+            self.update_state(specimen);
             return;
         }
 
-        if self.is_regenerating {
-            self.is_regenerating = false;
+        if specimen.is_regenerating {
+            specimen.is_regenerating = false;
         } else {
-            self.is_regenerating = true;
+            specimen.is_regenerating = true;
             let dropped_items = specimen.generate_drops();
             items.add_new_batch(&dropped_items);
             specimen.on_slain();
         }
+
+        self.update_state(specimen);
     }
 
     pub fn get_assigned_specimen_id(&self) -> Option<SpecimenId> {
@@ -57,25 +68,24 @@ impl DungeonLayerSlot {
     }
 
     pub fn set_assigned_specimen_id(&mut self, specimen_id: Option<SpecimenId>) -> GameResult<()> {
-        self.timer.reset();
         self.assigned_specimen = specimen_id;
         Ok(())
     }
 
+    pub fn max_seconds_current(&self) -> u64 {
+        if self.is_regenerating {
+            self.regen_duration_secs
+        } else {
+            self.slay_duration_secs
+        }
+    }
+
     pub fn progress(&self) -> f32 {
-        self.timer.progress(self.slay_duration_secs)
+        self.timer.progress(self.max_seconds_current())
     }
 
     pub fn format_time_left(&self) -> String {
-        self.timer.format_time_left(self.slay_duration_secs)
-    }
-
-    pub fn slay_duration_secs(&self) -> u64 {
-        self.slay_duration_secs
-    }
-
-    pub fn regeneration_duration_secs(&self) -> u64 {
-        self.regeneration_duration_secs
+        self.timer.format_time_left(self.max_seconds_current())
     }
 
     pub fn is_regenerating(&self) -> bool {

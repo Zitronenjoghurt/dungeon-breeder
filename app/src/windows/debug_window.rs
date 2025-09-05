@@ -77,6 +77,9 @@ impl ViewWindow for DebugWindow<'_> {
             if ui.button("Random Gonk").clicked() {
                 self.game.actions.random_specimen(CreatureID::Gonk);
             }
+            if ui.button("Eat the Rich").clicked() {
+                self.game.actions.add_coins(1_000_000);
+            }
         });
     }
 }

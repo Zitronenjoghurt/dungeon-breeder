@@ -6,8 +6,8 @@ use strum_macros::EnumIter;
     Debug, Default, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Serialize, Deserialize, EnumIter,
 )]
 pub enum SortDirection {
-    Ascending,
     #[default]
+    Ascending,
     Descending,
 }
 

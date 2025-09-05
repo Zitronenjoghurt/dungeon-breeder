@@ -26,6 +26,10 @@ impl GameActions {
         }
     }
 
+    pub fn add_coins(&self, coins: u128) {
+        self.push_action(GameAction::AddCoins(coins))
+    }
+
     pub fn assign_to_dungeon_layer_slot(
         &self,
         layer: usize,

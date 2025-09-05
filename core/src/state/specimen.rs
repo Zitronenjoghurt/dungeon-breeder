@@ -2,6 +2,7 @@ use crate::data::config::CONFIG;
 use crate::data::creature::def::CreatureDefinition;
 use crate::data::creature::id::CreatureID;
 use crate::state::item::NewItem;
+use crate::state::timer::Timer;
 use crate::utils::random::random_normal;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -27,6 +28,8 @@ pub struct Specimen {
     pub times_slain: u64,
     pub breeding_generation: u64,
     pub fusion_generation: u64,
+    pub slay_regen_timer: Timer,
+    pub is_regenerating: bool,
 }
 
 impl Specimen {
@@ -87,6 +90,8 @@ impl Specimen {
             times_slain: 0,
             breeding_generation: new_specimen.breeding_generation,
             fusion_generation: new_specimen.fusion_generation,
+            slay_regen_timer: Timer::default(),
+            is_regenerating: false,
         }
     }
 

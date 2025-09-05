@@ -44,6 +44,7 @@ impl GameState {
 
     pub fn handle_action(&mut self, action: GameAction) -> GameResult<()> {
         match action {
+            GameAction::AddCoins(coins) => self.handle_add_coins(coins),
             GameAction::AssignToDungeonLayerSlot {
                 layer,
                 slot,
@@ -62,12 +63,26 @@ impl GameState {
 
 // Game Action Handlers
 impl GameState {
+    fn handle_add_coins(&mut self, coins: u128) -> GameResult<()> {
+        self.treasury.add_coins(coins);
+        Ok(())
+    }
+
     fn handle_assign_to_dungeon_layer_slot(
         &mut self,
         layer_index: usize,
         slot_index: usize,
         specimen_id: Option<SpecimenId>,
     ) -> GameResult<()> {
+        if let Some(specimen_id) = specimen_id
+            && self
+                .dungeon
+                .iter_layer_slot_assigned_specimen()
+                .any(|id| id == specimen_id)
+        {
+            return Err(GameError::DungeonLayerSlotSpecimenAlreadyAssigned);
+        }
+
         let Some(layer) = self.dungeon.get_layer_mut(layer_index) else {
             return Err(GameError::DungeonLayerNotFound(layer_index));
         };

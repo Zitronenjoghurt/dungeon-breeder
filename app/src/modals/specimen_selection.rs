@@ -7,9 +7,9 @@ use egui::{Context, Id, Ui};
 use serde::{Deserialize, Serialize};
 
 #[allow(clippy::type_complexity)]
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct SpecimenSelectionModal {
-    selected_specimen_id: Option<SpecimenId>,
+    options: SpecimenSelectionModalOptions,
     sort_config: SpecimenCollectionSort,
     #[serde(skip, default)]
     callback: Option<Box<dyn Fn(Option<SpecimenId>, &mut GameApp)>>,
@@ -19,13 +19,26 @@ pub struct SpecimenSelectionModal {
     sort_dirty: bool,
 }
 
+impl Default for SpecimenSelectionModal {
+    fn default() -> Self {
+        Self {
+            options: SpecimenSelectionModalOptions::default(),
+            sort_config: SpecimenCollectionSort::default(),
+            callback: None,
+            sorted_ids: Vec::new(),
+            sort_dirty: true,
+        }
+    }
+}
+
 impl SpecimenSelectionModal {
     pub fn open(
         &mut self,
-        selected_specimen_id: Option<SpecimenId>,
+        options: SpecimenSelectionModalOptions,
         callback: impl Fn(Option<SpecimenId>, &mut GameApp) + 'static,
     ) {
-        self.selected_specimen_id = selected_specimen_id;
+        self.sort_dirty = true;
+        self.options = options;
         self.callback = Some(Box::new(callback));
     }
 
@@ -36,7 +49,28 @@ impl SpecimenSelectionModal {
     }
 
     fn sort(&mut self, app: &mut GameApp) {
+        self.update_excluded_ids(app);
         self.sorted_ids = app.game.state.specimen.sorted_ids(&self.sort_config);
+    }
+
+    fn update_excluded_ids(&mut self, app: &mut GameApp) {
+        self.sort_config.excluded_ids.clear();
+
+        if self.options.exclude_specimen_assigned_to_dungeon_layer_slot {
+            self.sort_config
+                .excluded_ids
+                .extend(app.game.state.dungeon.iter_layer_slot_assigned_specimen());
+        }
+
+        if self.options.exclude_specimen_on_breeding_cooldown {
+            self.sort_config.excluded_ids.extend(
+                app.game
+                    .state
+                    .specimen
+                    .iter_on_breeding_cooldown()
+                    .map(|specimen| specimen.id),
+            );
+        }
     }
 }
 
@@ -53,7 +87,7 @@ impl AppModal for SpecimenSelectionModal {
         self.callback = None;
     }
 
-    fn before_close(&mut self, _ctx: &Context, app: &mut GameApp) {
+    fn before_close(&mut self, _ctx: &Context, _app: &mut GameApp) {
         self.sorted_ids.clear();
         self.sort_dirty = true;
     }
@@ -86,7 +120,7 @@ impl AppModal for SpecimenSelectionModal {
         SortedSpecimenTable::new(
             &app.game.state.specimen,
             &self.sorted_ids,
-            &mut self.selected_specimen_id,
+            &mut self.options.selected_specimen_id,
         )
         .ui(ui);
 
@@ -94,12 +128,38 @@ impl AppModal for SpecimenSelectionModal {
 
         ui.horizontal(|ui| {
             if ui.button("Select").clicked() {
-                self.select(self.selected_specimen_id, app);
+                self.select(self.options.selected_specimen_id, app);
             }
             if ui.button("Clear").clicked() {
                 self.select(None, app);
             }
         });
+    }
+}
+
+#[derive(Default, Serialize, Deserialize)]
+pub struct SpecimenSelectionModalOptions {
+    selected_specimen_id: Option<SpecimenId>,
+    exclude_specimen_assigned_to_dungeon_layer_slot: bool,
+    exclude_specimen_on_breeding_cooldown: bool,
+}
+
+impl SpecimenSelectionModalOptions {
+    pub fn new(selected_specimen_id: Option<SpecimenId>) -> Self {
+        Self {
+            selected_specimen_id,
+            ..Self::default()
+        }
+    }
+
+    pub fn exclude_assigned_to_dungeon_layer_slot(mut self, exclude: bool) -> Self {
+        self.exclude_specimen_assigned_to_dungeon_layer_slot = exclude;
+        self
+    }
+
+    pub fn exclude_on_breeding_cooldown(mut self, exclude: bool) -> Self {
+        self.exclude_specimen_on_breeding_cooldown = exclude;
+        self
     }
 }
 

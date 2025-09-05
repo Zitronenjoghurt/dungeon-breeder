@@ -1,6 +1,7 @@
 use crate::state::dungeon::layer::slot::DungeonLayerSlot;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
+use crate::state::specimen::SpecimenId;
 use crate::systems::upgrade_costs::dungeon_layer_slot_unlock_cost;
 use serde::{Deserialize, Serialize};
 
@@ -52,5 +53,11 @@ impl DungeonLayer {
 
     pub fn has_slot_to_unlock(&self, layer_index: usize) -> bool {
         self.next_slot_costs(layer_index).is_some()
+    }
+
+    pub fn iter_slot_assigned_specimen(&self) -> impl Iterator<Item = SpecimenId> {
+        self.slots
+            .iter()
+            .filter_map(|slot| slot.get_assigned_specimen_id())
     }
 }

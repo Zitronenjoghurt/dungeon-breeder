@@ -1,5 +1,6 @@
 use crate::app::GameApp;
 use crate::components::Component;
+use crate::modals::specimen_selection::SpecimenSelectionModalOptions;
 use crate::modals::ModalSystem;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::SpecimenId;
@@ -12,6 +13,8 @@ pub struct SpecimenModalSelection<'a, F> {
     on_change: F,
     id: &'static str,
     selection_enabled: bool,
+    exclude_specimen_assigned_to_dungeon_layer_slot: bool,
+    exclude_specimen_on_breeding_cooldown: bool,
 }
 
 impl<'a, F> SpecimenModalSelection<'a, F>
@@ -31,6 +34,8 @@ where
             on_change,
             id: "specimen_modal_selection",
             selection_enabled: true,
+            exclude_specimen_assigned_to_dungeon_layer_slot: false,
+            exclude_specimen_on_breeding_cooldown: false,
         }
     }
 
@@ -43,6 +48,16 @@ where
         self.selection_enabled = selection_enabled;
         self
     }
+
+    pub fn exclude_assigned_to_dungeon_layer_slot(mut self, exclude: bool) -> Self {
+        self.exclude_specimen_assigned_to_dungeon_layer_slot = exclude;
+        self
+    }
+
+    pub fn exclude_on_breeding_cooldown(mut self, exclude: bool) -> Self {
+        self.exclude_specimen_on_breeding_cooldown = exclude;
+        self
+    }
 }
 
 impl<F> Component for SpecimenModalSelection<'_, F>
@@ -50,6 +65,12 @@ where
     F: Fn(Option<SpecimenId>, &mut GameApp) + Clone + 'static,
 {
     fn ui(self, ui: &mut Ui) {
+        let modal_options = SpecimenSelectionModalOptions::new(self.selected_id)
+            .exclude_assigned_to_dungeon_layer_slot(
+                self.exclude_specimen_assigned_to_dungeon_layer_slot,
+            )
+            .exclude_on_breeding_cooldown(self.exclude_specimen_on_breeding_cooldown);
+
         let on_change = self.on_change;
         ui.push_id(self.id, |ui| {
             ui.group(|ui| {
@@ -63,7 +84,7 @@ where
                             ui.add_enabled(self.selection_enabled, Button::new("🔄"));
                         if button_response.clicked() {
                             self.modals.specimen_selection.open(
-                                self.selected_id,
+                                modal_options,
                                 move |specimen_id, app| {
                                     on_change(specimen_id, app);
                                 },
@@ -76,7 +97,7 @@ where
                         ui.add_enabled(self.selection_enabled, Button::new("Select Specimen"));
                     if button_response.clicked() {
                         self.modals.specimen_selection.open(
-                            self.selected_id,
+                            modal_options,
                             move |specimen_id, app| {
                                 on_change(specimen_id, app);
                             },

@@ -62,6 +62,7 @@ impl Component for DungeonLayerSlotView<'_> {
                                 );
                             },
                         )
+                        .exclude_assigned_to_dungeon_layer_slot(true)
                         .ui(ui);
                     });
 
