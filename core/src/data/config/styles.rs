@@ -9,9 +9,16 @@ pub const COLOR_ORANGE: ColorRGBA = ColorRGBA::from_hex(0xE98537);
 pub const COLOR_YELLOW: ColorRGBA = ColorRGBA::from_hex(0xF3A833);
 pub const COLOR_DEEP_GREEN: ColorRGBA = ColorRGBA::from_hex(0x26854C);
 pub const COLOR_GREEN: ColorRGBA = ColorRGBA::from_hex(0x5AB552);
+pub const COLOR_DEEP_BLUE: ColorRGBA = ColorRGBA::from_hex(0x3E3B65);
+pub const COLOR_DARK_BLUE: ColorRGBA = ColorRGBA::from_hex(0x3859B3);
+pub const COLOR_BLUE: ColorRGBA = ColorRGBA::from_hex(0x3388DE);
+pub const COLOR_LIGHT_BLUE: ColorRGBA = ColorRGBA::from_hex(0x36C5F4);
 pub const COLOR_LIGHT_GREEN: ColorRGBA = ColorRGBA::from_hex(0x9DE64E);
 pub const COLOR_DEEP_PINK: ColorRGBA = ColorRGBA::from_hex(0x9A4D76);
 pub const COLOR_DARK_PINK: ColorRGBA = ColorRGBA::from_hex(0xC878AF);
+pub const COLOR_VIOLET: ColorRGBA = ColorRGBA::from_hex(0xCC99FF);
+pub const COLOR_PINK: ColorRGBA = ColorRGBA::from_hex(0xFA6E79);
+pub const COLOR_LIGHT_PINK: ColorRGBA = ColorRGBA::from_hex(0xFFA2AC);
 
 #[derive(Debug)]
 pub struct ConfigStyles {
@@ -21,6 +28,13 @@ pub struct ConfigStyles {
     pub color_specimen_health_75: ColorRGBA,
     pub color_specimen_health_100: ColorRGBA,
     pub color_specimen_regeneration: ColorRGBA,
+    pub color_proficiency: ColorRGBA,
+    pub color_strength: ColorRGBA,
+    pub color_intelligence: ColorRGBA,
+    pub color_agility: ColorRGBA,
+    pub color_vitality: ColorRGBA,
+    pub color_regeneration: ColorRGBA,
+    pub color_fertility: ColorRGBA,
 }
 
 pub static CONFIG_STYLES: ConfigStyles = ConfigStyles {
@@ -30,6 +44,13 @@ pub static CONFIG_STYLES: ConfigStyles = ConfigStyles {
     color_specimen_health_75: COLOR_YELLOW,
     color_specimen_health_100: COLOR_GREEN,
     color_specimen_regeneration: COLOR_DARK_PINK,
+    color_proficiency: COLOR_VIOLET,
+    color_strength: COLOR_RED,
+    color_intelligence: COLOR_BLUE,
+    color_agility: COLOR_ORANGE,
+    color_vitality: COLOR_GREEN,
+    color_regeneration: COLOR_DARK_PINK,
+    color_fertility: COLOR_PINK,
 };
 
 impl ConfigStyles {

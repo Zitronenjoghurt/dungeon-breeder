@@ -12,13 +12,25 @@ pub enum SpecimenCollectionSortField {
     #[default]
     Id,
     Proficiency,
+    Strength,
+    Intelligence,
+    Agility,
+    Vitality,
+    Regeneration,
+    Fertility,
 }
 
 impl Display for SpecimenCollectionSortField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SpecimenCollectionSortField::Id => write!(f, "ID"),
-            SpecimenCollectionSortField::Proficiency => write!(f, "Proficiency"),
+            Self::Id => write!(f, "ID"),
+            Self::Proficiency => write!(f, "Proficiency"),
+            Self::Strength => write!(f, "Strength"),
+            Self::Intelligence => write!(f, "Intelligence"),
+            Self::Agility => write!(f, "Agility"),
+            Self::Vitality => write!(f, "Vitality"),
+            Self::Regeneration => write!(f, "Regeneration"),
+            Self::Fertility => write!(f, "Fertility"),
         }
     }
 }
@@ -72,6 +84,36 @@ impl SpecimenCollection {
                 SpecimenCollectionSortField::Proficiency => {
                     a.1.proficiency()
                         .partial_cmp(&b.1.proficiency())
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }
+                SpecimenCollectionSortField::Strength => {
+                    a.1.strength
+                        .partial_cmp(&b.1.strength)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }
+                SpecimenCollectionSortField::Intelligence => {
+                    a.1.agility
+                        .partial_cmp(&b.1.agility)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }
+                SpecimenCollectionSortField::Agility => {
+                    a.1.agility
+                        .partial_cmp(&b.1.agility)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }
+                SpecimenCollectionSortField::Vitality => {
+                    a.1.vitality
+                        .partial_cmp(&b.1.vitality)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }
+                SpecimenCollectionSortField::Regeneration => {
+                    a.1.regeneration
+                        .partial_cmp(&b.1.regeneration)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }
+                SpecimenCollectionSortField::Fertility => {
+                    a.1.fertility
+                        .partial_cmp(&b.1.fertility)
                         .unwrap_or(std::cmp::Ordering::Equal)
                 }
             };

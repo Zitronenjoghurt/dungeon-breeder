@@ -1,4 +1,7 @@
 use crate::app::GameApp;
+use crate::components::column_config::{
+    SortedSpecimenTableColumnConfig, SortedSpecimenTableColumnConfigEdit,
+};
 use crate::components::{Component, EnumSelect, SortedSpecimenTable};
 use crate::modals::AppModal;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollectionSort;
@@ -10,6 +13,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize)]
 pub struct SpecimenSelectionModal {
     options: SpecimenSelectionModalOptions,
+    column_config: SortedSpecimenTableColumnConfig,
     sort_config: SpecimenCollectionSort,
     #[serde(skip, default)]
     callback: Option<Box<dyn Fn(Option<SpecimenId>, &mut GameApp)>>,
@@ -23,6 +27,7 @@ impl Default for SpecimenSelectionModal {
     fn default() -> Self {
         Self {
             options: SpecimenSelectionModalOptions::default(),
+            column_config: SortedSpecimenTableColumnConfig::default(),
             sort_config: SpecimenCollectionSort::default(),
             callback: None,
             sorted_ids: Vec::new(),
@@ -98,9 +103,16 @@ impl AppModal for SpecimenSelectionModal {
             self.sort(app);
         }
 
+        ui.vertical_centered_justified(|ui| {
+            ui.heading("Select specimen");
+        });
+
+        ui.separator();
+
         let old_sort_field = self.sort_config.sort_field;
         let old_sort_direction = self.sort_config.sort_direction;
         ui.horizontal(|ui| {
+            SortedSpecimenTableColumnConfigEdit::new(&mut self.column_config).ui(ui);
             EnumSelect::new(&mut self.sort_config.sort_field, "select_sort_field").ui(ui);
             EnumSelect::new(
                 &mut self.sort_config.sort_direction,
@@ -115,13 +127,13 @@ impl AppModal for SpecimenSelectionModal {
             self.sort_dirty = true;
         }
 
-        ui.separator();
-
         SortedSpecimenTable::new(
             &app.game.state.specimen,
             &self.sorted_ids,
             &mut self.options.selected_specimen_id,
         )
+        .max_height(500.0)
+        .column_config(self.column_config)
         .ui(ui);
 
         ui.separator();
