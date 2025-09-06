@@ -2,27 +2,29 @@ use crate::app::GameApp;
 use crate::components::state::SpecimenSelectionState;
 use crate::components::{Component, SpecimenOverview};
 use crate::windows::ViewWindow;
-use egui::{Id, Ui, WidgetText};
+use egui::{Context, Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
-pub struct DebugSpecimenWindowState {
+pub struct SpecimenWindowState {
     pub is_open: bool,
     pub selection_state: SpecimenSelectionState,
+    #[serde(skip, default)]
+    pub sort_ready: bool,
 }
 
-pub struct DebugSpecimenWindow<'a> {
+pub struct SpecimenWindow<'a> {
     app: &'a mut GameApp,
-    state: &'a mut DebugSpecimenWindowState,
+    state: &'a mut SpecimenWindowState,
 }
 
-impl<'a> DebugSpecimenWindow<'a> {
-    pub fn new(app: &'a mut GameApp, state: &'a mut DebugSpecimenWindowState) -> Self {
+impl<'a> SpecimenWindow<'a> {
+    pub fn new(app: &'a mut GameApp, state: &'a mut SpecimenWindowState) -> Self {
         Self { app, state }
     }
 }
 
-impl ViewWindow for DebugSpecimenWindow<'_> {
+impl ViewWindow for SpecimenWindow<'_> {
     fn id(&self) -> Id {
         Id::new("debug_specimen_window")
     }
@@ -36,15 +38,19 @@ impl ViewWindow for DebugSpecimenWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
-        let just_opened = !self.state.is_open && open;
         self.state.is_open = open;
+    }
 
-        if just_opened {
-            self.state.selection_state.sort_dirty();
-        }
+    fn before_close(&mut self, _ctx: &Context) {
+        self.state.sort_ready = false;
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
+        if !self.state.sort_ready {
+            self.state.selection_state.sort_dirty();
+            self.state.sort_ready = true;
+        }
+
         SpecimenOverview::new(self.app, &mut self.state.selection_state).ui(ui);
     }
 }

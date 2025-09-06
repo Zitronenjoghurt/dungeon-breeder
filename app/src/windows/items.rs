@@ -3,18 +3,18 @@ use crate::windows::ViewWindow;
 use dungeon_breeder_core::Game;
 use egui::{Id, ScrollArea, Ui, WidgetText};
 
-pub struct DebugItemsWindow<'a> {
+pub struct ItemsWindow<'a> {
     game: &'a Game,
     is_open: &'a mut bool,
 }
 
-impl<'a> DebugItemsWindow<'a> {
+impl<'a> ItemsWindow<'a> {
     pub fn new(game: &'a Game, is_open: &'a mut bool) -> Self {
         Self { game, is_open }
     }
 }
 
-impl ViewWindow for DebugItemsWindow<'_> {
+impl ViewWindow for ItemsWindow<'_> {
     fn id(&self) -> Id {
         Id::new("debug_items_window")
     }

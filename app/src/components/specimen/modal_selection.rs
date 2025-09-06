@@ -5,6 +5,7 @@ use crate::modals::ModalSystem;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::SpecimenId;
 use egui::{Button, Ui};
+use egui_phosphor::regular;
 
 pub struct SpecimenModalSelection<'a, F> {
     modals: &'a mut ModalSystem,
@@ -73,28 +74,16 @@ where
 
         let on_change = self.on_change;
         ui.push_id(self.id, |ui| {
-            ui.group(|ui| {
-                if let Some(specimen) = self
-                    .selected_id
-                    .map(|id| self.collection.get_by_id(id))
-                    .unwrap_or_default()
-                {
-                    ui.horizontal(|ui| {
-                        let button_response =
-                            ui.add_enabled(self.selection_enabled, Button::new("🔄"));
-                        if button_response.clicked() {
-                            self.modals.specimen_selection.open(
-                                modal_options,
-                                move |specimen_id, app| {
-                                    on_change(specimen_id, app);
-                                },
-                            );
-                        }
-                        ui.label(specimen.name_with_id());
-                    });
-                } else {
-                    let button_response =
-                        ui.add_enabled(self.selection_enabled, Button::new("Select Specimen"));
+            if let Some(specimen) = self
+                .selected_id
+                .map(|id| self.collection.get_by_id(id))
+                .unwrap_or_default()
+            {
+                ui.horizontal(|ui| {
+                    let button_response = ui.add_enabled(
+                        self.selection_enabled,
+                        Button::new(regular::LIST_MAGNIFYING_GLASS),
+                    );
                     if button_response.clicked() {
                         self.modals.specimen_selection.open(
                             modal_options,
@@ -103,8 +92,19 @@ where
                             },
                         );
                     }
+                    ui.label(specimen.name_with_id());
+                });
+            } else {
+                let button_response =
+                    ui.add_enabled(self.selection_enabled, Button::new("Select Specimen"));
+                if button_response.clicked() {
+                    self.modals
+                        .specimen_selection
+                        .open(modal_options, move |specimen_id, app| {
+                            on_change(specimen_id, app);
+                        });
                 }
-            });
+            }
         });
     }
 }

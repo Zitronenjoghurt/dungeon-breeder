@@ -1,23 +1,13 @@
 use crate::app::GameApp;
-use crate::components::{Component, ToggleButton};
-use crate::windows::debug_window::dungeon::DebugDungeonWindow;
-use crate::windows::debug_window::items::DebugItemsWindow;
-use crate::windows::debug_window::specimen::{DebugSpecimenWindow, DebugSpecimenWindowState};
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::creature::id::CreatureID;
 use egui::{Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
-mod dungeon;
-mod items;
-mod specimen;
-
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugWindowState {
     pub is_open: bool,
     pub dungeon_window_open: bool,
-    pub items_window_open: bool,
-    pub specimen_window: DebugSpecimenWindowState,
 }
 
 pub struct DebugWindow<'a> {
@@ -49,23 +39,6 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        DebugDungeonWindow::new(
-            &mut self.app.modals,
-            &self.app.game,
-            &mut self.state.dungeon_window_open,
-        )
-        .show(ui.ctx());
-        DebugItemsWindow::new(&self.app.game, &mut self.state.items_window_open).show(ui.ctx());
-        DebugSpecimenWindow::new(self.app, &mut self.state.specimen_window).show(ui.ctx());
-
-        ui.horizontal(|ui| {
-            ToggleButton::new(&mut self.state.dungeon_window_open, "Dungeon").ui(ui);
-            ToggleButton::new(&mut self.state.items_window_open, "Items").ui(ui);
-            ToggleButton::new(&mut self.state.specimen_window.is_open, "Specimen").ui(ui);
-        });
-
-        ui.separator();
-
         ui.horizontal(|ui| {
             if ui.button("Random Gonk").clicked() {
                 self.app.game.actions.random_specimen(CreatureID::Gonk);

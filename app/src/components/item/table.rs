@@ -4,6 +4,7 @@ use dungeon_breeder_core::state::item::collection::ItemCollection;
 use eframe::emath::Align;
 use egui::{Layout, Ui};
 use egui_extras::{Column, TableBuilder};
+use egui_phosphor::regular;
 
 pub struct ItemTable<'a> {
     actions: &'a GameActions,
@@ -52,7 +53,7 @@ impl Component for ItemTable<'_> {
                         });
 
                         row.col(|ui| {
-                            if ui.small_button("Sell").clicked() {
+                            if ui.small_button(regular::SCALES).clicked() {
                                 self.actions.sell_item(*item_id, *count);
                             }
                         });

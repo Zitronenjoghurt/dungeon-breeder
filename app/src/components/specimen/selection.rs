@@ -1,8 +1,10 @@
 use crate::app::GameApp;
+use crate::components::asc_desc_button::AscDescButton;
 use crate::components::column_config::SortedSpecimenTableColumnConfigEdit;
 use crate::components::state::SpecimenSelectionState;
 use crate::components::{Component, EnumSelect, SortedSpecimenTable};
 use egui::Ui;
+use egui_phosphor::regular;
 
 pub mod options;
 pub mod state;
@@ -37,13 +39,12 @@ impl Component for SpecimenSelection<'_> {
 
         ui.vertical(|ui| {
             ui.horizontal(|ui| {
-                if ui.button("⟲").clicked() {
+                if ui.button(regular::ARROWS_CLOCKWISE).clicked() {
                     self.state.sort_dirty();
                 }
                 SortedSpecimenTableColumnConfigEdit::new(&mut self.state.columns).ui(ui);
+                AscDescButton::new(&mut self.state.sort.sort_direction).ui(ui);
                 EnumSelect::new(&mut self.state.sort.sort_field, "select_sort_field").ui(ui);
-                EnumSelect::new(&mut self.state.sort.sort_direction, "select_sort_direction")
-                    .ui(ui);
             });
 
             if self.state.sort.sort_field != old_sort_field

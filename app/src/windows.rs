@@ -5,13 +5,17 @@ use egui::{Context, Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
 pub mod debug_window;
+pub mod dungeon;
+pub mod items;
 pub mod settings;
+pub mod specimen;
 
 pub trait ViewWindow: Sized {
     fn id(&self) -> Id;
     fn title(&self) -> impl Into<WidgetText>;
     fn is_open(&self) -> bool;
     fn set_open(&mut self, open: bool);
+    fn before_close(&mut self, ctx: &Context) {}
     fn render_content(&mut self, ui: &mut Ui);
 
     fn resizable(&self) -> bool {
@@ -41,6 +45,10 @@ pub trait ViewWindow: Sized {
             .show(ctx, |ui| {
                 self.render_content(ui);
             });
+
+        if !is_open {
+            self.before_close(ctx);
+        }
         self.set_open(is_open)
     }
 }

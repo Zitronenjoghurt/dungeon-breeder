@@ -6,6 +6,7 @@ use crate::views::{View, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::anyhow;
 use dungeon_breeder_core::Game;
+use egui::FontDefinitions;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
@@ -23,6 +24,10 @@ pub struct GameApp {
 
 impl GameApp {
     pub fn new(cc: &eframe::CreationContext) -> anyhow::Result<Self> {
+        let mut fonts = FontDefinitions::default();
+        egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
+        cc.egui_ctx.set_fonts(fonts);
+
         match cc.storage {
             Some(storage) => match eframe::get_value::<Self>(storage, eframe::APP_KEY) {
                 Some(app) => Ok(app),

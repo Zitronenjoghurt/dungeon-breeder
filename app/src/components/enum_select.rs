@@ -35,14 +35,12 @@ where
     T: IntoEnumIterator + PartialEq + Copy + Display,
 {
     fn ui(self, ui: &mut Ui) {
-        ui.horizontal(|ui| {
-            egui::ComboBox::new(self.id, self.label.unwrap_or_default())
-                .selected_text(self.value.to_string())
-                .show_ui(ui, |ui| {
-                    for variant in T::iter() {
-                        ui.selectable_value(self.value, variant, variant.to_string());
-                    }
-                });
-        });
+        egui::ComboBox::new(self.id, self.label.unwrap_or_default())
+            .selected_text(self.value.to_string())
+            .show_ui(ui, |ui| {
+                for variant in T::iter() {
+                    ui.selectable_value(self.value, variant, variant.to_string());
+                }
+            });
     }
 }

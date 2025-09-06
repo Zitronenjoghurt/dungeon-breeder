@@ -1,5 +1,6 @@
 use crate::components::Component;
 use egui::{Popup, PopupCloseBehavior, Ui};
+use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
@@ -41,7 +42,7 @@ impl<'a> SortedSpecimenTableColumnConfigEdit<'a> {
 
 impl Component for SortedSpecimenTableColumnConfigEdit<'_> {
     fn ui(self, ui: &mut Ui) {
-        let button_response = ui.button("Columns...");
+        let button_response = ui.button(regular::TABLE);
 
         Popup::from_toggle_button_response(&button_response)
             .close_behavior(PopupCloseBehavior::CloseOnClickOutside)

@@ -4,13 +4,13 @@ use crate::windows::ViewWindow;
 use dungeon_breeder_core::Game;
 use egui::{Id, ScrollArea, Ui, WidgetText};
 
-pub struct DebugDungeonWindow<'a> {
+pub struct DungeonWindow<'a> {
     modal_system: &'a mut ModalSystem,
     game: &'a Game,
     is_open: &'a mut bool,
 }
 
-impl<'a> DebugDungeonWindow<'a> {
+impl<'a> DungeonWindow<'a> {
     pub fn new(modal_system: &'a mut ModalSystem, game: &'a Game, is_open: &'a mut bool) -> Self {
         Self {
             modal_system,
@@ -20,7 +20,7 @@ impl<'a> DebugDungeonWindow<'a> {
     }
 }
 
-impl ViewWindow for DebugDungeonWindow<'_> {
+impl ViewWindow for DungeonWindow<'_> {
     fn id(&self) -> Id {
         Id::new("debug_dungeon_window")
     }

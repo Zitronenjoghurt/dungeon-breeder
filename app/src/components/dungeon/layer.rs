@@ -4,6 +4,7 @@ use crate::modals::ModalSystem;
 use dungeon_breeder_core::state::dungeon::layer::DungeonLayer;
 use dungeon_breeder_core::Game;
 use egui::{Frame, ScrollArea, Ui};
+use egui_phosphor::regular;
 
 pub struct DungeonLayerView<'a> {
     modal_system: &'a mut ModalSystem,
@@ -52,8 +53,8 @@ impl Component for DungeonLayerView<'_> {
                 }
                 if let Some(unlock_costs) = self.layer.next_slot_costs(self.layer_index) {
                     Frame::group(ui.style()).show(ui, |ui| {
-                        ui.label(format!("{}💰", unlock_costs));
-                        if ui.button("Unlock").clicked() {
+                        ui.label(format!("{} {}", unlock_costs, regular::COINS));
+                        if ui.button(regular::LOCK_KEY_OPEN).clicked() {
                             self.game
                                 .actions
                                 .unlock_dungeon_layer_slot(self.layer_index);
