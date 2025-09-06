@@ -54,7 +54,7 @@ pub struct WindowSystem {
 impl WindowSystem {
     // Will be able to access everything inside AppState besides the ModalSystem itself
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
-        DebugWindow::new(&mut app.modals, &app.game, &mut self.debug).show(ctx);
+        DebugWindow::new(app, &mut self.debug).show(ctx);
         SettingsWindow::new(&mut self.settings_open, &mut app.settings).show(ctx);
     }
 }

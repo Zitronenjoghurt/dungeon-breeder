@@ -1,6 +1,6 @@
 use crate::app::GameApp;
+use crate::components::options::SpecimenSelectionOptions;
 use crate::components::Component;
-use crate::modals::specimen_selection::SpecimenSelectionModalOptions;
 use crate::modals::ModalSystem;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::SpecimenId;
@@ -65,7 +65,7 @@ where
     F: Fn(Option<SpecimenId>, &mut GameApp) + Clone + 'static,
 {
     fn ui(self, ui: &mut Ui) {
-        let modal_options = SpecimenSelectionModalOptions::new(self.selected_id)
+        let modal_options = SpecimenSelectionOptions::new(self.selected_id)
             .exclude_assigned_to_dungeon_layer_slot(
                 self.exclude_specimen_assigned_to_dungeon_layer_slot,
             )

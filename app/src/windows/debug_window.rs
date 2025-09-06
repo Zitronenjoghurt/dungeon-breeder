@@ -1,11 +1,10 @@
+use crate::app::GameApp;
 use crate::components::{Component, ToggleButton};
-use crate::modals::ModalSystem;
 use crate::windows::debug_window::dungeon::DebugDungeonWindow;
 use crate::windows::debug_window::items::DebugItemsWindow;
 use crate::windows::debug_window::specimen::{DebugSpecimenWindow, DebugSpecimenWindowState};
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::creature::id::CreatureID;
-use dungeon_breeder_core::Game;
 use egui::{Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
@@ -22,22 +21,13 @@ pub struct DebugWindowState {
 }
 
 pub struct DebugWindow<'a> {
-    modals: &'a mut ModalSystem,
-    game: &'a Game,
+    app: &'a mut GameApp,
     state: &'a mut DebugWindowState,
 }
 
 impl<'a> DebugWindow<'a> {
-    pub fn new(
-        modals: &'a mut ModalSystem,
-        game: &'a Game,
-        state: &'a mut DebugWindowState,
-    ) -> Self {
-        Self {
-            modals,
-            game,
-            state,
-        }
+    pub fn new(app: &'a mut GameApp, state: &'a mut DebugWindowState) -> Self {
+        Self { app, state }
     }
 }
 
@@ -59,11 +49,14 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        DebugDungeonWindow::new(self.modals, self.game, &mut self.state.dungeon_window_open)
-            .show(ui.ctx());
-        DebugItemsWindow::new(self.game, &mut self.state.items_window_open).show(ui.ctx());
-        DebugSpecimenWindow::new(self.modals, self.game, &mut self.state.specimen_window)
-            .show(ui.ctx());
+        DebugDungeonWindow::new(
+            &mut self.app.modals,
+            &self.app.game,
+            &mut self.state.dungeon_window_open,
+        )
+        .show(ui.ctx());
+        DebugItemsWindow::new(&self.app.game, &mut self.state.items_window_open).show(ui.ctx());
+        DebugSpecimenWindow::new(self.app, &mut self.state.specimen_window).show(ui.ctx());
 
         ui.horizontal(|ui| {
             ToggleButton::new(&mut self.state.dungeon_window_open, "Dungeon").ui(ui);
@@ -75,10 +68,10 @@ impl ViewWindow for DebugWindow<'_> {
 
         ui.horizontal(|ui| {
             if ui.button("Random Gonk").clicked() {
-                self.game.actions.random_specimen(CreatureID::Gonk);
+                self.app.game.actions.random_specimen(CreatureID::Gonk);
             }
             if ui.button("Eat the Rich").clicked() {
-                self.game.actions.add_coins(1_000_000);
+                self.app.game.actions.add_coins(1_000_000);
             }
         });
     }

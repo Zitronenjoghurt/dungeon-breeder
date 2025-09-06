@@ -16,6 +16,7 @@ pub struct SortedSpecimenTable<'a> {
     selected_id: &'a mut Option<SpecimenId>,
     column_config: SortedSpecimenTableColumnConfig,
     max_height: f32,
+    selection_enabled: bool,
 }
 
 impl<'a> SortedSpecimenTable<'a> {
@@ -30,6 +31,7 @@ impl<'a> SortedSpecimenTable<'a> {
             selected_id,
             column_config: SortedSpecimenTableColumnConfig::default(),
             max_height: 200.0,
+            selection_enabled: true,
         }
     }
 
@@ -40,6 +42,11 @@ impl<'a> SortedSpecimenTable<'a> {
 
     pub fn max_height(mut self, max_height: f32) -> Self {
         self.max_height = max_height;
+        self
+    }
+
+    pub fn selection_enabled(mut self, enabled: bool) -> Self {
+        self.selection_enabled = enabled;
         self
     }
 
@@ -64,9 +71,12 @@ impl Component for SortedSpecimenTable<'_> {
             .max_height(self.max_height)
             .show(ui, |ui| {
                 let mut table_builder = TableBuilder::new(ui)
-                    .sense(egui::Sense::click())
                     .cell_layout(Layout::left_to_right(Align::Center))
                     .column(Column::auto().at_least(10.0));
+
+                if self.selection_enabled {
+                    table_builder = table_builder.sense(egui::Sense::click());
+                }
 
                 if self.column_config.name_column {
                     table_builder = table_builder.column(Column::auto().at_least(50.0));
@@ -163,7 +173,9 @@ impl Component for SortedSpecimenTable<'_> {
                             };
                             let creature = specimen.creature_def();
 
-                            row.set_selected(Some(id) == *self.selected_id);
+                            if self.selection_enabled {
+                                row.set_selected(Some(id) == *self.selected_id);
+                            }
 
                             row.col(|ui| {
                                 ui.label(format!("{}", specimen.id));
@@ -218,7 +230,7 @@ impl Component for SortedSpecimenTable<'_> {
                                 });
                             }
 
-                            if row.response().clicked() {
+                            if self.selection_enabled && row.response().clicked() {
                                 if Some(id) == *self.selected_id {
                                     *self.selected_id = None;
                                 } else {
