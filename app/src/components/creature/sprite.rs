@@ -6,13 +6,13 @@ use egui::{Frame, Layout, Ui, Vec2};
 
 pub struct CreatureSprite<'a> {
     textures: &'a mut TextureSystem,
-    creature_id: CreatureID,
+    creature_id: Option<CreatureID>,
     height: f32,
     width: f32,
 }
 
 impl<'a> CreatureSprite<'a> {
-    pub fn new(textures: &'a mut TextureSystem, creature_id: CreatureID) -> Self {
+    pub fn new(textures: &'a mut TextureSystem, creature_id: Option<CreatureID>) -> Self {
         Self {
             textures,
             creature_id,
@@ -40,17 +40,29 @@ impl<'a> CreatureSprite<'a> {
 
 impl Component for CreatureSprite<'_> {
     fn ui(self, ui: &mut Ui) {
-        if let Some(image) = self.textures.image_creature_sprite(
-            ui.ctx(),
-            self.creature_id,
-            Vec2::new(self.width, self.height),
-        ) {
+        if let Some(creature_id) = self.creature_id
+            && let Some(image) = self.textures.image_creature_sprite(
+                ui.ctx(),
+                creature_id,
+                Vec2::new(self.width, self.height),
+            )
+        {
             Frame::menu(ui.style()).show(ui, |ui| {
                 ui.allocate_ui_with_layout(
                     Vec2::new(self.height, self.width),
                     Layout::bottom_up(Align::Center),
                     |ui| {
                         ui.add(image);
+                    },
+                );
+            });
+        } else {
+            Frame::menu(ui.style()).show(ui, |ui| {
+                ui.allocate_ui_with_layout(
+                    Vec2::new(self.height, self.width),
+                    Layout::bottom_up(Align::Center),
+                    |ui| {
+                        ui.label("");
                     },
                 );
             });

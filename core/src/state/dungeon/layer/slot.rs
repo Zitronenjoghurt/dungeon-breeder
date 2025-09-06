@@ -42,22 +42,9 @@ impl DungeonLayerSlot {
             return;
         };
 
-        let max_secs_current = if specimen.is_regenerating {
-            specimen.regeneration_duration_secs()
-        } else {
-            specimen.slay_duration_secs()
-        };
+        let is_slain = specimen.tick_slay_regen();
 
-        if !specimen.slay_regen_timer.tick(max_secs_current) {
-            self.update_state(specimen);
-            return;
-        }
-
-        if specimen.is_regenerating {
-            specimen.is_regenerating = false;
-        } else {
-            specimen.is_regenerating = true;
-
+        if is_slain {
             let dropped_items = specimen.generate_drops();
             items.add_new_batch(&dropped_items);
             report.on_items_obtained(&dropped_items);

@@ -1,4 +1,5 @@
 use crate::data::config::CONFIG;
+use crate::data::creature::def::item_drop::CreatureItemDrop;
 use crate::data::creature::def::CreatureDefinition;
 use crate::data::creature::id::CreatureID;
 use crate::state::item::NewItem;
@@ -99,6 +100,14 @@ impl Specimen {
         }
     }
 
+    pub fn iter_possible_drops(&self) -> impl Iterator<Item = &CreatureItemDrop> {
+        self.creature_id
+            .def()
+            .item_drops
+            .iter()
+            .filter(|drop| drop.min_proficiency <= self.proficiency())
+    }
+
     pub fn generate_drops(&self) -> Vec<NewItem> {
         let mut rng = rand::rng();
         self.creature_id
@@ -113,6 +122,41 @@ impl Specimen {
                 })
             })
             .collect::<Vec<_>>()
+    }
+
+    fn slay_regen_max_secs_current(&self) -> u64 {
+        if self.is_regenerating {
+            self.regeneration_duration_secs()
+        } else {
+            self.slay_duration_secs()
+        }
+    }
+
+    /// Returns true if the specimen was slain
+    pub fn tick_slay_regen(&mut self) -> bool {
+        if !self
+            .slay_regen_timer
+            .tick(self.slay_regen_max_secs_current())
+        {
+            return false;
+        }
+
+        if self.is_regenerating {
+            self.is_regenerating = false;
+            false
+        } else {
+            self.is_regenerating = true;
+            true
+        }
+    }
+
+    pub fn current_health(&self) -> f32 {
+        if self.is_regenerating {
+            self.slay_regen_timer
+                .progress(self.regeneration_duration_secs())
+        } else {
+            1.0 - self.slay_regen_timer.progress(self.slay_duration_secs())
+        }
     }
 }
 

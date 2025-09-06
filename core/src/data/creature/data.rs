@@ -16,7 +16,7 @@ pub static CREATURE_GONK: CreatureDefinition = CreatureDefinition {
         },
         CreatureItemDrop {
             item_id: ItemID::GonkCrystal,
-            min_proficiency: 0.8,
+            min_proficiency: 0.75,
             drop_chance: 0.5,
             count_range: &(1..=3),
         },

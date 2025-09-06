@@ -784,6 +784,7 @@ dependencies = [
  "egui",
  "egui-notify",
  "egui_extras",
+ "humantime",
  "image",
  "serde",
  "strum 0.27.2",

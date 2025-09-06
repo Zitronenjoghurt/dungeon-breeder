@@ -35,29 +35,32 @@ impl Component for SpecimenSelection<'_> {
         let old_sort_field = self.state.sort.sort_field;
         let old_sort_direction = self.state.sort.sort_direction;
 
-        ui.horizontal(|ui| {
-            if ui.button("⟲").clicked() {
+        ui.vertical(|ui| {
+            ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    self.state.sort_dirty();
+                }
+                SortedSpecimenTableColumnConfigEdit::new(&mut self.state.columns).ui(ui);
+                EnumSelect::new(&mut self.state.sort.sort_field, "select_sort_field").ui(ui);
+                EnumSelect::new(&mut self.state.sort.sort_direction, "select_sort_direction")
+                    .ui(ui);
+            });
+
+            if self.state.sort.sort_field != old_sort_field
+                || self.state.sort.sort_direction != old_sort_direction
+            {
                 self.state.sort_dirty();
             }
-            SortedSpecimenTableColumnConfigEdit::new(&mut self.state.columns).ui(ui);
-            EnumSelect::new(&mut self.state.sort.sort_field, "select_sort_field").ui(ui);
-            EnumSelect::new(&mut self.state.sort.sort_direction, "select_sort_direction").ui(ui);
+
+            SortedSpecimenTable::new(
+                &self.app.game.state.specimen,
+                &self.state.sorted_ids,
+                &mut self.state.options.selected_specimen_id,
+            )
+            .max_height(500.0)
+            .column_config(self.state.columns)
+            .selection_enabled(self.selection_enabled)
+            .ui(ui);
         });
-
-        if self.state.sort.sort_field != old_sort_field
-            || self.state.sort.sort_direction != old_sort_direction
-        {
-            self.state.sort_dirty();
-        }
-
-        SortedSpecimenTable::new(
-            &self.app.game.state.specimen,
-            &self.state.sorted_ids,
-            &mut self.state.options.selected_specimen_id,
-        )
-        .max_height(500.0)
-        .column_config(self.state.columns)
-        .selection_enabled(self.selection_enabled)
-        .ui(ui);
     }
 }

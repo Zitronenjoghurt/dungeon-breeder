@@ -10,7 +10,7 @@ eframe = { version = "0.32.1", features = ["persistence", "wgpu"] }
 egui = { version = "0.32.1", features = ["persistence"] }
 egui-notify = "0.20.0"
 egui_extras = "0.32.1"
+humantime = { workspace = true }
 image = { version = "0.25.8", default-features = false, features = ["png"] }
 serde = { workspace = true }
 strum = { workspace = true }
-strum_macros = { workspace = true }
