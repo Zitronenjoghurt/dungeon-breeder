@@ -68,13 +68,22 @@ impl Specimen {
         format!("{} [{}]", self.creature_def().name, self.id)
     }
 
-    pub fn can_breed(&self) -> bool {
+    pub fn seconds_till_breed(&self) -> u64 {
         if let Some(last_bred) = self.last_bred {
             let elapsed = Utc::now() - last_bred;
-            elapsed.num_seconds() as u64 > self.breeding_duration_secs()
+            self.breeding_duration_secs()
+                .saturating_sub(elapsed.num_seconds() as u64)
         } else {
-            true
+            0
         }
+    }
+
+    pub fn till_breed_progress(&self) -> f32 {
+        1.0 - (self.seconds_till_breed() as f32 / self.breeding_duration_secs() as f32)
+    }
+
+    pub fn can_breed(&self) -> bool {
+        self.seconds_till_breed() == 0
     }
 
     pub fn from_new_specimen(id: SpecimenId, new_specimen: NewSpecimen) -> Specimen {

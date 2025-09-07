@@ -1,3 +1,4 @@
+use crate::state::breeding::check_specimen_can_breed;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::types::sort_direction::SortDirection;
 use serde::{Deserialize, Serialize};
@@ -125,6 +126,18 @@ impl SpecimenCollection {
         });
 
         specimens.into_iter().map(|(id, _)| *id).collect()
+    }
+
+    pub fn can_breed(&self, specimen_1: SpecimenId, specimen_2: SpecimenId) -> bool {
+        let Some(specimen_1) = self.get_by_id(specimen_1) else {
+            return false;
+        };
+
+        let Some(specimen_2) = self.get_by_id(specimen_2) else {
+            return false;
+        };
+
+        check_specimen_can_breed(specimen_1, specimen_2).is_ok()
     }
 
     pub fn iter_on_breeding_cooldown(&self) -> impl Iterator<Item = &Specimen> {

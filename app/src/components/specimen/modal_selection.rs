@@ -16,6 +16,7 @@ pub struct SpecimenModalSelection<'a, F> {
     selection_enabled: bool,
     exclude_specimen_assigned_to_dungeon_layer_slot: bool,
     exclude_specimen_on_breeding_cooldown: bool,
+    excluded_specimen: Option<SpecimenId>,
 }
 
 impl<'a, F> SpecimenModalSelection<'a, F>
@@ -37,6 +38,7 @@ where
             selection_enabled: true,
             exclude_specimen_assigned_to_dungeon_layer_slot: false,
             exclude_specimen_on_breeding_cooldown: false,
+            excluded_specimen: None,
         }
     }
 
@@ -59,6 +61,11 @@ where
         self.exclude_specimen_on_breeding_cooldown = exclude;
         self
     }
+
+    pub fn exclude_specimen(mut self, specimen_id: Option<SpecimenId>) -> Self {
+        self.excluded_specimen = specimen_id;
+        self
+    }
 }
 
 impl<F> Component for SpecimenModalSelection<'_, F>
@@ -70,7 +77,8 @@ where
             .exclude_assigned_to_dungeon_layer_slot(
                 self.exclude_specimen_assigned_to_dungeon_layer_slot,
             )
-            .exclude_on_breeding_cooldown(self.exclude_specimen_on_breeding_cooldown);
+            .exclude_on_breeding_cooldown(self.exclude_specimen_on_breeding_cooldown)
+            .exclude_specimen(self.excluded_specimen);
 
         let on_change = self.on_change;
         ui.push_id(self.id, |ui| {

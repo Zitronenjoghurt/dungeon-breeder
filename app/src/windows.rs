@@ -1,9 +1,11 @@
 use crate::app::GameApp;
+use crate::windows::breeding::{BreedingWindow, BreedingWindowState};
 use crate::windows::debug_window::{DebugWindow, DebugWindowState};
 use crate::windows::settings::SettingsWindow;
 use egui::{Context, Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
+mod breeding;
 pub mod debug_window;
 pub mod dungeon;
 pub mod items;
@@ -55,13 +57,15 @@ pub trait ViewWindow: Sized {
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct WindowSystem {
+    pub breeding: BreedingWindowState,
     pub debug: DebugWindowState,
     pub settings_open: bool,
 }
 
 impl WindowSystem {
-    // Will be able to access everything inside AppState besides the ModalSystem itself
+    // Will be able to access everything inside AppState besides the WindowSystem itself
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
+        BreedingWindow::new(app, &mut self.breeding).show(ctx);
         DebugWindow::new(app, &mut self.debug).show(ctx);
         SettingsWindow::new(&mut self.settings_open, &mut app.settings).show(ctx);
     }

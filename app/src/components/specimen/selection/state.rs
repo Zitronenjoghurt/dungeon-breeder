@@ -52,6 +52,9 @@ impl SpecimenSelectionState {
     fn sort(&mut self, app: &mut GameApp) {
         self.update_excluded_ids(app);
         self.sorted_ids = app.game.state.specimen.sorted_ids(&self.sort);
+        if let Some(excluded_id) = self.options.excluded_specimen {
+            self.sorted_ids.retain(|id| *id != excluded_id);
+        }
     }
 
     fn update_excluded_ids(&mut self, app: &mut GameApp) {

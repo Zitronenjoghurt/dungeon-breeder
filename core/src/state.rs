@@ -4,17 +4,19 @@ use crate::data::config::CONFIG;
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
 use crate::error::{GameError, GameResult};
+use crate::state::breeding::BreedingState;
 use crate::state::clock::Clock;
 use crate::state::dungeon::Dungeon;
 use crate::state::item::collection::ItemCollection;
 use crate::state::treasury::Treasury;
 use crate::state::update_report::GameStateUpdateReport;
-use crate::systems::breeding::breed_specimen;
 use crate::systems::fusion::fuse_specimen;
+use breeding::breed_specimen;
 use serde::{Deserialize, Serialize};
 use specimen::collection::SpecimenCollection;
 use specimen::{NewSpecimen, SpecimenId};
 
+pub mod breeding;
 mod clock;
 pub mod dungeon;
 pub mod item;
@@ -25,6 +27,7 @@ pub mod update_report;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct GameState {
+    pub breeding: BreedingState,
     pub clock: Clock,
     pub dungeon: Dungeon,
     pub items: ItemCollection,
@@ -118,6 +121,8 @@ impl GameState {
     ) -> GameResult<GameActionFeedback> {
         let new_specimen = breed_specimen(&mut self.specimen, specimen_a_id, specimen_b_id)?;
         let new_id = self.specimen.add_new(new_specimen);
+        self.breeding
+            .on_successful_breed(specimen_a_id, specimen_b_id, new_id);
         Ok(GameActionFeedback::bred(
             specimen_a_id,
             specimen_b_id,

@@ -61,30 +61,37 @@ impl Component for SpecimenInfo<'_> {
 
                                 ui.label("Possible drops");
                                 ui.vertical(|ui| {
-                                    ScrollArea::vertical()
-                                        .id_salt("specimen_info_grid_item_drops_scroll_area")
-                                        .show(ui, |ui| {
-                                            Grid::new("specimen_info_grid_item_drops_grid")
-                                                .num_columns(3)
-                                                .striped(true)
-                                                .max_col_width(40.0)
-                                                .show(ui, |ui| {
-                                                    ui.label("Item");
-                                                    ui.label("x");
-                                                    ui.label("%");
-                                                    ui.end_row();
-
-                                                    for drop in specimen.iter_possible_drops() {
-                                                        ui.label(drop.item_id.def().name);
-                                                        ui.label(format!("{:?}", drop.count_range));
-                                                        ui.label(format!(
-                                                            "{:0.0}",
-                                                            drop.drop_chance * 100.0
-                                                        ));
+                                    if specimen.iter_possible_drops().count() > 0 {
+                                        ScrollArea::vertical()
+                                            .id_salt("specimen_info_grid_item_drops_scroll_area")
+                                            .show(ui, |ui| {
+                                                Grid::new("specimen_info_grid_item_drops_grid")
+                                                    .num_columns(3)
+                                                    .striped(true)
+                                                    .max_col_width(40.0)
+                                                    .show(ui, |ui| {
+                                                        ui.label("Item");
+                                                        ui.label("x");
+                                                        ui.label("%");
                                                         ui.end_row();
-                                                    }
-                                                });
-                                        });
+
+                                                        for drop in specimen.iter_possible_drops() {
+                                                            ui.label(drop.item_id.def().name);
+                                                            ui.label(format!(
+                                                                "{:?}",
+                                                                drop.count_range
+                                                            ));
+                                                            ui.label(format!(
+                                                                "{:0.0}",
+                                                                drop.drop_chance * 100.0
+                                                            ));
+                                                            ui.end_row();
+                                                        }
+                                                    });
+                                            });
+                                    } else {
+                                        ui.label("None");
+                                    }
                                 });
                                 ui.end_row();
 

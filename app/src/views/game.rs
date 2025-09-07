@@ -46,6 +46,10 @@ impl View for GameView {
                     .tooltip("Dungeon")
                     .ui(ui);
 
+                ToggleButton::new(&mut app.windows.breeding.is_open, regular::HEART)
+                    .tooltip("Breeding")
+                    .ui(ui);
+
                 ui.separator();
 
                 ui.label(format!(

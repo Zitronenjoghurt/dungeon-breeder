@@ -6,6 +6,7 @@ pub struct SpecimenSelectionOptions {
     pub selected_specimen_id: Option<SpecimenId>,
     pub exclude_specimen_assigned_to_dungeon_layer_slot: bool,
     pub exclude_specimen_on_breeding_cooldown: bool,
+    pub excluded_specimen: Option<SpecimenId>,
 }
 
 impl SpecimenSelectionOptions {
@@ -23,6 +24,11 @@ impl SpecimenSelectionOptions {
 
     pub fn exclude_on_breeding_cooldown(mut self, exclude: bool) -> Self {
         self.exclude_specimen_on_breeding_cooldown = exclude;
+        self
+    }
+
+    pub fn exclude_specimen(mut self, specimen_id: Option<SpecimenId>) -> Self {
+        self.excluded_specimen = specimen_id;
         self
     }
 }
