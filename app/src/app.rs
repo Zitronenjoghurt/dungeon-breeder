@@ -2,6 +2,7 @@ use crate::modals::ModalSystem;
 use crate::systems::settings::SettingsSystem;
 use crate::systems::textures::TextureSystem;
 use crate::systems::toasts::ToastSystem;
+use crate::theme::apply_glomzy_theme;
 use crate::views::{View, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::anyhow;
@@ -27,6 +28,8 @@ impl GameApp {
         let mut fonts = FontDefinitions::default();
         egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
         cc.egui_ctx.set_fonts(fonts);
+
+        apply_glomzy_theme(&cc.egui_ctx);
 
         match cc.storage {
             Some(storage) => match eframe::get_value::<Self>(storage, eframe::APP_KEY) {

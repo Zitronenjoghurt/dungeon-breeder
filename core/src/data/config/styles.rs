@@ -1,24 +1,42 @@
 use crate::types::color::ColorRGBA;
 
-// Color palette for orientation: https://lospec.com/palette-list/lospec500
-pub const COLOR_DEEP_RED: ColorRGBA = ColorRGBA::from_hex(0x6B2643);
-pub const COLOR_RED: ColorRGBA = ColorRGBA::from_hex(0xAC2847);
-pub const COLOR_LIGHT_RED: ColorRGBA = ColorRGBA::from_hex(0xEC273F);
-pub const COLOR_DEEP_ORANGE: ColorRGBA = ColorRGBA::from_hex(0xDE5D3A);
-pub const COLOR_ORANGE: ColorRGBA = ColorRGBA::from_hex(0xE98537);
-pub const COLOR_YELLOW: ColorRGBA = ColorRGBA::from_hex(0xF3A833);
-pub const COLOR_DEEP_GREEN: ColorRGBA = ColorRGBA::from_hex(0x26854C);
-pub const COLOR_GREEN: ColorRGBA = ColorRGBA::from_hex(0x5AB552);
-pub const COLOR_DEEP_BLUE: ColorRGBA = ColorRGBA::from_hex(0x3E3B65);
-pub const COLOR_DARK_BLUE: ColorRGBA = ColorRGBA::from_hex(0x3859B3);
-pub const COLOR_BLUE: ColorRGBA = ColorRGBA::from_hex(0x3388DE);
-pub const COLOR_LIGHT_BLUE: ColorRGBA = ColorRGBA::from_hex(0x36C5F4);
-pub const COLOR_LIGHT_GREEN: ColorRGBA = ColorRGBA::from_hex(0x9DE64E);
-pub const COLOR_DEEP_PINK: ColorRGBA = ColorRGBA::from_hex(0x9A4D76);
-pub const COLOR_DARK_PINK: ColorRGBA = ColorRGBA::from_hex(0xC878AF);
-pub const COLOR_VIOLET: ColorRGBA = ColorRGBA::from_hex(0xCC99FF);
-pub const COLOR_PINK: ColorRGBA = ColorRGBA::from_hex(0xFA6E79);
-pub const COLOR_LIGHT_PINK: ColorRGBA = ColorRGBA::from_hex(0xFFA2AC);
+// https://lospec.com/palette-list/glomzy-05
+pub const COLOR_BROWN_LIGHT: ColorRGBA = ColorRGBA::from_hex(0xA7776B);
+pub const COLOR_BROWN: ColorRGBA = ColorRGBA::from_hex(0x694744);
+pub const COLOR_BROWN_DARK: ColorRGBA = ColorRGBA::from_hex(0x3E2730);
+
+pub const COLOR_RED_DARK: ColorRGBA = ColorRGBA::from_hex(0x8A2E3F);
+pub const COLOR_RED: ColorRGBA = ColorRGBA::from_hex(0xA83F48);
+pub const COLOR_RED_LIGHT: ColorRGBA = ColorRGBA::from_hex(0xC65550);
+
+pub const COLOR_ORANGE_DARK: ColorRGBA = ColorRGBA::from_hex(0xD37755);
+pub const COLOR_ORANGE: ColorRGBA = ColorRGBA::from_hex(0xDF9B5B);
+pub const COLOR_YELLOW: ColorRGBA = ColorRGBA::from_hex(0xE1C97A);
+
+pub const COLOR_LIME: ColorRGBA = ColorRGBA::from_hex(0xACB565);
+pub const COLOR_GREEN: ColorRGBA = ColorRGBA::from_hex(0x6F975E);
+pub const COLOR_GREEN_DARK: ColorRGBA = ColorRGBA::from_hex(0x3B6B58);
+
+pub const COLOR_TEAL_DARK: ColorRGBA = ColorRGBA::from_hex(0x2D494B);
+pub const COLOR_TEAL: ColorRGBA = ColorRGBA::from_hex(0x466F77);
+pub const COLOR_CYAN: ColorRGBA = ColorRGBA::from_hex(0x6C9BA7);
+pub const COLOR_CYAN_LIGHT: ColorRGBA = ColorRGBA::from_hex(0xA3BDC9);
+
+pub const COLOR_BLUE: ColorRGBA = ColorRGBA::from_hex(0x5F80A6);
+pub const COLOR_BLUE_DARK: ColorRGBA = ColorRGBA::from_hex(0x566794);
+
+pub const COLOR_PURPLE_LIGHT: ColorRGBA = ColorRGBA::from_hex(0x7E8AA7);
+pub const COLOR_PURPLE: ColorRGBA = ColorRGBA::from_hex(0x524F73);
+pub const COLOR_PURPLE_DARK: ColorRGBA = ColorRGBA::from_hex(0x473354);
+
+pub const COLOR_PINK_DARK: ColorRGBA = ColorRGBA::from_hex(0x7C3A67);
+pub const COLOR_PINK: ColorRGBA = ColorRGBA::from_hex(0xBA617C);
+pub const COLOR_PINK_LIGHT: ColorRGBA = ColorRGBA::from_hex(0xD3A092);
+
+pub const COLOR_GRAY_LIGHT: ColorRGBA = ColorRGBA::from_hex(0xD9D3D9);
+pub const COLOR_GRAY: ColorRGBA = ColorRGBA::from_hex(0xA097A1);
+pub const COLOR_GRAY_DARK: ColorRGBA = ColorRGBA::from_hex(0x6B5E6B);
+pub const COLOR_GRAY_DARKEST: ColorRGBA = ColorRGBA::from_hex(0x2A202A);
 
 #[derive(Debug)]
 pub struct ConfigStyles {
@@ -38,18 +56,18 @@ pub struct ConfigStyles {
 }
 
 pub static CONFIG_STYLES: ConfigStyles = ConfigStyles {
-    color_specimen_health_0: COLOR_DEEP_RED,
-    color_specimen_health_25: COLOR_LIGHT_RED,
-    color_specimen_health_50: COLOR_ORANGE,
-    color_specimen_health_75: COLOR_YELLOW,
+    color_specimen_health_0: COLOR_BROWN_DARK,
+    color_specimen_health_25: COLOR_RED,
+    color_specimen_health_50: COLOR_ORANGE_DARK,
+    color_specimen_health_75: COLOR_ORANGE,
     color_specimen_health_100: COLOR_GREEN,
-    color_specimen_regeneration: COLOR_DARK_PINK,
-    color_proficiency: COLOR_VIOLET,
+    color_specimen_regeneration: COLOR_PINK_DARK,
+    color_proficiency: COLOR_BROWN_LIGHT,
     color_strength: COLOR_RED,
     color_intelligence: COLOR_BLUE,
-    color_agility: COLOR_ORANGE,
+    color_agility: COLOR_ORANGE_DARK,
     color_vitality: COLOR_GREEN,
-    color_regeneration: COLOR_DARK_PINK,
+    color_regeneration: COLOR_PINK_DARK,
     color_fertility: COLOR_PINK,
 };
 

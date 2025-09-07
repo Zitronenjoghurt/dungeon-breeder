@@ -1,6 +1,6 @@
 use crate::data::config::styles::{ConfigStyles, CONFIG_STYLES};
 
-mod styles;
+pub mod styles;
 
 #[derive(Debug)]
 pub struct Config {
