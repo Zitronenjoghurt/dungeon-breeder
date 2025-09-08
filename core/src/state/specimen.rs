@@ -79,7 +79,12 @@ impl Specimen {
     }
 
     pub fn till_breed_progress(&self) -> f32 {
-        1.0 - (self.seconds_till_breed() as f32 / self.breeding_duration_secs() as f32)
+        let breeding_duration_secs = self.breeding_duration_secs();
+        if breeding_duration_secs == 0 {
+            return 1.0;
+        }
+
+        1.0 - (self.seconds_till_breed() as f32 / breeding_duration_secs as f32)
     }
 
     pub fn can_breed(&self) -> bool {

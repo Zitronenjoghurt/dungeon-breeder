@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugWindowState {
     pub is_open: bool,
-    pub dungeon_window_open: bool,
 }
 
 pub struct DebugWindow<'a> {
@@ -43,6 +42,7 @@ impl ViewWindow for DebugWindow<'_> {
             if ui.button("Random Gonk").clicked() {
                 self.app.game.actions.random_specimen(CreatureID::Gonk);
             }
+
             if ui.button("Eat the Rich").clicked() {
                 self.app.game.actions.add_coins(1_000_000);
             }

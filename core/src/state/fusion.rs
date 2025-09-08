@@ -5,8 +5,24 @@ use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::utils::random::{random_normal, random_normal_exp_bias, random_normalized};
+use serde::{Deserialize, Serialize};
 use std::cmp::max;
 use strum::IntoEnumIterator;
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct FusionState {
+    last_fusion_result_id: Option<SpecimenId>,
+}
+
+impl FusionState {
+    pub fn on_successful_fusion(&mut self, new_specimen_id: SpecimenId) {
+        self.last_fusion_result_id = Some(new_specimen_id);
+    }
+
+    pub fn last_fusion_result_id(&self) -> Option<SpecimenId> {
+        self.last_fusion_result_id
+    }
+}
 
 pub fn generate_fusion_power(specimen_a: &Specimen, specimen_b: &Specimen) -> f32 {
     (specimen_a.power() + specimen_b.power()) * random_normal()

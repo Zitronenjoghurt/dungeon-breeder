@@ -1,13 +1,15 @@
 use crate::app::GameApp;
 use crate::windows::breeding::{BreedingWindow, BreedingWindowState};
-use crate::windows::debug_window::{DebugWindow, DebugWindowState};
+use crate::windows::debug::{DebugWindow, DebugWindowState};
+use crate::windows::fusion::{FusionWindow, FusionWindowState};
 use crate::windows::settings::SettingsWindow;
 use egui::{Context, Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
 mod breeding;
-pub mod debug_window;
+pub mod debug;
 pub mod dungeon;
+mod fusion;
 pub mod items;
 pub mod settings;
 pub mod specimen;
@@ -59,6 +61,7 @@ pub trait ViewWindow: Sized {
 pub struct WindowSystem {
     pub breeding: BreedingWindowState,
     pub debug: DebugWindowState,
+    pub fusion: FusionWindowState,
     pub settings_open: bool,
 }
 
@@ -67,6 +70,7 @@ impl WindowSystem {
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
         BreedingWindow::new(app, &mut self.breeding).show(ctx);
         DebugWindow::new(app, &mut self.debug).show(ctx);
+        FusionWindow::new(app, &mut self.fusion).show(ctx);
         SettingsWindow::new(&mut self.settings_open, &mut app.settings).show(ctx);
     }
 }

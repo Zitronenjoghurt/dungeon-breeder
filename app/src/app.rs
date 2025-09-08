@@ -9,6 +9,7 @@ use anyhow::anyhow;
 use dungeon_breeder_core::Game;
 use egui::FontDefinitions;
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct GameApp {
@@ -76,7 +77,7 @@ impl GameApp {
 
 impl eframe::App for GameApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        ctx.request_repaint();
+        ctx.request_repaint_after(Duration::from_millis(500));
         self.update_game();
         self.update_views(ctx);
         self.update_windows(ctx);

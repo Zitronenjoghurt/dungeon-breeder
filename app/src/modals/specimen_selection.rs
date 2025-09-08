@@ -57,7 +57,13 @@ impl AppModal for SpecimenSelectionModal {
 
         ui.separator();
 
-        SpecimenSelection::new(app, &mut self.selection_state).ui(ui);
+        let mut is_double_clicked = false;
+        SpecimenSelection::new(app, &mut self.selection_state)
+            .is_double_clicked(Some(&mut is_double_clicked))
+            .ui(ui);
+        if is_double_clicked {
+            self.select(self.selection_state.selected_specimen_id(), app);
+        }
 
         ui.separator();
 

@@ -1,6 +1,7 @@
 use crate::app::GameApp;
 use crate::components::{Component, SpecimenModalSelection};
 use crate::types::color::ColorConvert;
+use crate::utils::formatting::format_seconds;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::config::CONFIG;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
@@ -8,9 +9,7 @@ use dungeon_breeder_core::state::specimen::{Specimen, SpecimenId};
 use eframe::emath::Align;
 use egui::{Button, Grid, Id, Layout, ProgressBar, RichText, Ui, Widget, WidgetText};
 use egui_phosphor::regular;
-use humantime::format_duration;
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct BreedingWindowState {
@@ -166,10 +165,7 @@ impl ViewWindow for BreedingWindow<'_> {
                             let text = if specimen_1.can_breed() {
                                 "Ready!".to_string()
                             } else {
-                                format_duration(Duration::from_secs(
-                                    specimen_1.seconds_till_breed(),
-                                ))
-                                .to_string()
+                                format_seconds(specimen_1.seconds_till_breed())
                             };
 
                             ProgressBar::new(specimen_1.till_breed_progress())
@@ -247,10 +243,7 @@ impl ViewWindow for BreedingWindow<'_> {
                             let text = if specimen_2.can_breed() {
                                 "Ready!".to_string()
                             } else {
-                                format_duration(Duration::from_secs(
-                                    specimen_2.seconds_till_breed(),
-                                ))
-                                .to_string()
+                                format_seconds(specimen_2.seconds_till_breed())
                             };
 
                             ProgressBar::new(specimen_2.till_breed_progress())

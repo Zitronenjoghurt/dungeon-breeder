@@ -56,10 +56,10 @@ pub struct ConfigStyles {
 }
 
 pub static CONFIG_STYLES: ConfigStyles = ConfigStyles {
-    color_specimen_health_0: COLOR_BROWN_DARK,
+    color_specimen_health_0: COLOR_RED_DARK,
     color_specimen_health_25: COLOR_RED,
-    color_specimen_health_50: COLOR_ORANGE_DARK,
-    color_specimen_health_75: COLOR_ORANGE,
+    color_specimen_health_50: COLOR_ORANGE,
+    color_specimen_health_75: COLOR_GREEN,
     color_specimen_health_100: COLOR_GREEN,
     color_specimen_regeneration: COLOR_PINK_DARK,
     color_proficiency: COLOR_BROWN_LIGHT,

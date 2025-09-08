@@ -12,6 +12,7 @@ use strum_macros::EnumIter;
 pub enum SpecimenCollectionSortField {
     #[default]
     Id,
+    Power,
     Proficiency,
     Strength,
     Intelligence,
@@ -25,6 +26,7 @@ impl Display for SpecimenCollectionSortField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Id => write!(f, "ID"),
+            Self::Power => write!(f, "Power"),
             Self::Proficiency => write!(f, "Proficiency"),
             Self::Strength => write!(f, "Strength"),
             Self::Intelligence => write!(f, "Intelligence"),
@@ -52,6 +54,10 @@ pub struct SpecimenCollection {
 impl SpecimenCollection {
     pub fn iter(&self) -> impl Iterator<Item = &Specimen> {
         self.collection.values()
+    }
+
+    pub fn len(&self) -> usize {
+        self.collection.len()
     }
 
     pub fn add_new(&mut self, new_specimen: NewSpecimen) -> SpecimenId {
@@ -82,6 +88,11 @@ impl SpecimenCollection {
         specimens.sort_by(|a, b| {
             let ordering = match sort.sort_field {
                 SpecimenCollectionSortField::Id => a.0.cmp(b.0),
+                SpecimenCollectionSortField::Power => {
+                    a.1.power()
+                        .partial_cmp(&b.1.power())
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }
                 SpecimenCollectionSortField::Proficiency => {
                     a.1.proficiency()
                         .partial_cmp(&b.1.proficiency())

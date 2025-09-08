@@ -50,6 +50,10 @@ impl View for GameView {
                     .tooltip("Breeding")
                     .ui(ui);
 
+                ToggleButton::new(&mut app.windows.fusion.is_open, regular::ARROWS_MERGE)
+                    .tooltip("Fusion")
+                    .ui(ui);
+
                 ui.separator();
 
                 ui.label(format!(

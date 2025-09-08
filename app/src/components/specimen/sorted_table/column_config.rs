@@ -6,7 +6,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct SortedSpecimenTableColumnConfig {
     pub name_column: bool,
+    pub power_column: bool,
+    pub breeding_cooldown_column: bool,
     pub proficiency_column: bool,
+
     pub strength_column: bool,
     pub intelligence_column: bool,
     pub vitality_column: bool,
@@ -20,6 +23,8 @@ impl Default for SortedSpecimenTableColumnConfig {
         Self {
             name_column: true,
             proficiency_column: true,
+            power_column: false,
+            breeding_cooldown_column: false,
             strength_column: false,
             intelligence_column: false,
             vitality_column: false,
@@ -50,9 +55,14 @@ impl Component for SortedSpecimenTableColumnConfigEdit<'_> {
                 ui.horizontal(|ui| {
                     ui.vertical(|ui| {
                         ui.checkbox(&mut self.config.name_column, "Name");
-                        ui.checkbox(&mut self.config.proficiency_column, "Proficiency");
+                        ui.checkbox(&mut self.config.power_column, "Power");
+                        ui.checkbox(
+                            &mut self.config.breeding_cooldown_column,
+                            format!("{} Breeding", regular::HOURGLASS_MEDIUM),
+                        );
                     });
                     ui.vertical(|ui| {
+                        ui.checkbox(&mut self.config.proficiency_column, "Proficiency");
                         ui.checkbox(&mut self.config.strength_column, "Strength");
                         ui.checkbox(&mut self.config.intelligence_column, "Intelligence");
                         ui.checkbox(&mut self.config.vitality_column, "Vitality");

@@ -6,6 +6,7 @@ mod modals;
 mod systems;
 mod theme;
 mod types;
+mod utils;
 mod views;
 mod windows;
 

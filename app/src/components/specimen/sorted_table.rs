@@ -1,5 +1,6 @@
 use crate::components::Component;
 use crate::types::color::ColorConvert;
+use crate::utils::formatting::format_seconds;
 use column_config::SortedSpecimenTableColumnConfig;
 use dungeon_breeder_core::data::config::CONFIG;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
@@ -7,6 +8,7 @@ use dungeon_breeder_core::state::specimen::SpecimenId;
 use eframe::emath::Align;
 use egui::{Color32, Layout, ProgressBar, ScrollArea, Ui, Widget};
 use egui_extras::{Column, TableBuilder};
+use egui_phosphor::regular;
 
 pub mod column_config;
 
@@ -17,6 +19,7 @@ pub struct SortedSpecimenTable<'a> {
     column_config: SortedSpecimenTableColumnConfig,
     max_height: f32,
     selection_enabled: bool,
+    is_double_clicked: Option<&'a mut bool>,
 }
 
 impl<'a> SortedSpecimenTable<'a> {
@@ -32,6 +35,7 @@ impl<'a> SortedSpecimenTable<'a> {
             column_config: SortedSpecimenTableColumnConfig::default(),
             max_height: 200.0,
             selection_enabled: true,
+            is_double_clicked: None,
         }
     }
 
@@ -47,6 +51,11 @@ impl<'a> SortedSpecimenTable<'a> {
 
     pub fn selection_enabled(mut self, enabled: bool) -> Self {
         self.selection_enabled = enabled;
+        self
+    }
+
+    pub fn is_double_clicked(mut self, is_double_clicked: Option<&'a mut bool>) -> Self {
+        self.is_double_clicked = is_double_clicked;
         self
     }
 
@@ -67,6 +76,7 @@ impl Component for SortedSpecimenTable<'_> {
         let text_height = ui.text_style_height(&egui::TextStyle::Body);
         ui.style_mut().interaction.selectable_labels = false;
 
+        let mut is_double_clicked = false;
         ScrollArea::vertical()
             .max_height(self.max_height)
             .show(ui, |ui| {
@@ -80,6 +90,14 @@ impl Component for SortedSpecimenTable<'_> {
 
                 if self.column_config.name_column {
                     table_builder = table_builder.column(Column::auto().at_least(50.0));
+                }
+
+                if self.column_config.power_column {
+                    table_builder = table_builder.column(Column::auto().at_least(20.0));
+                }
+
+                if self.column_config.breeding_cooldown_column {
+                    table_builder = table_builder.column(Column::auto().at_least(40.0));
                 }
 
                 if self.column_config.proficiency_column {
@@ -119,6 +137,18 @@ impl Component for SortedSpecimenTable<'_> {
                         if self.column_config.name_column {
                             header.col(|ui| {
                                 ui.label("Name");
+                            });
+                        }
+
+                        if self.column_config.power_column {
+                            header.col(|ui| {
+                                ui.label("Power");
+                            });
+                        }
+
+                        if self.column_config.breeding_cooldown_column {
+                            header.col(|ui| {
+                                ui.label(format!("{} Breeding", regular::HOURGLASS_MEDIUM));
                             });
                         }
 
@@ -187,6 +217,29 @@ impl Component for SortedSpecimenTable<'_> {
                                 });
                             }
 
+                            if self.column_config.power_column {
+                                row.col(|ui| {
+                                    ui.label(format!("{:0.2}", specimen.power()));
+                                });
+                            }
+
+                            if self.column_config.breeding_cooldown_column {
+                                row.col(|ui| {
+                                    let text = if specimen.can_breed() {
+                                        "Ready".to_string()
+                                    } else {
+                                        format_seconds(specimen.seconds_till_breed())
+                                    };
+
+                                    ProgressBar::new(specimen.till_breed_progress())
+                                        .fill(CONFIG.styles.color_fertility.to_egui())
+                                        .text(text)
+                                        .corner_radius(1.0)
+                                        .desired_height(text_height)
+                                        .ui(ui);
+                                });
+                            }
+
                             if self.column_config.proficiency_column {
                                 let color_proficiency = CONFIG.styles.color_proficiency.to_egui();
                                 row.col(|ui| {
@@ -230,7 +283,9 @@ impl Component for SortedSpecimenTable<'_> {
                                 });
                             }
 
-                            if self.selection_enabled && row.response().clicked() {
+                            if self.is_double_clicked.is_some() && row.response().double_clicked() {
+                                is_double_clicked = true;
+                            } else if self.selection_enabled && row.response().clicked() {
                                 if Some(id) == *self.selected_id {
                                     *self.selected_id = None;
                                 } else {
@@ -240,5 +295,9 @@ impl Component for SortedSpecimenTable<'_> {
                         })
                     });
             });
+
+        if is_double_clicked && let Some(is_double_clicked) = self.is_double_clicked {
+            *is_double_clicked = true;
+        }
     }
 }

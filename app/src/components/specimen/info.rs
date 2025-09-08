@@ -1,9 +1,8 @@
 use crate::components::{Component, CreatureSprite};
 use crate::systems::textures::TextureSystem;
+use crate::utils::formatting::format_seconds;
 use dungeon_breeder_core::state::specimen::Specimen;
 use egui::{Grid, ScrollArea, Ui};
-use humantime::format_duration;
-use std::time::Duration;
 
 pub struct SpecimenInfo<'a> {
     textures: &'a mut TextureSystem,
@@ -112,30 +111,15 @@ impl Component for SpecimenInfo<'_> {
                                 ui.end_row();
 
                                 ui.label("Slay duration");
-                                ui.label(
-                                    format_duration(Duration::from_secs(
-                                        specimen.slay_duration_secs(),
-                                    ))
-                                    .to_string(),
-                                );
+                                ui.label(format_seconds(specimen.slay_duration_secs()));
                                 ui.end_row();
 
                                 ui.label("Regeneration duration");
-                                ui.label(
-                                    format_duration(Duration::from_secs(
-                                        specimen.regeneration_duration_secs(),
-                                    ))
-                                    .to_string(),
-                                );
+                                ui.label(format_seconds(specimen.regeneration_duration_secs()));
                                 ui.end_row();
 
                                 ui.label("Breeding cooldown");
-                                ui.label(
-                                    format_duration(Duration::from_secs(
-                                        specimen.breeding_duration_secs(),
-                                    ))
-                                    .to_string(),
-                                );
+                                ui.label(format_seconds(specimen.breeding_duration_secs()));
                                 ui.end_row();
 
                                 ui.label("Strength");

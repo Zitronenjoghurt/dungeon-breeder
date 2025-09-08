@@ -19,10 +19,11 @@ impl Clock {
         let now = Utc::now();
         let elapsed = now - self.last_tick;
 
-        if elapsed.num_seconds() <= 0 {
+        let seconds = elapsed.num_seconds();
+        if seconds <= 0 {
             0
         } else {
-            self.last_tick = now;
+            self.last_tick += chrono::Duration::seconds(seconds);
             elapsed.num_seconds() as u64
         }
     }

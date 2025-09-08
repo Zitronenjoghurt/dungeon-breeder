@@ -7,11 +7,12 @@ use crate::error::{GameError, GameResult};
 use crate::state::breeding::BreedingState;
 use crate::state::clock::Clock;
 use crate::state::dungeon::Dungeon;
+use crate::state::fusion::FusionState;
 use crate::state::item::collection::ItemCollection;
 use crate::state::treasury::Treasury;
 use crate::state::update_report::GameStateUpdateReport;
-use crate::systems::fusion::fuse_specimen;
 use breeding::breed_specimen;
+use fusion::fuse_specimen;
 use serde::{Deserialize, Serialize};
 use specimen::collection::SpecimenCollection;
 use specimen::{NewSpecimen, SpecimenId};
@@ -19,6 +20,7 @@ use specimen::{NewSpecimen, SpecimenId};
 pub mod breeding;
 mod clock;
 pub mod dungeon;
+pub mod fusion;
 pub mod item;
 pub mod specimen;
 mod timer;
@@ -30,6 +32,7 @@ pub struct GameState {
     pub breeding: BreedingState,
     pub clock: Clock,
     pub dungeon: Dungeon,
+    pub fusion: FusionState,
     pub items: ItemCollection,
     pub specimen: SpecimenCollection,
     pub treasury: Treasury,
@@ -137,6 +140,7 @@ impl GameState {
     ) -> GameResult<GameActionFeedback> {
         let new_specimen = fuse_specimen(&mut self.specimen, specimen_a_id, specimen_b_id)?;
         let new_id = self.specimen.add_new(new_specimen);
+        self.fusion.on_successful_fusion(new_id);
         Ok(GameActionFeedback::fused(
             specimen_a_id,
             specimen_b_id,

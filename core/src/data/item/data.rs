@@ -11,7 +11,7 @@ pub static ITEM_GONK_CRYSTAL: ItemDefinition = ItemDefinition {
 };
 
 pub static ITEM_GONK_SOUL: ItemDefinition = ItemDefinition {
-    name: "Gonk Crystal",
+    name: "Gonk Soul",
     price: 100,
 };
 

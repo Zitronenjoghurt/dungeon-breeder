@@ -14,6 +14,8 @@ pub struct SpecimenSelectionState {
     pub sorted_ids: Vec<SpecimenId>,
     #[serde(skip, default = "default_true")]
     sort_dirty: bool,
+    #[serde(skip, default)]
+    last_specimen_count: usize,
 }
 
 impl Default for SpecimenSelectionState {
@@ -24,12 +26,20 @@ impl Default for SpecimenSelectionState {
             columns: Default::default(),
             sorted_ids: vec![],
             sort_dirty: true,
+            last_specimen_count: 0,
         }
     }
 }
 
 impl SpecimenSelectionState {
     pub fn update(&mut self, app: &mut GameApp) {
+        // Force update when Specimen are added/removed
+        let specimen_count = app.game.state.specimen.len();
+        if specimen_count != self.last_specimen_count {
+            self.sort_dirty();
+            self.last_specimen_count = specimen_count;
+        }
+
         if self.sort_dirty {
             self.sort_dirty = false;
             self.sort(app);

@@ -13,6 +13,7 @@ pub struct SpecimenSelection<'a> {
     app: &'a mut GameApp,
     state: &'a mut SpecimenSelectionState,
     selection_enabled: bool,
+    is_double_clicked: Option<&'a mut bool>,
 }
 
 impl<'a> SpecimenSelection<'a> {
@@ -21,11 +22,17 @@ impl<'a> SpecimenSelection<'a> {
             app,
             state,
             selection_enabled: true,
+            is_double_clicked: None,
         }
     }
 
     pub fn selection_enabled(mut self, enabled: bool) -> Self {
         self.selection_enabled = enabled;
+        self
+    }
+
+    pub fn is_double_clicked(mut self, is_double_clicked: Option<&'a mut bool>) -> Self {
+        self.is_double_clicked = is_double_clicked;
         self
     }
 }
@@ -61,6 +68,7 @@ impl Component for SpecimenSelection<'_> {
             .max_height(500.0)
             .column_config(self.state.columns)
             .selection_enabled(self.selection_enabled)
+            .is_double_clicked(self.is_double_clicked)
             .ui(ui);
         });
     }
