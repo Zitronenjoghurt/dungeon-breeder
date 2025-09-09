@@ -13,6 +13,7 @@ mod fusion;
 pub mod items;
 pub mod settings;
 pub mod specimen;
+pub mod statistics;
 
 pub trait ViewWindow: Sized {
     fn id(&self) -> Id;

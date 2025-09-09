@@ -1,6 +1,5 @@
 use crate::actions::action::GameAction;
 use crate::actions::feedback::GameActionFeedback;
-use crate::data::config::CONFIG;
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
 use crate::error::{GameError, GameResult};
@@ -9,6 +8,7 @@ use crate::state::clock::Clock;
 use crate::state::dungeon::Dungeon;
 use crate::state::fusion::FusionState;
 use crate::state::item::collection::ItemCollection;
+use crate::state::statistics::GameStatistics;
 use crate::state::treasury::Treasury;
 use crate::state::update_report::GameStateUpdateReport;
 use breeding::breed_specimen;
@@ -23,6 +23,7 @@ pub mod dungeon;
 pub mod fusion;
 pub mod item;
 pub mod specimen;
+pub mod statistics;
 mod timer;
 mod treasury;
 pub mod update_report;
@@ -35,6 +36,7 @@ pub struct GameState {
     pub fusion: FusionState,
     pub items: ItemCollection,
     pub specimen: SpecimenCollection,
+    pub statistics: GameStatistics,
     pub treasury: Treasury,
 }
 
@@ -43,10 +45,11 @@ impl GameState {
         let mut update_report = GameStateUpdateReport::default();
 
         let seconds_passed = self.clock.update();
-        let ticks = seconds_passed * CONFIG.ticks_per_second;
-        for _ in 0..ticks {
+        for _ in 0..seconds_passed {
             self.tick(&mut update_report);
         }
+
+        self.statistics.on_game_state_update(&update_report);
 
         update_report
     }
@@ -126,6 +129,7 @@ impl GameState {
         let new_id = self.specimen.add_new(new_specimen);
         self.breeding
             .on_successful_breed(specimen_a_id, specimen_b_id, new_id);
+        self.statistics.on_successful_breed();
         Ok(GameActionFeedback::bred(
             specimen_a_id,
             specimen_b_id,
@@ -153,6 +157,7 @@ impl GameState {
         self.specimen.remove_by_id(specimen_b_id);
 
         self.fusion.on_successful_fusion(new_id);
+        self.statistics.on_successful_fusion();
         Ok(GameActionFeedback::fused(
             specimen_a_id,
             specimen_b_id,

@@ -4,7 +4,6 @@ pub mod styles;
 
 #[derive(Debug)]
 pub struct Config {
-    pub ticks_per_second: u64,
     /// Higher values will make the monsters exponentially harder to slay depending on their power
     pub slay_duration_power_exponent: f32,
     /// Higher values will make the monster take exponentially longer to regenerate after being slain
@@ -22,7 +21,6 @@ pub struct Config {
 }
 
 pub static CONFIG: Config = Config {
-    ticks_per_second: 1,
     slay_duration_power_exponent: 1.5,
     regeneration_duration_power_exponent: 1.25,
     breeding_duration_power_exponent: 3.0,

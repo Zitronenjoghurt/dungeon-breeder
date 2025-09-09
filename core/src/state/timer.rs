@@ -1,4 +1,3 @@
-use crate::data::config::CONFIG;
 use humantime::format_duration;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
@@ -28,8 +27,8 @@ impl Timer {
     }
 
     pub fn format_time_left(&self, max_ticks: u64) -> String {
-        let current_secs = self.0 / CONFIG.ticks_per_second;
-        let max_secs = max_ticks / CONFIG.ticks_per_second;
+        let current_secs = self.0;
+        let max_secs = max_ticks;
         let secs_left = max_secs - current_secs;
         format_duration(Duration::from_secs(secs_left)).to_string()
     }
