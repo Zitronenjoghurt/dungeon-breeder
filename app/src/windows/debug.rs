@@ -1,4 +1,5 @@
 use crate::app::GameApp;
+use crate::systems::file_picker::FilePickerConfig;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::creature::id::CreatureID;
 use egui::{Id, Ui, WidgetText};
@@ -38,6 +39,45 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
+        ui.horizontal(|ui| {
+            if ui.button("Export Snapshot").clicked() {
+                self.app.file_picker.open(
+                    FilePickerConfig::save().default_file_name("snapshot.dbsp"),
+                    |app, paths| {
+                        let Some(path) = paths.first() else {
+                            return;
+                        };
+                        app.actions.save_app_snapshot(path.clone());
+                    },
+                )
+            }
+
+            if ui.button("Restore Snapshot").clicked() {
+                self.app
+                    .file_picker
+                    .open(FilePickerConfig::pick_single(), |app, paths| {
+                        let Some(path) = paths.first() else {
+                            return;
+                        };
+                        app.actions.restore_app_snapshot(path.clone());
+                    })
+            }
+
+            if ui.button("Dump JSON").clicked() {
+                self.app.file_picker.open(
+                    FilePickerConfig::save().default_file_name("app_dump.json"),
+                    |app, paths| {
+                        let Some(path) = paths.first() else {
+                            return;
+                        };
+                        app.actions.dump_app_json(path.clone());
+                    },
+                )
+            }
+        });
+
+        ui.separator();
+
         ui.horizontal(|ui| {
             if ui.button("Random Gonk").clicked() {
                 self.app.game.actions.random_specimen(CreatureID::Gonk);

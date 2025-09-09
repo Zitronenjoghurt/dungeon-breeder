@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct CreatureCompendium {
     entries: HashMap<CreatureID, CreatureCompendiumEntry>,
 }
@@ -34,7 +34,7 @@ impl CreatureCompendium {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreatureCompendiumEntry {
     pub unlocked_at: DateTime<Utc>,
     pub proficiency: (f32, f32),

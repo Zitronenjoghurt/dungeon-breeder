@@ -7,6 +7,7 @@ use egui::{Context, Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
 mod breeding;
+pub mod bug_report;
 pub mod debug;
 pub mod dungeon;
 mod fusion;

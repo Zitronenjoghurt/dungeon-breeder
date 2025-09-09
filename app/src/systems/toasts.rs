@@ -6,6 +6,12 @@ pub struct ToastSystem {
     toasts: Toasts,
 }
 
+impl Clone for ToastSystem {
+    fn clone(&self) -> Self {
+        ToastSystem::default()
+    }
+}
+
 impl ToastSystem {
     pub fn update(&mut self, ctx: &Context) {
         self.toasts.show(ctx);

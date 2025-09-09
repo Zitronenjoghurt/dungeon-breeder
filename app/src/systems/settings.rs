@@ -44,6 +44,7 @@ impl Display for UIScale {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SettingsSystem {
     ui_scale: UIScale,
+    #[serde(skip, default = "default_true")]
     dirty: bool,
 }
 
@@ -77,4 +78,8 @@ impl SettingsSystem {
         self.ui_scale = ui_scale;
         self.dirty = true;
     }
+}
+
+fn default_true() -> bool {
+    true
 }
