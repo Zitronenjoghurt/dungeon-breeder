@@ -1,13 +1,14 @@
 use crate::data::config::CONFIG;
 use crate::data::creature::id::CreatureID;
 use crate::error::{GameError, GameResult};
-use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::utils::random::{random_normal, random_normal_exp_bias, random_normalized};
 use serde::{Deserialize, Serialize};
 use std::cmp::max;
 use strum::IntoEnumIterator;
+
+pub mod simulation;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct FusionState {
@@ -21,6 +22,14 @@ impl FusionState {
 
     pub fn last_fusion_result_id(&self) -> Option<SpecimenId> {
         self.last_fusion_result_id
+    }
+}
+
+pub fn check_specimen_can_fuse(specimen_1: &Specimen, specimen_2: &Specimen) -> GameResult<()> {
+    if specimen_1.id == specimen_2.id {
+        Err(GameError::FusionImpossibleSameSpecimen)
+    } else {
+        Ok(())
     }
 }
 
@@ -46,22 +55,8 @@ pub fn determine_fusion_candidates(fusion_power: f32) -> Vec<CreatureID> {
     }
 }
 
-pub fn fuse_specimen(
-    collection: &mut SpecimenCollection,
-    specimen_a_id: SpecimenId,
-    specimen_b_id: SpecimenId,
-) -> GameResult<NewSpecimen> {
-    let Some(specimen_a) = collection.get_by_id(specimen_a_id) else {
-        return Err(GameError::SpecimenNotFound(specimen_a_id));
-    };
-
-    let Some(specimen_b) = collection.get_by_id(specimen_b_id) else {
-        return Err(GameError::SpecimenNotFound(specimen_b_id));
-    };
-
-    if specimen_a.id == specimen_b.id {
-        return Err(GameError::FusionImpossibleSameSpecimen);
-    }
+pub fn fuse_specimen(specimen_a: &Specimen, specimen_b: &Specimen) -> GameResult<NewSpecimen> {
+    check_specimen_can_fuse(specimen_a, specimen_b)?;
 
     let fusion_power = generate_fusion_power(specimen_a, specimen_b);
     let creature_candidates = determine_fusion_candidates(fusion_power);
@@ -106,9 +101,6 @@ pub fn fuse_specimen(
         ),
         fusion_generation: max(specimen_a.fusion_generation, specimen_b.fusion_generation) + 1,
     };
-
-    collection.remove_by_id(specimen_a_id);
-    collection.remove_by_id(specimen_b_id);
 
     Ok(new_specimen)
 }

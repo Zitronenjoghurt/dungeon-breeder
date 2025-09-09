@@ -138,8 +138,20 @@ impl GameState {
         specimen_a_id: SpecimenId,
         specimen_b_id: SpecimenId,
     ) -> GameResult<GameActionFeedback> {
-        let new_specimen = fuse_specimen(&mut self.specimen, specimen_a_id, specimen_b_id)?;
+        let Some(specimen_a) = self.specimen.get_by_id(specimen_a_id) else {
+            return Err(GameError::SpecimenNotFound(specimen_a_id));
+        };
+
+        let Some(specimen_b) = self.specimen.get_by_id(specimen_b_id) else {
+            return Err(GameError::SpecimenNotFound(specimen_b_id));
+        };
+
+        let new_specimen = fuse_specimen(specimen_a, specimen_b)?;
         let new_id = self.specimen.add_new(new_specimen);
+
+        self.specimen.remove_by_id(specimen_a_id);
+        self.specimen.remove_by_id(specimen_b_id);
+
         self.fusion.on_successful_fusion(new_id);
         Ok(GameActionFeedback::fused(
             specimen_a_id,

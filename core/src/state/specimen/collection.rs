@@ -1,4 +1,5 @@
 use crate::state::breeding::check_specimen_can_breed;
+use crate::state::fusion::check_specimen_can_fuse;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::types::sort_direction::SortDirection;
 use serde::{Deserialize, Serialize};
@@ -153,5 +154,17 @@ impl SpecimenCollection {
 
     pub fn iter_on_breeding_cooldown(&self) -> impl Iterator<Item = &Specimen> {
         self.iter().filter(|specimen| !specimen.can_breed())
+    }
+
+    pub fn can_fuse(&self, specimen_1: SpecimenId, specimen_2: SpecimenId) -> bool {
+        let Some(specimen_1) = self.get_by_id(specimen_1) else {
+            return false;
+        };
+
+        let Some(specimen_2) = self.get_by_id(specimen_2) else {
+            return false;
+        };
+
+        check_specimen_can_fuse(specimen_1, specimen_2).is_ok()
     }
 }
