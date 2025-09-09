@@ -4,6 +4,7 @@ pub mod asc_desc_button;
 pub mod creature;
 pub mod dungeon;
 pub mod enum_select;
+mod generic_select;
 pub mod item;
 pub mod specimen;
 pub mod toggle_button;

@@ -1,6 +1,7 @@
 use crate::app::GameApp;
 use crate::components::column_config::SortedSpecimenTableColumnConfig;
 use crate::components::options::SpecimenSelectionOptions;
+use dungeon_breeder_core::data::creature::id::CreatureID;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollectionSort;
 use dungeon_breeder_core::state::specimen::SpecimenId;
 use serde::{Deserialize, Serialize};
@@ -10,6 +11,7 @@ pub struct SpecimenSelectionState {
     pub options: SpecimenSelectionOptions,
     pub sort: SpecimenCollectionSort,
     pub columns: SortedSpecimenTableColumnConfig,
+    pub selected_creature_id: Option<CreatureID>,
     #[serde(skip, default)]
     pub sorted_ids: Vec<SpecimenId>,
     #[serde(skip, default = "default_true")]
@@ -24,6 +26,7 @@ impl Default for SpecimenSelectionState {
             options: Default::default(),
             sort: Default::default(),
             columns: Default::default(),
+            selected_creature_id: None,
             sorted_ids: vec![],
             sort_dirty: true,
             last_specimen_count: 0,
@@ -82,6 +85,16 @@ impl SpecimenSelectionState {
                     .state
                     .specimen
                     .iter_on_breeding_cooldown()
+                    .map(|specimen| specimen.id),
+            );
+        }
+
+        if let Some(creature_id) = self.selected_creature_id {
+            self.sort.excluded_ids.extend(
+                app.game
+                    .state
+                    .specimen
+                    .iter_without_creature_id(&creature_id)
                     .map(|specimen| specimen.id),
             );
         }

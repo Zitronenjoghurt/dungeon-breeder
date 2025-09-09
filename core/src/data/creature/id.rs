@@ -1,6 +1,7 @@
 use crate::data::creature::data::*;
 use crate::data::creature::def::CreatureDefinition;
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
@@ -22,5 +23,11 @@ impl CreatureID {
             Self::Gonk => &CREATURE_GONK,
             Self::Slime => &CREATURE_SLIME,
         }
+    }
+}
+
+impl Display for CreatureID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
     }
 }

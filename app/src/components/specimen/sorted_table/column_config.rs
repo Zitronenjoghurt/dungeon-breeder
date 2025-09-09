@@ -9,7 +9,6 @@ pub struct SortedSpecimenTableColumnConfig {
     pub power_column: bool,
     pub breeding_cooldown_column: bool,
     pub proficiency_column: bool,
-
     pub strength_column: bool,
     pub intelligence_column: bool,
     pub vitality_column: bool,

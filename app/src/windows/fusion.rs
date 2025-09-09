@@ -75,7 +75,7 @@ impl<'a> FusionWindow<'a> {
             return;
         }
 
-        if let Ok(simulation) = FusionSimulation::simulate(specimen_1, specimen_2, 100_000) {
+        if let Ok(simulation) = FusionSimulation::simulate(specimen_1, specimen_2, 1_000_000) {
             self.state.simulated_specimen_1 = Some(specimen_1.id);
             self.state.simulated_specimen_2 = Some(specimen_2.id);
             self.state.simulation = Some(simulation);
@@ -186,7 +186,19 @@ impl ViewWindow for FusionWindow<'_> {
                                         for (creature_id, probability) in
                                             simulation.iter_creature_probabilities()
                                         {
-                                            ui.label(creature_id.def().name);
+                                            if self
+                                                .app
+                                                .game
+                                                .state
+                                                .specimen
+                                                .compendium()
+                                                .has_unlocked(creature_id)
+                                            {
+                                                ui.label(creature_id.def().name);
+                                            } else {
+                                                ui.label("???");
+                                            };
+
                                             ui.label(format!("{:.2}%", probability * 100.0));
                                             ui.end_row();
                                         }

@@ -1,5 +1,7 @@
+use crate::data::creature::id::CreatureID;
 use crate::state::breeding::check_specimen_can_breed;
 use crate::state::fusion::check_specimen_can_fuse;
+use crate::state::specimen::compendium::CreatureCompendium;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::types::sort_direction::SortDirection;
 use serde::{Deserialize, Serialize};
@@ -50,6 +52,7 @@ pub struct SpecimenCollectionSort {
 pub struct SpecimenCollection {
     next_id: SpecimenId,
     collection: HashMap<SpecimenId, Specimen>,
+    compendium: CreatureCompendium,
 }
 
 impl SpecimenCollection {
@@ -61,12 +64,21 @@ impl SpecimenCollection {
         self.collection.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.collection.is_empty()
+    }
+
     pub fn add_new(&mut self, new_specimen: NewSpecimen) -> SpecimenId {
         let id = self.next_id;
         let specimen = Specimen::from_new_specimen(id, new_specimen);
+        self.compendium.on_specimen_obtained(&specimen);
         self.collection.insert(self.next_id, specimen);
         self.next_id = self.next_id.saturating_add(1);
         id
+    }
+
+    pub fn compendium(&self) -> &CreatureCompendium {
+        &self.compendium
     }
 
     pub fn get_by_id(&self, id: SpecimenId) -> Option<&Specimen> {
@@ -166,5 +178,13 @@ impl SpecimenCollection {
         };
 
         check_specimen_can_fuse(specimen_1, specimen_2).is_ok()
+    }
+
+    pub fn iter_without_creature_id(
+        &self,
+        creature_id: &CreatureID,
+    ) -> impl Iterator<Item = &Specimen> {
+        self.iter()
+            .filter(|specimen| specimen.creature_id != *creature_id)
     }
 }

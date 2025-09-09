@@ -2,7 +2,7 @@ use crate::app::GameApp;
 use crate::components::asc_desc_button::AscDescButton;
 use crate::components::column_config::SortedSpecimenTableColumnConfigEdit;
 use crate::components::state::SpecimenSelectionState;
-use crate::components::{Component, EnumSelect, SortedSpecimenTable};
+use crate::components::{Component, CreatureIdSelect, EnumSelect, SortedSpecimenTable};
 use egui::Ui;
 use egui_phosphor::regular;
 
@@ -43,6 +43,7 @@ impl Component for SpecimenSelection<'_> {
 
         let old_sort_field = self.state.sort.sort_field;
         let old_sort_direction = self.state.sort.sort_direction;
+        let old_selected_creature_id = self.state.selected_creature_id;
 
         ui.vertical(|ui| {
             ui.horizontal(|ui| {
@@ -52,10 +53,17 @@ impl Component for SpecimenSelection<'_> {
                 SortedSpecimenTableColumnConfigEdit::new(&mut self.state.columns).ui(ui);
                 AscDescButton::new(&mut self.state.sort.sort_direction).ui(ui);
                 EnumSelect::new(&mut self.state.sort.sort_field, "select_sort_field").ui(ui);
+                CreatureIdSelect::new(
+                    &mut self.state.selected_creature_id,
+                    &self.app.game.state.specimen,
+                )
+                .id("specimen_selection_creature_id_select")
+                .ui(ui);
             });
 
             if self.state.sort.sort_field != old_sort_field
                 || self.state.sort.sort_direction != old_sort_direction
+                || self.state.selected_creature_id != old_selected_creature_id
             {
                 self.state.sort_dirty();
             }

@@ -10,6 +10,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 pub mod collection;
+mod compendium;
 pub mod obtain_method;
 
 pub type SpecimenId = u32;
