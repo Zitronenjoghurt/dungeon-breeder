@@ -825,6 +825,7 @@ dependencies = [
  "serde",
  "serde_json",
  "strum 0.27.2",
+ "sysinfo 0.37.0",
  "zstd",
 ]
 
@@ -924,7 +925,7 @@ dependencies = [
  "dunce",
  "egui",
  "serde",
- "sysinfo",
+ "sysinfo 0.36.1",
 ]
 
 [[package]]
@@ -1990,6 +1991,15 @@ name = "nohash-hasher"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2bf50223579dc7cdcfb3bfcacf7069ff68243f8c363f62ffa99cf000a6b9c451"
+
+[[package]]
+name = "ntapi"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8a3895c6391c39d7fe7ebc444a87eb2991b2a0bc718fdabd071eec617fc68e4"
+dependencies = [
+ "winapi",
+]
 
 [[package]]
 name = "num-traits"
@@ -3086,6 +3096,21 @@ dependencies = [
  "libc",
  "objc2-core-foundation",
  "objc2-io-kit",
+ "windows 0.61.3",
+]
+
+[[package]]
+name = "sysinfo"
+version = "0.37.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "07cec4dc2d2e357ca1e610cfb07de2fa7a10fc3e9fe89f72545f3d244ea87753"
+dependencies = [
+ "libc",
+ "memchr",
+ "ntapi",
+ "objc2-core-foundation",
+ "objc2-io-kit",
+ "serde",
  "windows 0.61.3",
 ]
 

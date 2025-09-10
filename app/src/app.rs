@@ -15,7 +15,10 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::time::Duration;
 
+mod bug_report;
+mod runtime_info;
 mod snapshot;
+mod system_info;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct GameApp {

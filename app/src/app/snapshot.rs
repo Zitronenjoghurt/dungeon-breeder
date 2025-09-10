@@ -2,7 +2,7 @@ use crate::app::GameApp;
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GameAppSnapshot {
     app: Vec<u8>,
     egui: Vec<u8>,
