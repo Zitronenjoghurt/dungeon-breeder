@@ -1,5 +1,6 @@
 use crate::app::GameApp;
 use crate::windows::breeding::{BreedingWindow, BreedingWindowState};
+use crate::windows::bug_report::{BugReportWindow, BugReportWindowState};
 use crate::windows::debug::{DebugWindow, DebugWindowState};
 use crate::windows::fusion::{FusionWindow, FusionWindowState};
 use crate::windows::settings::SettingsWindow;
@@ -62,6 +63,7 @@ pub trait ViewWindow: Sized {
 #[derive(Default, Serialize, Deserialize)]
 pub struct WindowSystem {
     pub breeding: BreedingWindowState,
+    pub bug_report: BugReportWindowState,
     pub debug: DebugWindowState,
     pub fusion: FusionWindowState,
     pub settings_open: bool,
@@ -71,6 +73,7 @@ impl WindowSystem {
     // Will be able to access everything inside AppState besides the WindowSystem itself
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
         BreedingWindow::new(app, &mut self.breeding).show(ctx);
+        BugReportWindow::new(app, &mut self.bug_report).show(ctx);
         DebugWindow::new(app, &mut self.debug).show(ctx);
         FusionWindow::new(app, &mut self.fusion).show(ctx);
         SettingsWindow::new(&mut self.settings_open, &mut app.settings).show(ctx);

@@ -1,6 +1,8 @@
+use crate::app::bug_report::{BugReport, BugReportMetadata};
 use crate::app::snapshot::GameAppSnapshot;
 use crate::modals::ModalSystem;
 use crate::systems::actions::{AppAction, AppActions};
+use crate::systems::bug_report_review::BugReportReviewSystem;
 use crate::systems::file_picker::FilePicker;
 use crate::systems::settings::SettingsSystem;
 use crate::systems::textures::TextureSystem;
@@ -8,17 +10,17 @@ use crate::systems::toasts::ToastSystem;
 use crate::theme::apply_glomzy_theme;
 use crate::views::{View, ViewSystem};
 use crate::windows::WindowSystem;
-use anyhow::anyhow;
+use anyhow::{anyhow, Context};
 use dungeon_breeder_core::Game;
 use egui::FontDefinitions;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::time::Duration;
 
-mod bug_report;
-mod runtime_info;
-mod snapshot;
-mod system_info;
+pub mod bug_report;
+pub mod runtime_info;
+pub mod snapshot;
+pub mod system_info;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct GameApp {
@@ -35,6 +37,8 @@ pub struct GameApp {
     pub toasts: ToastSystem,
     #[serde(skip, default)]
     pub file_picker: FilePicker,
+    #[serde(skip, default)]
+    pub bug_report_review: BugReportReviewSystem,
 }
 
 impl eframe::App for GameApp {
@@ -130,6 +134,11 @@ impl GameApp {
             AppAction::SaveAppSnapshot(path) => self.handle_save_app_snapshot(path, ctx),
             AppAction::RestoreAppSnapshot(path) => self.handle_restore_app_snapshot(path, ctx),
             AppAction::DumpAppJSON(path) => self.handle_dump_app_json(path),
+            AppAction::CreateBugReport { path, metadata } => {
+                self.handle_create_bug_report(path, metadata, ctx)
+            }
+            AppAction::ReviewBugReport(path) => self.handle_review_bug_report(path),
+            AppAction::RestoreBugReport => self.handle_restore_bug_report(ctx),
         };
 
         if let Err(error) = result {
@@ -161,6 +170,34 @@ impl GameApp {
     fn handle_dump_app_json(&self, path: PathBuf) -> anyhow::Result<()> {
         let string = serde_json::to_string_pretty(&self)?;
         std::fs::write(path, string)?;
+        Ok(())
+    }
+
+    fn handle_create_bug_report(
+        &self,
+        path: PathBuf,
+        meta: BugReportMetadata,
+        ctx: &egui::Context,
+    ) -> anyhow::Result<()> {
+        let report = BugReport::create(meta, self, ctx)?;
+        let bytes = report.export_rmp()?;
+        std::fs::write(path, bytes)?;
+        Ok(())
+    }
+
+    fn handle_review_bug_report(&mut self, path: PathBuf) -> anyhow::Result<()> {
+        let bytes = std::fs::read(path)?;
+        let bug_report = BugReport::import_rmp(&bytes)?;
+        self.bug_report_review.set_bug_report(bug_report);
+        Ok(())
+    }
+
+    fn handle_restore_bug_report(&mut self, ctx: &egui::Context) -> anyhow::Result<()> {
+        let bug_report = self
+            .bug_report_review
+            .take_bug_report()
+            .context("No bug report loaded for review")?;
+        bug_report.snapshot.restore(self, ctx)?;
         Ok(())
     }
 }

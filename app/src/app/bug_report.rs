@@ -5,7 +5,7 @@ use crate::app::GameApp;
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct BugReportMetadata {
     pub title: String,
     pub description: String,

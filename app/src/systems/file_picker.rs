@@ -13,6 +13,7 @@ impl Default for FilePicker {
         Self {
             file_dialog: FileDialog::default()
                 .add_save_extension("Snapshot", "dbsp")
+                .add_save_extension("Bug Report", "dbrep")
                 .add_save_extension("JSON", "json"),
             callback: None,
         }

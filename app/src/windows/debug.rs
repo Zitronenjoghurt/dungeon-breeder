@@ -47,7 +47,7 @@ impl ViewWindow for DebugWindow<'_> {
                         let Some(path) = paths.first() else {
                             return;
                         };
-                        app.actions.save_app_snapshot(path.clone());
+                        app.actions.save_app_snapshot(path);
                     },
                 )
             }
@@ -59,7 +59,7 @@ impl ViewWindow for DebugWindow<'_> {
                         let Some(path) = paths.first() else {
                             return;
                         };
-                        app.actions.restore_app_snapshot(path.clone());
+                        app.actions.restore_app_snapshot(path);
                     })
             }
 
@@ -70,7 +70,7 @@ impl ViewWindow for DebugWindow<'_> {
                         let Some(path) = paths.first() else {
                             return;
                         };
-                        app.actions.dump_app_json(path.clone());
+                        app.actions.dump_app_json(path);
                     },
                 )
             }

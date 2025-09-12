@@ -1,6 +1,7 @@
 use egui::Ui;
 
 pub mod asc_desc_button;
+pub mod bug_report_meta;
 pub mod creature;
 pub mod dungeon;
 pub mod enum_select;
@@ -9,6 +10,7 @@ pub mod item;
 pub mod specimen;
 pub mod toggle_button;
 
+pub use bug_report_meta::*;
 pub use creature::*;
 pub use dungeon::*;
 pub use enum_select::*;

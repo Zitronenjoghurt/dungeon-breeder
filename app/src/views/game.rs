@@ -1,7 +1,6 @@
 use crate::app::GameApp;
 use crate::components::*;
 use crate::views::View;
-use crate::windows::bug_report::BugReportWindow;
 use crate::windows::dungeon::DungeonWindow;
 use crate::windows::items::ItemsWindow;
 use crate::windows::specimen::{SpecimenWindow, SpecimenWindowState};
@@ -13,7 +12,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct GameView {
-    bug_report_window_open: bool,
     dungeon_window_open: bool,
     items_window_open: bool,
     statistics_window_open: bool,
@@ -22,7 +20,6 @@ pub struct GameView {
 
 impl View for GameView {
     fn render(&mut self, ctx: &Context, app: &mut GameApp) {
-        BugReportWindow::new(app, &mut self.bug_report_window_open).show(ctx);
         DungeonWindow::new(&mut app.modals, &app.game, &mut self.dungeon_window_open).show(ctx);
         ItemsWindow::new(&app.game, &mut self.items_window_open).show(ctx);
         SpecimenWindow::new(app, &mut self.specimen_window).show(ctx);
@@ -31,7 +28,7 @@ impl View for GameView {
 
         TopBottomPanel::top("game_tab_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ToggleButton::new(&mut self.bug_report_window_open, regular::BUG)
+                ToggleButton::new(&mut app.windows.bug_report.is_open, regular::BUG)
                     .tooltip("Bug Report")
                     .ui(ui);
 

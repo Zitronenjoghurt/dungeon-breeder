@@ -1,11 +1,18 @@
+use crate::app::bug_report::BugReportMetadata;
 use std::cell::RefCell;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Debug)]
 pub enum AppAction {
     SaveAppSnapshot(PathBuf),
     RestoreAppSnapshot(PathBuf),
     DumpAppJSON(PathBuf),
+    CreateBugReport {
+        path: PathBuf,
+        metadata: BugReportMetadata,
+    },
+    ReviewBugReport(PathBuf),
+    RestoreBugReport,
 }
 
 #[derive(Debug, Default)]
@@ -28,15 +35,30 @@ impl AppActions {
         }
     }
 
-    pub fn save_app_snapshot(&self, path: PathBuf) {
-        self.push_action(AppAction::SaveAppSnapshot(path));
+    pub fn save_app_snapshot(&self, path: &Path) {
+        self.push_action(AppAction::SaveAppSnapshot(path.to_path_buf()));
     }
 
-    pub fn restore_app_snapshot(&self, path: PathBuf) {
-        self.push_action(AppAction::RestoreAppSnapshot(path));
+    pub fn restore_app_snapshot(&self, path: &Path) {
+        self.push_action(AppAction::RestoreAppSnapshot(path.to_path_buf()));
     }
 
-    pub fn dump_app_json(&self, path: PathBuf) {
-        self.push_action(AppAction::DumpAppJSON(path));
+    pub fn dump_app_json(&self, path: &Path) {
+        self.push_action(AppAction::DumpAppJSON(path.to_path_buf()));
+    }
+
+    pub fn create_bug_report(&self, path: &Path, metadata: BugReportMetadata) {
+        self.push_action(AppAction::CreateBugReport {
+            path: path.to_path_buf(),
+            metadata,
+        });
+    }
+
+    pub fn review_bug_report(&self, path: &Path) {
+        self.push_action(AppAction::ReviewBugReport(path.to_path_buf()));
+    }
+
+    pub fn restore_bug_report(&self) {
+        self.push_action(AppAction::RestoreBugReport);
     }
 }
