@@ -1,8 +1,10 @@
 use crate::app::GameApp;
+use crate::components::{Component, ToggleButton};
 use crate::systems::file_picker::FilePickerConfig;
-use crate::windows::ViewWindow;
+use crate::windows::{ViewWindow, WindowSystem};
 use dungeon_breeder_core::data::creature::id::CreatureID;
 use egui::{Id, Ui, WidgetText};
+use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
@@ -12,12 +14,21 @@ pub struct DebugWindowState {
 
 pub struct DebugWindow<'a> {
     app: &'a mut GameApp,
+    windows: &'a mut WindowSystem,
     state: &'a mut DebugWindowState,
 }
 
 impl<'a> DebugWindow<'a> {
-    pub fn new(app: &'a mut GameApp, state: &'a mut DebugWindowState) -> Self {
-        Self { app, state }
+    pub fn new(
+        app: &'a mut GameApp,
+        windows: &'a mut WindowSystem,
+        state: &'a mut DebugWindowState,
+    ) -> Self {
+        Self {
+            app,
+            windows,
+            state,
+        }
     }
 }
 
@@ -39,6 +50,10 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
+        ToggleButton::new(&mut self.windows.bug_report_debug.is_open, regular::BUG).ui(ui);
+
+        ui.separator();
+
         ui.horizontal(|ui| {
             if ui.button("Export Snapshot").clicked() {
                 self.app.file_picker.open(

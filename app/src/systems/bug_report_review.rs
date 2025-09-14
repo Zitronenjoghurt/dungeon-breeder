@@ -18,6 +18,10 @@ impl BugReportReviewSystem {
         self.bug_report.as_ref()
     }
 
+    pub fn bug_report_mut(&mut self) -> Option<&mut BugReport> {
+        self.bug_report.as_mut()
+    }
+
     pub fn take_bug_report(&mut self) -> Option<BugReport> {
         self.bug_report.take()
     }

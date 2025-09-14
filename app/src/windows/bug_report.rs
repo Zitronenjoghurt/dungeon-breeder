@@ -1,15 +1,21 @@
 use crate::app::bug_report::BugReportMetadata;
+use crate::app::system_info::SystemInfo;
 use crate::app::GameApp;
+use crate::components::system_info::SystemInfoComponent;
 use crate::components::{BugReportMetaEdit, Component};
 use crate::systems::file_picker::FilePickerConfig;
 use crate::windows::ViewWindow;
-use egui::{Id, Ui, WidgetText};
+use egui::{CollapsingHeader, Id, Ui, WidgetText};
+use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct BugReportWindowState {
     pub is_open: bool,
     pub metadata: BugReportMetadata,
+    pub system_info_open: bool,
+    #[serde(skip, default)]
+    pub system_info: Option<SystemInfo>,
 }
 
 pub struct BugReportWindow<'a> {
@@ -38,10 +44,32 @@ impl ViewWindow for BugReportWindow<'_> {
 
     fn set_open(&mut self, open: bool) {
         self.state.is_open = open;
+
+        if open {
+            self.state.system_info = Some(SystemInfo::collect());
+        } else {
+            self.state.system_info = None;
+        }
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
         BugReportMetaEdit::new(&mut self.state.metadata).ui(ui);
+
+        if let Some(system_info) = &self.state.system_info {
+            ui.group(|ui| {
+                ui.set_width(ui.available_width());
+                CollapsingHeader::new("System information")
+                    .id_salt("bug_report_system_info_collapsible")
+                    .show(ui, |ui| {
+                        SystemInfoComponent::new(system_info).ui(ui);
+                    });
+                ui.small(format!(
+                    "{} This information will be included in the bug report",
+                    regular::INFO
+                ))
+            });
+        }
+
         ui.vertical_centered(|ui| {
             if ui.button("Create").clicked() {
                 let metadata = self.state.metadata.clone();

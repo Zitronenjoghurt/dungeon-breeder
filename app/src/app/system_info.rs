@@ -20,6 +20,12 @@ pub struct SystemInfo {
     pub uptime_seconds: u64,
 }
 
+impl Default for SystemInfo {
+    fn default() -> Self {
+        Self::collect()
+    }
+}
+
 impl SystemInfo {
     pub fn collect() -> Self {
         let mut sys = System::new();

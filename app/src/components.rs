@@ -8,6 +8,7 @@ pub mod enum_select;
 mod generic_select;
 pub mod item;
 pub mod specimen;
+pub mod system_info;
 pub mod toggle_button;
 
 pub use bug_report_meta::*;
