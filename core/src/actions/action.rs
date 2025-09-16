@@ -13,6 +13,7 @@ pub enum GameAction {
     Breed((SpecimenId, SpecimenId)),
     Fuse((SpecimenId, SpecimenId)),
     RandomSpecimen(CreatureID),
+    ResetGameState,
     SellItem((ItemID, u64)),
     UnlockDungeonLayer,
     UnlockDungeonLayerSlot(usize),

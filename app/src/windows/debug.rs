@@ -1,5 +1,6 @@
 use crate::app::GameApp;
 use crate::components::{Component, ToggleButton};
+use crate::modals::confirm::ConfirmModalOptions;
 use crate::systems::file_picker::FilePickerConfig;
 use crate::windows::{ViewWindow, WindowSystem};
 use dungeon_breeder_core::data::creature::id::CreatureID;
@@ -100,6 +101,23 @@ impl ViewWindow for DebugWindow<'_> {
 
             if ui.button("Eat the Rich").clicked() {
                 self.app.game.actions.add_coins(1_000_000);
+            }
+        });
+
+        ui.separator();
+
+        ui.horizontal(|ui| {
+            if ui.button("Reset Game").clicked() {
+                let modal_options = ConfirmModalOptions::new(
+                    "Delete all game data?",
+                    "Once deleted, the game state cannot be restored.",
+                )
+                .yes("Delete")
+                .no("Cancel");
+                self.app
+                    .modals
+                    .confirm
+                    .open(modal_options, |app| app.game.actions.reset_game_state());
             }
         });
     }

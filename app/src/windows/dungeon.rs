@@ -1,21 +1,33 @@
-use crate::components::{Component, DungeonView};
+use crate::components::dungeon::dungeon::DungeonComponent;
+use crate::components::Component;
 use crate::modals::ModalSystem;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::Game;
-use egui::{Id, ScrollArea, Ui, WidgetText};
+use egui::{Id, Ui, WidgetText};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct DungeonWindowState {
+    pub is_open: bool,
+    pub selected_layer: usize,
+}
 
 pub struct DungeonWindow<'a> {
     modal_system: &'a mut ModalSystem,
     game: &'a Game,
-    is_open: &'a mut bool,
+    state: &'a mut DungeonWindowState,
 }
 
 impl<'a> DungeonWindow<'a> {
-    pub fn new(modal_system: &'a mut ModalSystem, game: &'a Game, is_open: &'a mut bool) -> Self {
+    pub fn new(
+        modal_system: &'a mut ModalSystem,
+        game: &'a Game,
+        state: &'a mut DungeonWindowState,
+    ) -> Self {
         Self {
             modal_system,
             game,
-            is_open,
+            state,
         }
     }
 }
@@ -30,16 +42,20 @@ impl ViewWindow for DungeonWindow<'_> {
     }
 
     fn is_open(&self) -> bool {
-        *self.is_open
+        self.state.is_open
     }
 
     fn set_open(&mut self, open: bool) {
-        *self.is_open = open;
+        self.state.is_open = open;
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        ScrollArea::vertical().show(ui, |ui| {
-            DungeonView::new(self.modal_system, self.game, &self.game.state.dungeon).ui(ui);
-        });
+        DungeonComponent::new(
+            &mut self.state.selected_layer,
+            self.modal_system,
+            self.game,
+            &self.game.state.dungeon,
+        )
+        .ui(ui);
     }
 }

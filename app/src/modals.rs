@@ -2,6 +2,7 @@ use crate::app::GameApp;
 use egui::{Context, Id, Modal, Ui};
 use serde::{Deserialize, Serialize};
 
+pub mod confirm;
 pub mod specimen_selection;
 
 pub trait AppModal {
@@ -30,12 +31,15 @@ pub trait AppModal {
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct ModalSystem {
+    #[serde(skip, default)]
+    pub confirm: confirm::ConfirmModal,
     pub specimen_selection: specimen_selection::SpecimenSelectionModal,
 }
 
 impl ModalSystem {
     // Will be able to access everything inside AppState besides the ModalSystem itself
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
+        self.confirm.update(ctx, app);
         self.specimen_selection.update(ctx, app);
     }
 }

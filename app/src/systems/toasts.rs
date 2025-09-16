@@ -25,6 +25,10 @@ impl ToastSystem {
         self.toast(ToastConfig::error(text).duration(std::time::Duration::from_secs(5)));
     }
 
+    pub fn info(&mut self, text: impl Into<String>) {
+        self.toast(ToastConfig::info(text).duration(std::time::Duration::from_secs(5)));
+    }
+
     pub fn toast(&mut self, config: ToastConfig) {
         match config.toast_type {
             ToastType::Info => {

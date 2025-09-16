@@ -7,6 +7,7 @@ pub mod dungeon;
 pub mod enum_select;
 mod generic_select;
 pub mod item;
+pub mod number_range_dropdown_select;
 pub mod specimen;
 pub mod system_info;
 pub mod toggle_button;

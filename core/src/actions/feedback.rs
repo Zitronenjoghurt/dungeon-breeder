@@ -21,6 +21,7 @@ pub enum GameActionFeedback {
         specimen_b_id: SpecimenId,
         new_specimen_id: SpecimenId,
     },
+    GameStateReset,
     GenerateRandomSpecimen {
         creature_id: CreatureID,
         specimen_id: SpecimenId,
@@ -38,6 +39,17 @@ pub enum GameActionFeedback {
 }
 
 impl GameActionFeedback {
+    pub fn is_noteworthy(&self) -> bool {
+        matches!(
+            self,
+            Self::AddedCoins(_)
+                | Self::GameStateReset
+                | Self::SoldItems { .. }
+                | Self::UnlockDungeonLayer(_)
+                | Self::UnlockDungeonLayerSlot { .. }
+        )
+    }
+
     pub fn assigned_specimen_to_dungeon_layer_slot(
         specimen_id: Option<SpecimenId>,
         layer_index: usize,
@@ -125,6 +137,7 @@ impl Display for GameActionFeedback {
                 f,
                 "Fusing specimen '{specimen_a_id}' with '{specimen_b_id}' resulted in specimen '{new_specimen_id}'",
             ),
+            Self::GameStateReset => write!(f, "Game state was reset"),
             Self::GenerateRandomSpecimen {
                 creature_id,
                 specimen_id,

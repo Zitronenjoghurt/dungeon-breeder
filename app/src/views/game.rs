@@ -1,7 +1,7 @@
 use crate::app::GameApp;
 use crate::components::*;
 use crate::views::View;
-use crate::windows::dungeon::DungeonWindow;
+use crate::windows::dungeon::{DungeonWindow, DungeonWindowState};
 use crate::windows::items::ItemsWindow;
 use crate::windows::specimen::{SpecimenWindow, SpecimenWindowState};
 use crate::windows::statistics::StatisticsWindow;
@@ -12,15 +12,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct GameView {
-    dungeon_window_open: bool,
     items_window_open: bool,
     statistics_window_open: bool,
+    dungeon_window: DungeonWindowState,
     specimen_window: SpecimenWindowState,
 }
 
 impl View for GameView {
     fn render(&mut self, ctx: &Context, app: &mut GameApp) {
-        DungeonWindow::new(&mut app.modals, &app.game, &mut self.dungeon_window_open).show(ctx);
+        DungeonWindow::new(&mut app.modals, &app.game, &mut self.dungeon_window).show(ctx);
         ItemsWindow::new(&app.game, &mut self.items_window_open).show(ctx);
         SpecimenWindow::new(app, &mut self.specimen_window).show(ctx);
         StatisticsWindow::new(&app.game.state.statistics, &mut self.statistics_window_open)
@@ -53,7 +53,7 @@ impl View for GameView {
                     .tooltip("Items")
                     .ui(ui);
 
-                ToggleButton::new(&mut self.dungeon_window_open, regular::SWORD)
+                ToggleButton::new(&mut self.dungeon_window.is_open, regular::SWORD)
                     .tooltip("Dungeon")
                     .ui(ui);
 

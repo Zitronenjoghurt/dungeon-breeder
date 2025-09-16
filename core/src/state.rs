@@ -72,6 +72,7 @@ impl GameState {
             GameAction::Breed((sp_a, sp_b)) => self.handle_breed(sp_a, sp_b),
             GameAction::Fuse((sp_a, sp_b)) => self.handle_fuse(sp_a, sp_b),
             GameAction::RandomSpecimen(creature_id) => self.handle_random_specimen(creature_id),
+            GameAction::ResetGameState => self.handle_reset_game_state(),
             GameAction::SellItem((item_id, amount)) => self.handle_sell_item(item_id, amount),
             GameAction::UnlockDungeonLayer => self.unlock_dungeon_layer(),
             GameAction::UnlockDungeonLayerSlot(layer) => self.unlock_dungeon_layer_slot(layer),
@@ -175,6 +176,11 @@ impl GameState {
             creature_id,
             new_id,
         ))
+    }
+
+    fn handle_reset_game_state(&mut self) -> GameResult<GameActionFeedback> {
+        *self = Self::default();
+        Ok(GameActionFeedback::GameStateReset)
     }
 
     fn handle_sell_item(&mut self, item_id: ItemID, amount: u64) -> GameResult<GameActionFeedback> {

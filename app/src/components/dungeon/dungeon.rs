@@ -1,51 +1,39 @@
-use crate::components::dungeon::layer::DungeonLayerView;
+use crate::components::number_range_dropdown_select::NumberRangeDropdownSelect;
 use crate::components::Component;
 use crate::modals::ModalSystem;
 use dungeon_breeder_core::state::dungeon::Dungeon;
 use dungeon_breeder_core::Game;
-use egui::{Frame, ScrollArea, Ui};
-use egui_phosphor::regular;
 
-pub struct DungeonView<'a> {
-    modal_system: &'a mut ModalSystem,
+pub struct DungeonComponent<'a> {
+    selected_layer: &'a mut usize,
+    modals: &'a mut ModalSystem,
     game: &'a Game,
     dungeon: &'a Dungeon,
-    id: &'a str,
 }
 
-impl<'a> DungeonView<'a> {
-    pub fn new(modal_system: &'a mut ModalSystem, game: &'a Game, dungeon: &'a Dungeon) -> Self {
+impl<'a> DungeonComponent<'a> {
+    pub fn new(
+        selected_layer: &'a mut usize,
+        modals: &'a mut ModalSystem,
+        game: &'a Game,
+        dungeon: &'a Dungeon,
+    ) -> Self {
         Self {
-            modal_system,
+            selected_layer,
+            modals,
             game,
             dungeon,
-            id: "dungeon_view",
         }
-    }
-
-    pub fn id(&self) -> &str {
-        self.id
     }
 }
 
-impl Component for DungeonView<'_> {
-    fn ui(self, ui: &mut Ui) {
-        ScrollArea::vertical().id_salt(self.id).show(ui, |ui| {
-            for (i, layer) in self.dungeon.iter_layers().enumerate() {
-                ui.push_id(i, |ui| {
-                    DungeonLayerView::new(self.modal_system, self.game, layer, i).ui(ui);
-                });
-            }
-            if let Some(unlock_costs) = self.dungeon.next_layer_costs() {
-                Frame::group(ui.style()).show(ui, |ui| {
-                    ui.horizontal(|ui| {
-                        ui.label(format!("{} {}", unlock_costs, regular::COINS));
-                        if ui.button(regular::LOCK_KEY_OPEN).clicked() {
-                            self.game.actions.unlock_dungeon_layer();
-                        }
-                    });
-                });
-            }
-        });
+impl<'a> Component for DungeonComponent<'a> {
+    fn ui(self, ui: &mut egui::Ui) {
+        let mut selected_layer = *self.selected_layer + 1;
+        NumberRangeDropdownSelect::new(&mut selected_layer, 1..self.dungeon.layer_count() + 1)
+            .id("dungeon_layer_select")
+            .label("Layer")
+            .ui(ui);
+        *self.selected_layer = selected_layer - 1;
     }
 }

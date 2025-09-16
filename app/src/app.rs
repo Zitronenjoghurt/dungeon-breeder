@@ -97,6 +97,11 @@ impl GameApp {
         for error in report.action_report.errors {
             self.toasts.error(error.to_string());
         }
+        for feedback in report.action_report.feedback {
+            if feedback.is_noteworthy() {
+                self.toasts.info(feedback.to_string());
+            }
+        }
     }
 
     fn update_modals(&mut self, ctx: &egui::Context) {

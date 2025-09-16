@@ -57,6 +57,10 @@ impl GameActions {
         self.push_action(GameAction::RandomSpecimen(creature_id))
     }
 
+    pub fn reset_game_state(&self) {
+        self.push_action(GameAction::ResetGameState)
+    }
+
     pub fn sell_item(&self, item_id: ItemID, amount: u64) {
         self.push_action(GameAction::SellItem((item_id, amount)))
     }
