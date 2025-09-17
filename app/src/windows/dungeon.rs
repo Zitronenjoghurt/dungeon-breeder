@@ -1,4 +1,4 @@
-use crate::components::dungeon::dungeon::DungeonComponent;
+use crate::components::dungeon::dungeon::{DungeonComponent, DungeonComponentState};
 use crate::components::Component;
 use crate::modals::ModalSystem;
 use crate::windows::ViewWindow;
@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct DungeonWindowState {
     pub is_open: bool,
-    pub selected_layer: usize,
+    pub dungeon_component_state: DungeonComponentState,
 }
 
 pub struct DungeonWindow<'a> {
@@ -51,7 +51,7 @@ impl ViewWindow for DungeonWindow<'_> {
 
     fn render_content(&mut self, ui: &mut Ui) {
         DungeonComponent::new(
-            &mut self.state.selected_layer,
+            &mut self.state.dungeon_component_state,
             self.modal_system,
             self.game,
             &self.game.state.dungeon,

@@ -10,7 +10,7 @@ use crate::systems::toasts::ToastSystem;
 use crate::theme::apply_glomzy_theme;
 use crate::views::{View, ViewSystem};
 use crate::windows::WindowSystem;
-use anyhow::{anyhow, Context};
+use anyhow::Context;
 use dungeon_breeder_core::Game;
 use egui::FontDefinitions;
 use serde::{Deserialize, Serialize};
@@ -71,20 +71,31 @@ impl GameApp {
 
         Self::setup_context(&cc.egui_ctx);
 
-        match cc.storage {
-            Some(storage) => match eframe::get_value::<Self>(storage, eframe::APP_KEY) {
-                Some(app) => Ok(app),
-                None => {
-                    if storage.get_string(eframe::APP_KEY).is_some() {
-                        Err(anyhow!(
-                            "Failed to deserialize app state - corrupted or incompatible format"
-                        ))
-                    } else {
-                        Ok(Self::default())
+        #[cfg(debug_assertions)]
+        {
+            Ok(cc
+                .storage
+                .and_then(|storage| eframe::get_value::<Self>(storage, eframe::APP_KEY))
+                .unwrap_or_default())
+        }
+
+        #[cfg(not(debug_assertions))]
+        {
+            match cc.storage {
+                Some(storage) => match eframe::get_value::<Self>(storage, eframe::APP_KEY) {
+                    Some(app) => Ok(app),
+                    None => {
+                        if storage.get_string(eframe::APP_KEY).is_some() {
+                            Err(anyhow!(
+                                "Failed to deserialize app state - corrupted or incompatible format"
+                            ))
+                        } else {
+                            Ok(Self::default())
+                        }
                     }
-                }
-            },
-            None => Ok(Self::default()),
+                },
+                None => Ok(Self::default()),
+            }
         }
     }
 

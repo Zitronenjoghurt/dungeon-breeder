@@ -11,10 +11,10 @@ pub mod number_range_dropdown_select;
 pub mod specimen;
 pub mod system_info;
 pub mod toggle_button;
+pub mod value_button;
 
 pub use bug_report_meta::*;
 pub use creature::*;
-pub use dungeon::*;
 pub use enum_select::*;
 pub use item::*;
 pub use specimen::*;
