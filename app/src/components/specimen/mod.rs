@@ -3,6 +3,7 @@ pub mod modal_selection;
 pub mod overview;
 pub mod selection;
 pub mod sorted_table;
+pub mod spawn;
 pub mod table;
 
 pub use modal_selection::*;

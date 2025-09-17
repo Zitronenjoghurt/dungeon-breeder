@@ -45,23 +45,21 @@ impl Component for DungeonSpecimenSlotComponent<'_> {
                     .map(|id| self.game.state.specimen.get_by_id(id))
                     .unwrap_or_default();
 
-                ui.vertical(|ui| {
-                    ui.horizontal(|ui| {
-                        SpecimenModalSelection::new(
-                            self.modals,
-                            &self.game.state.specimen,
-                            specimen_id,
-                            move |specimen_id, state| {
-                                state.game.actions.assign_to_dungeon_layer_slot(
-                                    self.layer_index,
-                                    self.slot_index,
-                                    specimen_id,
-                                );
-                            },
-                        )
-                        .exclude_assigned_to_dungeon_layer_slot(true)
-                        .ui(ui);
-                    });
+                ui.horizontal(|ui| {
+                    SpecimenModalSelection::new(
+                        self.modals,
+                        &self.game.state.specimen,
+                        specimen_id,
+                        move |specimen_id, state| {
+                            state.game.actions.assign_to_dungeon_layer_slot(
+                                self.layer_index,
+                                self.slot_index,
+                                specimen_id,
+                            );
+                        },
+                    )
+                    .exclude_assigned_to_dungeon_layer_slot(true)
+                    .ui(ui);
 
                     if specimen.is_some() {
                         let is_regenerating = self.slot.is_regenerating();

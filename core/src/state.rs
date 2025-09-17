@@ -74,6 +74,7 @@ impl GameState {
             GameAction::RandomSpecimen(creature_id) => self.handle_random_specimen(creature_id),
             GameAction::ResetGameState => self.handle_reset_game_state(),
             GameAction::SellItem((item_id, amount)) => self.handle_sell_item(item_id, amount),
+            GameAction::SpawnSpecimen(new_specimen) => self.handle_spawn_specimen(new_specimen),
             GameAction::UnlockDungeonLayer => self.unlock_dungeon_layer(),
             GameAction::UnlockDungeonLayerSlot(layer) => self.unlock_dungeon_layer_slot(layer),
         }
@@ -192,6 +193,14 @@ impl GameState {
         } else {
             Err(GameError::InsufficientItems)
         }
+    }
+
+    fn handle_spawn_specimen(
+        &mut self,
+        specimen: Box<NewSpecimen>,
+    ) -> GameResult<GameActionFeedback> {
+        self.specimen.add_new(*specimen);
+        Ok(GameActionFeedback::SpecimenSpawned)
     }
 
     fn unlock_dungeon_layer(&mut self) -> GameResult<GameActionFeedback> {

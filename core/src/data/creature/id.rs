@@ -6,9 +6,21 @@ use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
 #[derive(
-    Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Default,
+    Clone,
+    Copy,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
 )]
 pub enum CreatureID {
+    #[default]
     Gonk,
     Slime,
 }

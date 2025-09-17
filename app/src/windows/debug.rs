@@ -51,7 +51,14 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        ToggleButton::new(&mut self.windows.bug_report_debug.is_open, regular::BUG).ui(ui);
+        ui.horizontal(|ui| {
+            ToggleButton::new(&mut self.windows.debug_bug_report.is_open, regular::BUG).ui(ui);
+            ToggleButton::new(
+                &mut self.windows.debug_specimen_spawn.is_open,
+                regular::ALIEN,
+            )
+            .ui(ui);
+        });
 
         ui.separator();
 

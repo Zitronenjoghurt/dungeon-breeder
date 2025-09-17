@@ -1,7 +1,7 @@
 use crate::actions::action::GameAction;
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
-use crate::state::specimen::SpecimenId;
+use crate::state::specimen::{NewSpecimen, SpecimenId};
 use std::cell::RefCell;
 
 pub mod action;
@@ -63,6 +63,10 @@ impl GameActions {
 
     pub fn sell_item(&self, item_id: ItemID, amount: u64) {
         self.push_action(GameAction::SellItem((item_id, amount)))
+    }
+
+    pub fn spawn_specimen(&self, new_specimen: NewSpecimen) {
+        self.push_action(GameAction::SpawnSpecimen(Box::new(new_specimen)))
     }
 
     pub fn unlock_dungeon_layer(&self) {

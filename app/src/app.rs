@@ -43,7 +43,7 @@ pub struct GameApp {
 
 impl eframe::App for GameApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        ctx.request_repaint_after(Duration::from_millis(500));
+        ctx.request_repaint_after(Duration::from_millis(100));
         self.handle_keyboard_inputs(ctx);
         self.update_game();
         self.update_views(ctx);

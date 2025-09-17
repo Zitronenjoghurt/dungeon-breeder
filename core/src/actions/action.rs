@@ -1,8 +1,8 @@
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
-use crate::state::specimen::SpecimenId;
+use crate::state::specimen::{NewSpecimen, SpecimenId};
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum GameAction {
     AddCoins(u128),
     AssignToDungeonLayerSlot {
@@ -15,6 +15,7 @@ pub enum GameAction {
     RandomSpecimen(CreatureID),
     ResetGameState,
     SellItem((ItemID, u64)),
+    SpawnSpecimen(Box<NewSpecimen>),
     UnlockDungeonLayer,
     UnlockDungeonLayerSlot(usize),
 }

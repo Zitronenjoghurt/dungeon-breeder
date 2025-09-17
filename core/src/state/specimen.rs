@@ -187,7 +187,7 @@ impl Specimen {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct NewSpecimen {
     pub creature_id: CreatureID,
     pub obtain_method: SpecimenObtainMethod,

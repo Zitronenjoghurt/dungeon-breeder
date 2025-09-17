@@ -31,6 +31,7 @@ pub enum GameActionFeedback {
         amount: u64,
         coins: u128,
     },
+    SpecimenSpawned,
     UnlockDungeonLayer(usize),
     UnlockDungeonLayerSlot {
         layer_index: usize,
@@ -150,6 +151,7 @@ impl Display for GameActionFeedback {
                 amount,
                 coins,
             } => write!(f, "Sold {amount} of '{item_id:?}' for {coins} coins",),
+            Self::SpecimenSpawned => write!(f, "Spawned a new specimen"),
             Self::UnlockDungeonLayer(layer_index) => {
                 write!(f, "Unlocked dungeon layer {layer_index}")
             }
