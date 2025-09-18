@@ -1,4 +1,5 @@
 use crate::components::Component;
+use egui::Button;
 
 pub struct ValueButton<'a, V>
 where
@@ -8,6 +9,7 @@ where
     selectable_value: V,
     label: &'a str,
     tooltip: Option<&'a str>,
+    enabled: bool,
 }
 
 impl<'a, V> ValueButton<'a, V>
@@ -20,11 +22,17 @@ where
             selectable_value,
             label,
             tooltip: None,
+            enabled: true,
         }
     }
 
     pub fn tooltip(mut self, tooltip: &'a str) -> Self {
         self.tooltip = Some(tooltip);
+        self
+    }
+
+    pub fn enabled(mut self, enabled: bool) -> Self {
+        self.enabled = enabled;
         self
     }
 }
@@ -36,7 +44,7 @@ where
     fn ui(self, ui: &mut egui::Ui) {
         let checked = *self.current_value == self.selectable_value;
 
-        let response = ui.selectable_label(checked, self.label);
+        let response = ui.add_enabled(self.enabled, Button::selectable(checked, self.label));
         if response.clicked() {
             *self.current_value = self.selectable_value;
         };

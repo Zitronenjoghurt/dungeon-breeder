@@ -1,4 +1,4 @@
-use crate::components::dungeon::dungeon::{DungeonComponent, DungeonComponentState};
+use crate::components::dungeon::{DungeonComponent, DungeonComponentState};
 use crate::components::Component;
 use crate::modals::ModalSystem;
 use crate::windows::ViewWindow;

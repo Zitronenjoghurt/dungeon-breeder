@@ -58,12 +58,34 @@ impl Component for SpecimenSpawnComponent<'_> {
                 ui.end_row();
             });
 
-        if ui.button("Spawn").clicked() {
-            self.game.actions.spawn_specimen(NewSpecimen {
-                breeding_generation: 1,
-                fusion_generation: 1,
-                ..self.state.new_specimen
-            })
-        }
+        ui.separator();
+
+        ui.horizontal(|ui| {
+            if ui.button("Spawn").clicked() {
+                self.game.actions.spawn_specimen(NewSpecimen {
+                    breeding_generation: 1,
+                    fusion_generation: 1,
+                    ..self.state.new_specimen
+                })
+            }
+
+            if ui.button("Min").clicked() {
+                self.state.new_specimen.strength = 0.0;
+                self.state.new_specimen.intelligence = 0.0;
+                self.state.new_specimen.vitality = 0.0;
+                self.state.new_specimen.agility = 0.0;
+                self.state.new_specimen.regeneration = 0.0;
+                self.state.new_specimen.fertility = 0.0;
+            }
+
+            if ui.button("Max").clicked() {
+                self.state.new_specimen.strength = 1.0;
+                self.state.new_specimen.intelligence = 1.0;
+                self.state.new_specimen.vitality = 1.0;
+                self.state.new_specimen.agility = 1.0;
+                self.state.new_specimen.regeneration = 1.0;
+                self.state.new_specimen.fertility = 1.0;
+            }
+        });
     }
 }

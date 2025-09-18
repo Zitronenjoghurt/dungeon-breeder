@@ -1,7 +1,8 @@
-use egui::Ui;
+use egui::{Ui, Widget};
 
 pub mod asc_desc_button;
 pub mod bug_report_meta;
+pub mod compendium;
 pub mod creature;
 pub mod dungeon;
 pub mod enum_select;

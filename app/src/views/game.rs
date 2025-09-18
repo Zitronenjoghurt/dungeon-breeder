@@ -1,6 +1,7 @@
 use crate::app::GameApp;
 use crate::components::*;
 use crate::views::View;
+use crate::windows::compendium::{CompendiumWindow, CompendiumWindowState};
 use crate::windows::dungeon::{DungeonWindow, DungeonWindowState};
 use crate::windows::items::ItemsWindow;
 use crate::windows::specimen::{SpecimenWindow, SpecimenWindowState};
@@ -14,12 +15,14 @@ use serde::{Deserialize, Serialize};
 pub struct GameView {
     items_window_open: bool,
     statistics_window_open: bool,
+    compendium_window: CompendiumWindowState,
     dungeon_window: DungeonWindowState,
     specimen_window: SpecimenWindowState,
 }
 
 impl View for GameView {
     fn render(&mut self, ctx: &Context, app: &mut GameApp) {
+        CompendiumWindow::new(app, &mut self.compendium_window).show(ctx);
         DungeonWindow::new(&mut app.modals, &app.game, &mut self.dungeon_window).show(ctx);
         ItemsWindow::new(&app.game, &mut self.items_window_open).show(ctx);
         SpecimenWindow::new(app, &mut self.specimen_window).show(ctx);
@@ -44,6 +47,10 @@ impl View for GameView {
                 .ui(ui);
 
                 ui.separator();
+
+                ToggleButton::new(&mut self.compendium_window.is_open, regular::BOOK)
+                    .tooltip("Compendium")
+                    .ui(ui);
 
                 ToggleButton::new(&mut self.specimen_window.is_open, regular::WAREHOUSE)
                     .tooltip("Specimen")

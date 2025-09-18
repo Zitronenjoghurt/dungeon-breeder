@@ -8,6 +8,9 @@ use dungeon_breeder_core::Game;
 use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
 
+pub mod legacy;
+pub mod specimen;
+
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DungeonTab {
     #[default]
