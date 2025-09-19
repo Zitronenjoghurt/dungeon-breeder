@@ -89,8 +89,18 @@ impl Component for CompendiumCreaturesComponent<'_> {
             ui.set_min_height(ui.available_height());
 
             self.show_creature_buttons(ui);
+
             ui.separator();
-            self.show_creature_info(ui);
+
+            if self
+                .game
+                .state
+                .specimen
+                .compendium()
+                .has_unlocked(self.selected_creature)
+            {
+                self.show_creature_info(ui);
+            }
         });
     }
 }

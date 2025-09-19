@@ -1,6 +1,7 @@
 use crate::data::item::data::*;
 use crate::data::item::def::ItemDefinition;
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
@@ -54,5 +55,11 @@ impl ItemID {
             Self::Tinkosphere => &ITEM_TINKOSPHERE,
             Self::Tinkolite => &ITEM_TINKOLITE,
         }
+    }
+}
+
+impl Display for ItemID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
     }
 }

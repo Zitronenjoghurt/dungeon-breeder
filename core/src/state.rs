@@ -189,6 +189,7 @@ impl GameState {
         if success {
             let coins = item_id.def().price as u128 * amount as u128;
             self.treasury.add_coins(coins);
+            self.items.on_item_sold(&item_id, amount);
             Ok(GameActionFeedback::sold_items(item_id, amount, coins))
         } else {
             Err(GameError::InsufficientItems)

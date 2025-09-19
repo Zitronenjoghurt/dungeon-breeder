@@ -1,4 +1,5 @@
 use crate::data::item::id::ItemID;
+use crate::state::item::compendium::ItemCompendium;
 use crate::state::item::NewItem;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -6,12 +7,19 @@ use std::collections::BTreeMap;
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct ItemCollection {
     collection: BTreeMap<ItemID, u64>,
+    compendium: ItemCompendium,
 }
 
 impl ItemCollection {
+    pub fn compendium(&self) -> &ItemCompendium {
+        &self.compendium
+    }
+
     pub fn add_new(&mut self, new_item: &NewItem) {
         let current_amount = self.collection.entry(new_item.item_id).or_insert(0);
         *current_amount = current_amount.saturating_add(new_item.amount);
+        self.compendium
+            .on_item_obtained(&new_item.item_id, new_item.amount);
     }
 
     pub fn add_new_batch(&mut self, new_items: &[NewItem]) {
@@ -46,5 +54,12 @@ impl ItemCollection {
 
     pub fn is_empty(&self) -> bool {
         self.collection.is_empty()
+    }
+}
+
+// Events
+impl ItemCollection {
+    pub fn on_item_sold(&mut self, item_id: &ItemID, amount: u64) {
+        self.compendium.on_item_sold(item_id, amount);
     }
 }
