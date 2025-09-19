@@ -1,9 +1,9 @@
+use crate::mechanics::upgrade_costs::dungeon_layer_unlock_cost;
 use crate::state::dungeon::layer::DungeonLayer;
 use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::SpecimenId;
 use crate::state::update_report::GameStateUpdateReport;
-use crate::systems::upgrade_costs::dungeon_layer_unlock_cost;
 use serde::{Deserialize, Serialize};
 
 pub mod layer;

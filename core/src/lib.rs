@@ -1,4 +1,5 @@
 use crate::actions::GameActions;
+use crate::events::event::GameEvent;
 use crate::events::GameEvents;
 use crate::state::GameState;
 use crate::update_report::GameUpdateReport;
@@ -8,8 +9,8 @@ pub mod actions;
 pub mod data;
 mod error;
 mod events;
+mod mechanics;
 pub mod state;
-mod systems;
 pub mod types;
 mod update_report;
 mod utils;
@@ -20,7 +21,7 @@ pub struct Game {
     #[serde(skip, default)]
     pub actions: GameActions,
     #[serde(skip, default)]
-    pub events: GameEvents,
+    events: GameEvents,
 }
 
 impl Game {
@@ -37,5 +38,15 @@ impl Game {
             state_report,
             time_elapsed,
         }
+    }
+
+    fn handle_events(&mut self) {
+        for event in self.events.take_events() {
+            self.handle_event(event);
+        }
+    }
+
+    fn handle_event(&mut self, event: GameEvent) {
+        self.state.handle_event(&event);
     }
 }

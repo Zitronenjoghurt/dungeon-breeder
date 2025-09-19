@@ -1,6 +1,6 @@
 use crate::data::creature::id::CreatureID;
 use crate::error::GameResult;
-use crate::state::fusion::specimen_fusion;
+use crate::mechanics::fusion::fuse_specimen;
 use crate::state::specimen::Specimen;
 use std::collections::{BTreeMap, HashMap};
 
@@ -18,7 +18,7 @@ impl FusionSimulation {
         let mut creature_counts: HashMap<CreatureID, usize> = HashMap::new();
 
         for _ in 0..samples {
-            let new_specimen = specimen_fusion(specimen_1, specimen_2)?;
+            let new_specimen = fuse_specimen(specimen_1, specimen_2)?;
             let creature_id = new_specimen.creature_id;
             creature_counts
                 .entry(creature_id)

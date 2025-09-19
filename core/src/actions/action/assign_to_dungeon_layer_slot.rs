@@ -12,7 +12,7 @@ pub struct AssignToDungeonLayerSlotAction {
 }
 
 impl GameActionHandler for AssignToDungeonLayerSlotAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         if let Some(specimen_id) = self.specimen_id
             && state
                 .dungeon

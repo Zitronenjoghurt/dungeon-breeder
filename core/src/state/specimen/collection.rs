@@ -1,6 +1,7 @@
 use crate::data::creature::id::CreatureID;
-use crate::state::breeding::check_specimen_can_breed;
-use crate::state::fusion::check_specimen_can_fuse;
+use crate::error::{GameError, GameResult};
+use crate::mechanics::breeding::{breed_specimen, check_specimen_can_breed};
+use crate::mechanics::fusion::{check_specimen_can_fuse, fuse_specimen};
 use crate::state::specimen::compendium::CreatureCompendium;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::types::sort_direction::SortDirection;
@@ -162,6 +163,64 @@ impl SpecimenCollection {
         };
 
         check_specimen_can_breed(specimen_1, specimen_2).is_ok()
+    }
+
+    pub fn breed(
+        &mut self,
+        specimen_a_id: SpecimenId,
+        specimen_b_id: SpecimenId,
+    ) -> GameResult<SpecimenId> {
+        let Some(specimen_a) = self.get_by_id(specimen_a_id) else {
+            return Err(GameError::SpecimenNotFound(specimen_a_id));
+        };
+
+        let Some(specimen_b) = self.get_by_id(specimen_b_id) else {
+            return Err(GameError::SpecimenNotFound(specimen_b_id));
+        };
+
+        let new_specimen = breed_specimen(specimen_a, specimen_b)?;
+        let creature_a_id = specimen_a.creature_id;
+        let creature_b_id = specimen_b.creature_id;
+
+        self.on_specimen_bred(&creature_a_id);
+        self.on_specimen_bred(&creature_b_id);
+
+        if let Some(specimen_a_mut) = self.get_by_id_mut(specimen_a_id) {
+            specimen_a_mut.on_bred();
+        }
+
+        if let Some(specimen_b_mut) = self.get_by_id_mut(specimen_b_id) {
+            specimen_b_mut.on_bred();
+        }
+
+        let new_id = self.add_new(new_specimen);
+        Ok(new_id)
+    }
+
+    pub fn fuse(
+        &mut self,
+        specimen_a_id: SpecimenId,
+        specimen_b_id: SpecimenId,
+    ) -> GameResult<SpecimenId> {
+        let Some(specimen_a) = self.get_by_id(specimen_a_id) else {
+            return Err(GameError::SpecimenNotFound(specimen_a_id));
+        };
+
+        let Some(specimen_b) = self.get_by_id(specimen_b_id) else {
+            return Err(GameError::SpecimenNotFound(specimen_b_id));
+        };
+
+        let new_specimen = fuse_specimen(specimen_a, specimen_b)?;
+        let creature_a_id = specimen_a.creature_id;
+        let creature_b_id = specimen_b.creature_id;
+
+        self.remove_by_id(specimen_a_id);
+        self.remove_by_id(specimen_b_id);
+        self.on_specimen_fused(&creature_a_id);
+        self.on_specimen_fused(&creature_b_id);
+
+        let new_id = self.add_new(new_specimen);
+        Ok(new_id)
     }
 
     pub fn iter_on_breeding_cooldown(&self) -> impl Iterator<Item = &Specimen> {

@@ -9,7 +9,7 @@ pub struct UnlockDungeonLayerSlotAction {
 }
 
 impl GameActionHandler for UnlockDungeonLayerSlotAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         let Some(layer) = state.dungeon.get_layer_mut(self.layer_index) else {
             return Err(GameError::DungeonLayerNotFound(self.layer_index));
         };

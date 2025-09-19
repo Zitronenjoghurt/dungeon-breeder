@@ -7,7 +7,7 @@ use crate::state::GameState;
 pub struct UnlockDungeonLayerAction;
 
 impl GameActionHandler for UnlockDungeonLayerAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         let Some(costs) = state.dungeon.next_layer_costs() else {
             return Err(GameError::InsufficientCoins);
         };

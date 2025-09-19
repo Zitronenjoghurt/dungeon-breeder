@@ -9,7 +9,7 @@ pub struct AddCoinsAction {
 }
 
 impl GameActionHandler for AddCoinsAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         state.treasury.add_coins(self.amount);
         Ok(())
     }

@@ -11,7 +11,7 @@ pub struct SellItemAction {
 }
 
 impl GameActionHandler for SellItemAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         let success = state.items.remove_item(self.item_id, self.amount);
         if success {
             let coins = self.item_id.def().price as u128 * self.amount as u128;

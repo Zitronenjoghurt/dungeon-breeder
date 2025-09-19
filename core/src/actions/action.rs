@@ -17,7 +17,7 @@ mod unlock_dungeon_layer;
 mod unlock_dungeon_layer_slot;
 
 pub trait GameActionHandler {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()>;
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()>;
 }
 
 #[derive(Debug)]
@@ -87,20 +87,20 @@ impl GameAction {
 }
 
 impl GameActionHandler for GameAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         match self {
-            Self::AddCoins(action) => action.handle(state, events),
-            Self::AssignToDungeonLayerSlot(action) => action.handle(state, events),
-            Self::Breed(action) => action.handle(state, events),
-            Self::Fuse(action) => action.handle(state, events),
-            Self::RandomSpecimen(action) => action.handle(state, events),
-            Self::ResetGameState => reset_game_state::ResetGameStateAction.handle(state, events),
-            Self::SellItem(action) => action.handle(state, events),
-            Self::SpawnSpecimen(action) => action.handle(state, events),
+            Self::AddCoins(action) => action.handle(state, bus),
+            Self::AssignToDungeonLayerSlot(action) => action.handle(state, bus),
+            Self::Breed(action) => action.handle(state, bus),
+            Self::Fuse(action) => action.handle(state, bus),
+            Self::RandomSpecimen(action) => action.handle(state, bus),
+            Self::ResetGameState => reset_game_state::ResetGameStateAction.handle(state, bus),
+            Self::SellItem(action) => action.handle(state, bus),
+            Self::SpawnSpecimen(action) => action.handle(state, bus),
             Self::UnlockDungeonLayer => {
-                unlock_dungeon_layer::UnlockDungeonLayerAction.handle(state, events)
+                unlock_dungeon_layer::UnlockDungeonLayerAction.handle(state, bus)
             }
-            Self::UnlockDungeonLayerSlot(action) => action.handle(state, events),
+            Self::UnlockDungeonLayerSlot(action) => action.handle(state, bus),
         }
     }
 }

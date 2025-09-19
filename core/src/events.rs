@@ -1,25 +1,18 @@
 use crate::events::event::GameEvent;
-use std::cell::RefCell;
 
-mod event;
+pub mod event;
 
 #[derive(Debug, Default)]
 pub struct GameEvents {
-    queue: RefCell<Vec<GameEvent>>,
+    queue: Vec<GameEvent>,
 }
 
 impl GameEvents {
-    pub fn take_events(&self) -> Vec<GameEvent> {
-        if let Ok(mut queue) = self.queue.try_borrow_mut() {
-            queue.drain(..).collect()
-        } else {
-            vec![]
-        }
+    pub fn take_events(&mut self) -> Vec<GameEvent> {
+        self.queue.drain(..).collect()
     }
 
-    pub fn push_event(&self, event: GameEvent) {
-        if let Ok(mut queue) = self.queue.try_borrow_mut() {
-            queue.push(event);
-        }
+    pub fn push_event(&mut self, event: GameEvent) {
+        self.queue.push(event);
     }
 }

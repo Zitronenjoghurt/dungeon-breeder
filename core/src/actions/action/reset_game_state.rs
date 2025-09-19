@@ -7,7 +7,7 @@ use crate::state::GameState;
 pub struct ResetGameStateAction;
 
 impl GameActionHandler for ResetGameStateAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         *state = GameState::default();
         Ok(())
     }

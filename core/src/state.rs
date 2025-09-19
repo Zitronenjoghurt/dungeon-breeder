@@ -1,3 +1,4 @@
+use crate::events::event::GameEvent;
 use crate::state::breeding::BreedingState;
 use crate::state::clock::Clock;
 use crate::state::dungeon::Dungeon;
@@ -52,4 +53,6 @@ impl GameState {
         self.dungeon
             .tick(report, &mut self.specimen, &mut self.items);
     }
+
+    pub fn handle_event(&mut self, event: &GameEvent) {}
 }

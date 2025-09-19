@@ -10,7 +10,7 @@ pub struct SpawnSpecimenAction {
 }
 
 impl GameActionHandler for SpawnSpecimenAction {
-    fn handle(self, state: &mut GameState, events: &mut GameEvents) -> GameResult<()> {
+    fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         state.specimen.add_new(*self.new_specimen);
         Ok(())
     }
