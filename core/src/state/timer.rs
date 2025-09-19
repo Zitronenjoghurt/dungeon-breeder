@@ -8,10 +8,14 @@ pub struct Timer(u64);
 
 impl Timer {
     pub fn tick(&mut self, max_ticks: u64) -> bool {
-        self.0 += 1;
+        self.tick_multiple(max_ticks, 1)
+    }
+
+    pub fn tick_multiple(&mut self, max_ticks: u64, count: u64) -> bool {
+        self.0 += count;
 
         if self.0 >= max_ticks {
-            self.0 = 0;
+            self.0 -= max_ticks;
             true
         } else {
             false

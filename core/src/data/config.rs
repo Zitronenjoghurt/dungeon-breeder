@@ -4,6 +4,8 @@ pub mod styles;
 
 #[derive(Debug)]
 pub struct Config {
+    /// How many generations of followup events will be processed within the same tick.
+    pub max_event_generations: u8,
     /// Higher values will make the monsters exponentially harder to slay depending on their power
     pub slay_duration_power_exponent: f32,
     /// Higher values will make the monster take exponentially longer to regenerate after being slain
@@ -21,6 +23,7 @@ pub struct Config {
 }
 
 pub static CONFIG: Config = Config {
+    max_event_generations: 10,
     slay_duration_power_exponent: 1.5,
     regeneration_duration_power_exponent: 1.25,
     breeding_duration_power_exponent: 3.0,

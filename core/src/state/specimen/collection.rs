@@ -1,5 +1,8 @@
 use crate::data::creature::id::CreatureID;
 use crate::error::{GameError, GameResult};
+use crate::events::event::specimen_bred::SpecimenBredEvent;
+use crate::events::event::GameEvent;
+use crate::events::GameEvents;
 use crate::mechanics::breeding::{breed_specimen, check_specimen_can_breed};
 use crate::mechanics::fusion::{check_specimen_can_fuse, fuse_specimen};
 use crate::state::specimen::compendium::CreatureCompendium;
@@ -69,12 +72,16 @@ impl SpecimenCollection {
         self.collection.is_empty()
     }
 
-    pub fn add_new(&mut self, new_specimen: NewSpecimen) -> SpecimenId {
+    pub fn add_new(&mut self, bus: &mut GameEvents, new_specimen: NewSpecimen) -> SpecimenId {
         let id = self.next_id;
+        let creature_id = new_specimen.creature_id;
+
         let specimen = Specimen::from_new_specimen(id, new_specimen);
-        self.compendium.on_specimen_obtained(&specimen);
         self.collection.insert(self.next_id, specimen);
         self.next_id = self.next_id.saturating_add(1);
+
+        bus.specimen_obtained(id, creature_id);
+
         id
     }
 
@@ -167,6 +174,7 @@ impl SpecimenCollection {
 
     pub fn breed(
         &mut self,
+        bus: &mut GameEvents,
         specimen_a_id: SpecimenId,
         specimen_b_id: SpecimenId,
     ) -> GameResult<SpecimenId> {
@@ -179,26 +187,17 @@ impl SpecimenCollection {
         };
 
         let new_specimen = breed_specimen(specimen_a, specimen_b)?;
-        let creature_a_id = specimen_a.creature_id;
-        let creature_b_id = specimen_b.creature_id;
+        let creature_id = new_specimen.creature_id;
+        let new_id = self.add_new(bus, new_specimen);
 
-        self.on_specimen_bred(&creature_a_id);
-        self.on_specimen_bred(&creature_b_id);
+        bus.specimen_bred(new_id, creature_id, specimen_a_id, specimen_b_id);
 
-        if let Some(specimen_a_mut) = self.get_by_id_mut(specimen_a_id) {
-            specimen_a_mut.on_bred();
-        }
-
-        if let Some(specimen_b_mut) = self.get_by_id_mut(specimen_b_id) {
-            specimen_b_mut.on_bred();
-        }
-
-        let new_id = self.add_new(new_specimen);
         Ok(new_id)
     }
 
     pub fn fuse(
         &mut self,
+        bus: &mut GameEvents,
         specimen_a_id: SpecimenId,
         specimen_b_id: SpecimenId,
     ) -> GameResult<SpecimenId> {
@@ -211,15 +210,12 @@ impl SpecimenCollection {
         };
 
         let new_specimen = fuse_specimen(specimen_a, specimen_b)?;
-        let creature_a_id = specimen_a.creature_id;
-        let creature_b_id = specimen_b.creature_id;
-
+        let creature_id = new_specimen.creature_id;
         self.remove_by_id(specimen_a_id);
         self.remove_by_id(specimen_b_id);
-        self.on_specimen_fused(&creature_a_id);
-        self.on_specimen_fused(&creature_b_id);
+        let new_id = self.add_new(bus, new_specimen);
+        bus.specimen_fused(new_id, creature_id);
 
-        let new_id = self.add_new(new_specimen);
         Ok(new_id)
     }
 
@@ -250,15 +246,64 @@ impl SpecimenCollection {
 
 // Events
 impl SpecimenCollection {
-    pub fn on_specimen_slain(&mut self, creature_id: &CreatureID) {
-        self.compendium.on_specimen_slain(creature_id);
+    pub fn handle_event(&mut self, bus: &mut GameEvents, event: &GameEvent) {
+        match event {
+            GameEvent::SpecimenBred(event) => self.on_specimen_bred(event),
+            GameEvent::SpecimenFused(event) => self.on_specimen_fused(event.creature_id),
+            GameEvent::SpecimenObtained(event) => self.on_specimen_obtained(event.specimen_id),
+            GameEvent::SpecimenSlain(event) => {
+                self.on_specimen_slain(event.specimen_id, event.creature_id)
+            }
+            GameEvent::SpecimenTickSlayRegen(event) => {
+                self.on_specimen_tick_slay_regen(bus, event.specimen_id, event.ticks)
+            }
+            _ => {}
+        }
     }
 
-    pub fn on_specimen_bred(&mut self, creature_id: &CreatureID) {
-        self.compendium.on_specimen_bred(creature_id);
+    pub fn on_specimen_bred(&mut self, event: &SpecimenBredEvent) {
+        self.compendium.on_specimen_bred(&event.creature_id);
+
+        if let Some(specimen) = self.get_by_id_mut(event.parent_1_id) {
+            specimen.on_bred();
+        }
+
+        if let Some(specimen) = self.get_by_id_mut(event.parent_2_id) {
+            specimen.on_bred();
+        }
     }
 
-    pub fn on_specimen_fused(&mut self, creature_id: &CreatureID) {
-        self.compendium.on_specimen_fused(creature_id);
+    pub fn on_specimen_fused(&mut self, creature_id: CreatureID) {
+        self.compendium.on_specimen_fused(&creature_id);
+    }
+
+    pub fn on_specimen_obtained(&mut self, specimen_id: SpecimenId) {
+        let Some(specimen) = self.collection.get(&specimen_id) else {
+            return;
+        };
+        self.compendium.on_specimen_obtained(specimen);
+    }
+
+    pub fn on_specimen_tick_slay_regen(
+        &mut self,
+        bus: &mut GameEvents,
+        specimen_id: SpecimenId,
+        ticks: u64,
+    ) {
+        let Some(specimen) = self.get_by_id_mut(specimen_id) else {
+            return;
+        };
+
+        specimen.on_tick_slay_regen(bus, ticks);
+    }
+
+    pub fn on_specimen_slain(&mut self, specimen_id: SpecimenId, creature_id: CreatureID) {
+        self.compendium.on_specimen_slain(&creature_id);
+
+        let Some(specimen) = self.get_by_id_mut(specimen_id) else {
+            return;
+        };
+
+        specimen.on_slain();
     }
 }

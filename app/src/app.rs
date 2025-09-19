@@ -86,7 +86,7 @@ impl GameApp {
                     Some(app) => Ok(app),
                     None => {
                         if storage.get_string(eframe::APP_KEY).is_some() {
-                            Err(anyhow!(
+                            Err(anyhow::anyhow!(
                                 "Failed to deserialize app state - corrupted or incompatible format"
                             ))
                         } else {

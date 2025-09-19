@@ -12,15 +12,9 @@ pub struct BreedAction {
 
 impl GameActionHandler for BreedAction {
     fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
-        let new_id = state
-            .specimen
-            .breed(self.specimen_a_id, self.specimen_b_id)?;
-
         state
-            .breeding
-            .on_successful_breed(self.specimen_a_id, self.specimen_b_id, new_id);
-        state.statistics.on_successful_breed();
-
+            .specimen
+            .breed(bus, self.specimen_a_id, self.specimen_b_id)?;
         Ok(())
     }
 }

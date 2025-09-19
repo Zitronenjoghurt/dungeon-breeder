@@ -1,4 +1,4 @@
-use crate::state::update_report::GameStateUpdateReport;
+use crate::events::event::GameEvent;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -28,23 +28,22 @@ impl Default for GameStatistics {
 }
 
 impl GameStatistics {
-    pub fn on_game_state_update(&mut self, report: &GameStateUpdateReport) {
-        if report.ticks_elapsed <= 10 {
-            self.active_ticks = self.active_ticks.saturating_add(report.ticks_elapsed);
-        } else {
-            self.passive_ticks = self.active_ticks.saturating_add(report.ticks_elapsed);
+    pub fn handle_event(&mut self, event: &GameEvent) {
+        match event {
+            GameEvent::SpecimenBred(_) => self.times_bred = self.times_bred.saturating_add(1),
+            GameEvent::SpecimenFused(_) => self.times_fused = self.times_fused.saturating_add(1),
+            GameEvent::SpecimenSlain(_) => {
+                self.times_specimen_slain = self.times_specimen_slain.saturating_add(1)
+            }
+            _ => {}
         }
-
-        self.times_specimen_slain = self
-            .times_specimen_slain
-            .saturating_add(report.times_specimen_slain);
     }
 
-    pub fn on_successful_breed(&mut self) {
-        self.times_bred = self.times_bred.saturating_add(1);
-    }
-
-    pub fn on_successful_fusion(&mut self) {
-        self.times_fused = self.times_fused.saturating_add(1);
+    pub fn on_ticks_elapsed(&mut self, ticks: u64) {
+        if ticks <= 10 {
+            self.active_ticks = self.active_ticks.saturating_add(ticks);
+        } else {
+            self.passive_ticks = self.active_ticks.saturating_add(ticks);
+        }
     }
 }

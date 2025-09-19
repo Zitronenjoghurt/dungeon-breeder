@@ -1,5 +1,6 @@
 use crate::data::creature::data::*;
 use crate::data::creature::def::CreatureDefinition;
+use crate::state::item::NewItem;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use strum::IntoEnumIterator;
@@ -39,6 +40,21 @@ impl CreatureID {
             Self::Baragoo => &CREATURE_BARAGOO,
             Self::Tinky => &CREATURE_TINKY,
         }
+    }
+
+    pub fn generate_drops(&self, proficiency: f32) -> Vec<NewItem> {
+        let mut rng = rand::rng();
+        self.def()
+            .item_drops
+            .iter()
+            .filter_map(|item_drop| {
+                let count = item_drop.generate_drop(&mut rng, proficiency)?;
+                Some(NewItem {
+                    item_id: item_drop.item_id,
+                    amount: count as u64,
+                })
+            })
+            .collect::<Vec<_>>()
     }
 }
 

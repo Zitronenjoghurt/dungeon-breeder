@@ -16,7 +16,7 @@ impl GameActionHandler for SellItemAction {
         if success {
             let coins = self.item_id.def().price as u128 * self.amount as u128;
             state.treasury.add_coins(coins);
-            state.items.on_item_sold(&self.item_id, self.amount);
+            bus.item_sold(self.item_id, self.amount);
             Ok(())
         } else {
             Err(GameError::InsufficientItems)

@@ -1,9 +1,8 @@
+use crate::events::GameEvents;
 use crate::mechanics::upgrade_costs::dungeon_layer_unlock_cost;
 use crate::state::dungeon::layer::DungeonLayer;
-use crate::state::item::collection::ItemCollection;
 use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::SpecimenId;
-use crate::state::update_report::GameStateUpdateReport;
 use serde::{Deserialize, Serialize};
 
 pub mod layer;
@@ -14,14 +13,9 @@ pub struct Dungeon {
 }
 
 impl Dungeon {
-    pub fn tick(
-        &mut self,
-        report: &mut GameStateUpdateReport,
-        specimen: &mut SpecimenCollection,
-        items: &mut ItemCollection,
-    ) {
+    pub fn tick(&mut self, bus: &mut GameEvents, specimen: &SpecimenCollection) {
         for layer in self.layers.iter_mut() {
-            layer.tick(report, specimen, items);
+            layer.tick(bus, specimen);
         }
     }
 

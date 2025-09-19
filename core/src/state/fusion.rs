@@ -1,3 +1,4 @@
+use crate::events::event::GameEvent;
 use crate::state::specimen::SpecimenId;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
@@ -16,5 +17,14 @@ impl FusionState {
 
     pub fn last_fusion_result_id(&self) -> Option<SpecimenId> {
         self.last_fusion_result_id
+    }
+}
+
+// Events
+impl FusionState {
+    pub fn handle_event(&mut self, event: &GameEvent) {
+        if let GameEvent::SpecimenFused(event) = event {
+            self.on_successful_fusion(event.specimen_id);
+        }
     }
 }

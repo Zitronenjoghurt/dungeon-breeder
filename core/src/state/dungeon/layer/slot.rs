@@ -1,9 +1,8 @@
 use crate::error::GameResult;
-use crate::state::item::collection::ItemCollection;
+use crate::events::GameEvents;
 use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::{Specimen, SpecimenId};
 use crate::state::timer::Timer;
-use crate::state::update_report::GameStateUpdateReport;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -27,39 +26,18 @@ impl DungeonLayerSlot {
         self.regen_duration_secs = specimen.regeneration_duration_secs();
     }
 
-    pub fn tick(
-        &mut self,
-        report: &mut GameStateUpdateReport,
-        specimen_collection: &mut SpecimenCollection,
-        items: &mut ItemCollection,
-    ) {
+    pub fn tick(&mut self, bus: &mut GameEvents, specimen_collection: &SpecimenCollection) {
         let Some(specimen_id) = self.assigned_specimen else {
             return;
         };
 
-        let Some(specimen) = specimen_collection.get_by_id_mut(specimen_id) else {
+        let Some(specimen) = specimen_collection.get_by_id(specimen_id) else {
             self.assigned_specimen = None;
             return;
         };
 
-        let is_slain = specimen.tick_slay_regen();
-
-        if is_slain {
-            let dropped_items = specimen.generate_drops();
-            items.add_new_batch(&dropped_items);
-            report.on_items_obtained(&dropped_items);
-
-            specimen.on_slain();
-
-            report.on_specimen_slain();
-        }
-
         self.update_state(specimen);
-
-        if is_slain {
-            let creature_id = specimen.creature_id;
-            specimen_collection.on_specimen_slain(&creature_id);
-        }
+        bus.specimen_tick_slay_regen(specimen_id, 1);
     }
 
     pub fn get_assigned_specimen_id(&self) -> Option<SpecimenId> {

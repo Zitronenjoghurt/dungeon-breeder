@@ -13,7 +13,7 @@ pub struct RandomSpecimenAction {
 impl GameActionHandler for RandomSpecimenAction {
     fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         let new_specimen = NewSpecimen::random_from_creature_id(self.creature_id);
-        let new_id = state.specimen.add_new(new_specimen);
+        state.specimen.add_new(bus, new_specimen);
         Ok(())
     }
 }

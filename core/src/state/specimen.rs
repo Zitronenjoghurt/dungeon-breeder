@@ -2,7 +2,7 @@ use crate::data::config::CONFIG;
 use crate::data::creature::def::item_drop::CreatureItemDrop;
 use crate::data::creature::def::CreatureDefinition;
 use crate::data::creature::id::CreatureID;
-use crate::state::item::NewItem;
+use crate::events::GameEvents;
 use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::timer::Timer;
 use crate::utils::random::random_normal;
@@ -10,7 +10,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 pub mod collection;
-mod compendium;
+pub mod compendium;
 pub mod obtain_method;
 
 pub type SpecimenId = u32;
@@ -123,45 +123,11 @@ impl Specimen {
             .filter(|drop| drop.min_proficiency <= self.proficiency())
     }
 
-    pub fn generate_drops(&self) -> Vec<NewItem> {
-        let mut rng = rand::rng();
-        self.creature_id
-            .def()
-            .item_drops
-            .iter()
-            .filter_map(|item_drop| {
-                let count = item_drop.generate_drop(&mut rng, self.proficiency())?;
-                Some(NewItem {
-                    item_id: item_drop.item_id,
-                    amount: count as u64,
-                })
-            })
-            .collect::<Vec<_>>()
-    }
-
     fn slay_regen_max_secs_current(&self) -> u64 {
         if self.is_regenerating {
             self.regeneration_duration_secs()
         } else {
             self.slay_duration_secs()
-        }
-    }
-
-    /// Returns true if the specimen was slain
-    pub fn tick_slay_regen(&mut self) -> bool {
-        if !self
-            .slay_regen_timer
-            .tick(self.slay_regen_max_secs_current())
-        {
-            return false;
-        }
-
-        if self.is_regenerating {
-            self.is_regenerating = false;
-            false
-        } else {
-            self.is_regenerating = true;
-            true
         }
     }
 
@@ -177,6 +143,27 @@ impl Specimen {
 
 // Events
 impl Specimen {
+    pub fn on_tick_slay_regen(&mut self, bus: &mut GameEvents, ticks: u64) {
+        if !self
+            .slay_regen_timer
+            .tick_multiple(self.slay_regen_max_secs_current(), ticks)
+        {
+            return;
+        }
+
+        let is_slain = if self.is_regenerating {
+            self.is_regenerating = false;
+            false
+        } else {
+            self.is_regenerating = true;
+            true
+        };
+
+        if is_slain {
+            bus.specimen_slain(self.id, self.creature_id, self.proficiency());
+        }
+    }
+
     pub fn on_bred(&mut self) {
         self.last_bred = Some(Utc::now());
         self.times_bred += 1;

@@ -12,13 +12,9 @@ pub struct FuseAction {
 
 impl GameActionHandler for FuseAction {
     fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
-        let new_id = state
+        state
             .specimen
-            .fuse(self.specimen_a_id, self.specimen_b_id)?;
-
-        state.fusion.on_successful_fusion(new_id);
-        state.statistics.on_successful_fusion();
-
+            .fuse(bus, self.specimen_a_id, self.specimen_b_id)?;
         Ok(())
     }
 }

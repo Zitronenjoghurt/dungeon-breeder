@@ -14,7 +14,7 @@ impl GameActionHandler for UnlockDungeonLayerAction {
 
         let success = state.treasury.remove_coins(costs);
         if success {
-            let layer_index = state.dungeon.unlock_layer();
+            state.dungeon.unlock_layer();
             Ok(())
         } else {
             Err(GameError::InsufficientCoins)
