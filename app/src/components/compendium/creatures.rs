@@ -1,6 +1,7 @@
 use crate::components::value_button::ValueButton;
 use crate::components::{Component, CreatureSprite};
 use crate::systems::textures::TextureSystem;
+use crate::utils::formatting::format_date;
 use dungeon_breeder_core::data::creature::id::CreatureID;
 use dungeon_breeder_core::Game;
 use egui::{Grid, ScrollArea};
@@ -58,6 +59,8 @@ impl<'a> CompendiumCreaturesComponent<'a> {
                 .size(250.0)
                 .ui(ui);
             ui.group(|ui| {
+                ui.set_width(250.0);
+
                 ScrollArea::vertical().show(ui, |ui| {
                     Grid::new("compendium_creature_info_grid")
                         .num_columns(2)
@@ -76,7 +79,40 @@ impl<'a> CompendiumCreaturesComponent<'a> {
                             ui.label("Tier");
                             ui.label(self.selected_creature.def().tier.to_string());
                             ui.end_row();
-                        })
+                        });
+
+                    if let Some(entry) = self
+                        .game
+                        .state
+                        .specimen
+                        .compendium()
+                        .get_entry(self.selected_creature)
+                    {
+                        ui.separator();
+
+                        Grid::new("compendium_creature_statistics_grid")
+                            .num_columns(2)
+                            .striped(true)
+                            .min_col_width(121.0)
+                            .max_col_width(121.0)
+                            .show(ui, |ui| {
+                                ui.label("Unlocked at");
+                                ui.label(format_date(entry.unlocked_at));
+                                ui.end_row();
+
+                                ui.label("Times slain");
+                                ui.label(format!("{}", entry.times_slain));
+                                ui.end_row();
+
+                                ui.label("Times bred");
+                                ui.label(format!("{}", entry.times_bred));
+                                ui.end_row();
+
+                                ui.label("Times fused");
+                                ui.label(format!("{}", entry.times_fused));
+                                ui.end_row();
+                            });
+                    }
                 });
             });
         });

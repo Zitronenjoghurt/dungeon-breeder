@@ -67,6 +67,9 @@ pub fn breed_specimen(
         return Err(GameError::SpecimenNotFound(specimen_b_id));
     };
 
+    let creature_a_id = specimen_a.creature_id;
+    let creature_b_id = specimen_b.creature_id;
+
     check_specimen_can_breed(specimen_a, specimen_b)?;
 
     let strength = random_normal_combination_01(specimen_a.strength, specimen_b.strength);
@@ -93,6 +96,9 @@ pub fn breed_specimen(
         ) + 1,
         fusion_generation: max(specimen_a.fusion_generation, specimen_b.fusion_generation),
     };
+
+    collection.on_specimen_bred(&creature_a_id);
+    collection.on_specimen_bred(&creature_b_id);
 
     if let Some(specimen_a_mut) = collection.get_by_id_mut(specimen_a_id) {
         specimen_a_mut.on_bred();

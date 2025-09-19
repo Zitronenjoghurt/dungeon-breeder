@@ -1,4 +1,4 @@
-use crate::utils::formatting::format_seconds;
+use crate::utils::formatting::{format_date, format_seconds};
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::state::statistics::GameStatistics;
 use egui::{Grid, Id, ScrollArea, Ui, WidgetText};
@@ -41,7 +41,7 @@ impl ViewWindow for StatisticsWindow<'_> {
                 .striped(true)
                 .show(ui, |ui| {
                     ui.label("Started at");
-                    ui.label(self.statistics.started_at.to_string());
+                    ui.label(format_date(self.statistics.started_at));
                     ui.end_row();
 
                     ui.label("Playtime");

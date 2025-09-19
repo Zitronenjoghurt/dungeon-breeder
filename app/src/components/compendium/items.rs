@@ -1,5 +1,6 @@
 use crate::components::value_button::ValueButton;
 use crate::components::Component;
+use crate::utils::formatting::format_date;
 use dungeon_breeder_core::data::item::id::ItemID;
 use dungeon_breeder_core::Game;
 use egui::{Grid, ScrollArea};
@@ -44,8 +45,10 @@ impl<'a> CompendiumItemsComponent<'a> {
     pub fn show_item_info(&mut self, ui: &mut egui::Ui) {
         ui.vertical(|ui| {
             ui.group(|ui| {
+                ui.set_width(250.0);
+
                 ScrollArea::vertical().show(ui, |ui| {
-                    Grid::new("compendium_creature_info_grid")
+                    Grid::new("compendium_items_info_grid")
                         .num_columns(2)
                         .striped(true)
                         .min_col_width(121.0)
@@ -61,7 +64,37 @@ impl<'a> CompendiumItemsComponent<'a> {
                                 self.selected_item.def().price,
                                 regular::COINS
                             ));
-                        })
+                            ui.end_row();
+                        });
+
+                    if let Some(entry) = self
+                        .game
+                        .state
+                        .items
+                        .compendium()
+                        .get_entry(self.selected_item)
+                    {
+                        ui.separator();
+
+                        Grid::new("compendium_items_statistics_grid")
+                            .num_columns(2)
+                            .striped(true)
+                            .min_col_width(121.0)
+                            .max_col_width(121.0)
+                            .show(ui, |ui| {
+                                ui.label("Unlocked at");
+                                ui.label(format_date(entry.unlocked_at));
+                                ui.end_row();
+
+                                ui.label("Times obtained");
+                                ui.label(format!("{}", entry.times_obtained));
+                                ui.end_row();
+
+                                ui.label("Times sold");
+                                ui.label(format!("{}", entry.times_sold));
+                                ui.end_row();
+                            });
+                    }
                 });
             });
         });

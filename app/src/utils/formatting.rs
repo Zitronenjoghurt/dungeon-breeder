@@ -1,3 +1,4 @@
+use chrono::{DateTime, Local, Utc};
 use humantime::format_duration;
 use std::time::Duration;
 
@@ -15,4 +16,10 @@ pub fn format_bytes(bytes: u64) -> String {
     } else {
         format!("{:.2} GB", bytes as f64 / 1_000_000_000.0)
     }
+}
+
+pub fn format_date(date: DateTime<Utc>) -> String {
+    date.with_timezone(&Local)
+        .format("%Y-%m-%d %H:%M:%S")
+        .to_string()
 }

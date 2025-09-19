@@ -17,6 +17,18 @@ impl CreatureCompendium {
             .update(specimen);
     }
 
+    pub fn on_specimen_slain(&mut self, creature_id: &CreatureID) {
+        self.entries.entry(*creature_id).or_default().times_slain += 1;
+    }
+
+    pub fn on_specimen_bred(&mut self, creature_id: &CreatureID) {
+        self.entries.entry(*creature_id).or_default().times_bred += 1;
+    }
+
+    pub fn on_specimen_fused(&mut self, creature_id: &CreatureID) {
+        self.entries.entry(*creature_id).or_default().times_fused += 1;
+    }
+
     pub fn has_unlocked(&self, creature_id: &CreatureID) -> bool {
         self.entries.contains_key(creature_id)
     }
@@ -32,11 +44,18 @@ impl CreatureCompendium {
     pub fn unlocked_ids(&self) -> Vec<CreatureID> {
         self.entries.keys().copied().collect()
     }
+
+    pub fn get_entry(&self, creature_id: &CreatureID) -> Option<&CreatureCompendiumEntry> {
+        self.entries.get(creature_id)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreatureCompendiumEntry {
     pub unlocked_at: DateTime<Utc>,
+    pub times_slain: u128,
+    pub times_bred: u128,
+    pub times_fused: u128,
     pub proficiency: (f32, f32),
     pub strength: (f32, f32),
     pub intelligence: (f32, f32),
@@ -50,6 +69,9 @@ impl Default for CreatureCompendiumEntry {
     fn default() -> Self {
         Self {
             unlocked_at: Utc::now(),
+            times_slain: 0,
+            times_bred: 0,
+            times_fused: 0,
             proficiency: (1.0, 0.0),
             strength: (1.0, 0.0),
             intelligence: (1.0, 0.0),

@@ -188,3 +188,18 @@ impl SpecimenCollection {
             .filter(|specimen| specimen.creature_id != *creature_id)
     }
 }
+
+// Events
+impl SpecimenCollection {
+    pub fn on_specimen_slain(&mut self, creature_id: &CreatureID) {
+        self.compendium.on_specimen_slain(creature_id);
+    }
+
+    pub fn on_specimen_bred(&mut self, creature_id: &CreatureID) {
+        self.compendium.on_specimen_bred(creature_id);
+    }
+
+    pub fn on_specimen_fused(&mut self, creature_id: &CreatureID) {
+        self.compendium.on_specimen_fused(creature_id);
+    }
+}

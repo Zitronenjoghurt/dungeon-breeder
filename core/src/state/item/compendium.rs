@@ -35,6 +35,10 @@ impl ItemCompendium {
     pub fn unlocked_ids(&self) -> Vec<ItemID> {
         self.entries.keys().copied().collect()
     }
+
+    pub fn get_entry(&self, item_id: &ItemID) -> Option<&ItemCompendiumEntry> {
+        self.entries.get(item_id)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

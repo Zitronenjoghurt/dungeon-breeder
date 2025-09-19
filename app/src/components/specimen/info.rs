@@ -1,6 +1,6 @@
 use crate::components::{Component, CreatureSprite};
 use crate::systems::textures::TextureSystem;
-use crate::utils::formatting::format_seconds;
+use crate::utils::formatting::{format_date, format_seconds};
 use dungeon_breeder_core::state::specimen::Specimen;
 use egui::{Grid, ScrollArea, Ui};
 
@@ -99,7 +99,7 @@ impl Component for SpecimenInfo<'_> {
                                 ui.end_row();
 
                                 ui.label("Obtained at");
-                                ui.label(specimen.obtained_at.to_string());
+                                ui.label(format_date(specimen.obtained_at));
                                 ui.end_row();
 
                                 ui.label("Power");

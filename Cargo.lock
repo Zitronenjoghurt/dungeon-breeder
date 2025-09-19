@@ -812,6 +812,7 @@ name = "dungeon-breeder-app"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "dungeon-breeder-core",
  "eframe",
  "egui",

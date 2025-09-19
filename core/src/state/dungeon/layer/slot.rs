@@ -50,10 +50,16 @@ impl DungeonLayerSlot {
             report.on_items_obtained(&dropped_items);
 
             specimen.on_slain();
+
             report.on_specimen_slain();
         }
 
         self.update_state(specimen);
+
+        if is_slain {
+            let creature_id = specimen.creature_id;
+            specimen_collection.on_specimen_slain(&creature_id);
+        }
     }
 
     pub fn get_assigned_specimen_id(&self) -> Option<SpecimenId> {

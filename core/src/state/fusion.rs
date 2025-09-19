@@ -1,6 +1,7 @@
 use crate::data::config::CONFIG;
 use crate::data::creature::id::CreatureID;
 use crate::error::{GameError, GameResult};
+use crate::state::specimen::collection::SpecimenCollection;
 use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::specimen::{NewSpecimen, Specimen, SpecimenId};
 use crate::utils::random::{random_normal, random_normal_exp_bias, random_normalized};
@@ -55,7 +56,34 @@ pub fn determine_fusion_candidates(fusion_power: f32) -> Vec<CreatureID> {
     }
 }
 
-pub fn fuse_specimen(specimen_a: &Specimen, specimen_b: &Specimen) -> GameResult<NewSpecimen> {
+pub fn fuse_specimen(
+    collection: &mut SpecimenCollection,
+    specimen_a_id: SpecimenId,
+    specimen_b_id: SpecimenId,
+) -> GameResult<NewSpecimen> {
+    let Some(specimen_a) = collection.get_by_id(specimen_a_id) else {
+        return Err(GameError::SpecimenNotFound(specimen_a_id));
+    };
+
+    let Some(specimen_b) = collection.get_by_id(specimen_b_id) else {
+        return Err(GameError::SpecimenNotFound(specimen_b_id));
+    };
+
+    let new_specimen = specimen_fusion(specimen_a, specimen_b)?;
+
+    let creature_a_id = specimen_a.creature_id;
+    let creature_b_id = specimen_b.creature_id;
+
+    collection.remove_by_id(specimen_a_id);
+    collection.remove_by_id(specimen_b_id);
+
+    collection.on_specimen_fused(&creature_a_id);
+    collection.on_specimen_fused(&creature_b_id);
+
+    Ok(new_specimen)
+}
+
+pub fn specimen_fusion(specimen_a: &Specimen, specimen_b: &Specimen) -> GameResult<NewSpecimen> {
     check_specimen_can_fuse(specimen_a, specimen_b)?;
 
     let fusion_power = generate_fusion_power(specimen_a, specimen_b);
