@@ -23,6 +23,8 @@ pub enum CreatureID {
     #[default]
     Gonk,
     Slime,
+    Baragoo,
+    Tinky,
 }
 
 impl CreatureID {
@@ -34,6 +36,8 @@ impl CreatureID {
         match self {
             Self::Gonk => &CREATURE_GONK,
             Self::Slime => &CREATURE_SLIME,
+            Self::Baragoo => &CREATURE_BARAGOO,
+            Self::Tinky => &CREATURE_TINKY,
         }
     }
 }

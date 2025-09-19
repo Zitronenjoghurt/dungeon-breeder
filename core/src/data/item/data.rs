@@ -15,7 +15,47 @@ pub static ITEM_GONK_SOUL: ItemDefinition = ItemDefinition {
     price: 100,
 };
 
+pub static ITEM_SLIMY_DABS: ItemDefinition = ItemDefinition {
+    name: "Slimy Dabs",
+    price: 3,
+};
+
 pub static ITEM_SLIMY_JELLY: ItemDefinition = ItemDefinition {
     name: "Slimy Jelly",
-    price: 3,
+    price: 20,
+};
+
+pub static ITEM_SLIME_AMETHYST: ItemDefinition = ItemDefinition {
+    name: "Slimy Jelly",
+    price: 200,
+};
+
+pub static ITEM_GOO_GOO: ItemDefinition = ItemDefinition {
+    name: "Goo Goo",
+    price: 10,
+};
+
+pub static ITEM_GOOBER: ItemDefinition = ItemDefinition {
+    name: "Goober",
+    price: 50,
+};
+
+pub static ITEM_REFINED_GOOBER: ItemDefinition = ItemDefinition {
+    name: "Refined Goober",
+    price: 350,
+};
+
+pub static ITEM_TINKOFUZZ: ItemDefinition = ItemDefinition {
+    name: "Tinky Fuzz",
+    price: 30,
+};
+
+pub static ITEM_TINKOSPHERE: ItemDefinition = ItemDefinition {
+    name: "Tinkosphere",
+    price: 100,
+};
+
+pub static ITEM_TINKOLITE: ItemDefinition = ItemDefinition {
+    name: "Tinkolite",
+    price: 500,
 };

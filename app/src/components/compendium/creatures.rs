@@ -85,7 +85,9 @@ impl<'a> CompendiumCreaturesComponent<'a> {
 
 impl Component for CompendiumCreaturesComponent<'_> {
     fn ui(mut self, ui: &mut egui::Ui) {
-        ui.horizontal(|ui| {
+        ui.horizontal_top(|ui| {
+            ui.set_min_height(ui.available_height());
+
             self.show_creature_buttons(ui);
             ui.separator();
             self.show_creature_info(ui);
