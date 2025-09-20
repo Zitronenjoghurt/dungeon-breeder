@@ -1,5 +1,4 @@
 use crate::app::GameApp;
-use tracing_subscriber::Layer;
 
 mod app;
 mod components;
@@ -35,6 +34,7 @@ fn main() {
 #[cfg(feature = "tracy")]
 fn init_tracing() {
     use tracing_subscriber::EnvFilter;
+    use tracing_subscriber::Layer;
     use tracing_subscriber::prelude::*;
 
     let filter = EnvFilter::new("")

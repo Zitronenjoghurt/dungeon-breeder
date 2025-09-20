@@ -43,6 +43,12 @@ impl GameActions {
         }
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::actions::push_action",
+        level = "trace",
+        skip(self)
+    )]
     pub fn push_action(&self, action: GameAction) {
         if let Ok(mut queue) = self.queue.try_borrow_mut() {
             queue.push(action);

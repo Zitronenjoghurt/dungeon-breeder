@@ -63,6 +63,12 @@ impl ItemCollection {
 
 // Events
 impl ItemCollection {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::items::handle_event",
+        level = "trace",
+        skip(self, bus)
+    )]
     pub fn handle_event(&mut self, bus: &mut GameEvents, event: &GameEvent) {
         match event {
             GameEvent::ItemObtained(event) => self.on_item_obtained(event.item_id, event.amount),

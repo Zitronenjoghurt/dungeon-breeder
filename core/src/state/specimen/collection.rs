@@ -101,6 +101,12 @@ impl SpecimenCollection {
         self.collection.remove(&id)
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::specimen::sorted_ids",
+        level = "trace",
+        skip(self, sort)
+    )]
     pub fn sorted_ids(&self, sort: &SpecimenCollectionSort) -> Vec<SpecimenId> {
         let mut specimens: Vec<(&SpecimenId, &Specimen)> = self.collection.iter().collect();
 
@@ -172,6 +178,12 @@ impl SpecimenCollection {
         check_specimen_can_breed(specimen_1, specimen_2).is_ok()
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::specimen::breed",
+        level = "trace",
+        skip(self, bus, specimen_a_id, specimen_b_id)
+    )]
     pub fn breed(
         &mut self,
         bus: &mut GameEvents,
@@ -195,6 +207,12 @@ impl SpecimenCollection {
         Ok(new_id)
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::specimen::fuse",
+        level = "trace",
+        skip(self, bus, specimen_a_id, specimen_b_id)
+    )]
     pub fn fuse(
         &mut self,
         bus: &mut GameEvents,
@@ -246,6 +264,12 @@ impl SpecimenCollection {
 
 // Events
 impl SpecimenCollection {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::specimen::handle_event",
+        level = "trace",
+        skip(self, bus)
+    )]
     pub fn handle_event(&mut self, bus: &mut GameEvents, event: &GameEvent) {
         match event {
             GameEvent::SpecimenBred(event) => self.on_specimen_bred(event),

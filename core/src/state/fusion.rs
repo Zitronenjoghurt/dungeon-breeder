@@ -22,6 +22,12 @@ impl FusionState {
 
 // Events
 impl FusionState {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::fusion::handle_event",
+        level = "trace",
+        skip(self)
+    )]
     pub fn handle_event(&mut self, event: &GameEvent) {
         if let GameEvent::SpecimenFused(event) = event {
             self.on_successful_fusion(event.specimen_id);

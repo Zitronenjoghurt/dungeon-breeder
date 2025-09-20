@@ -28,6 +28,12 @@ impl Default for GameStatistics {
 }
 
 impl GameStatistics {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::statistics::handle_event",
+        level = "trace",
+        skip(self)
+    )]
     pub fn handle_event(&mut self, event: &GameEvent) {
         match event {
             GameEvent::SpecimenBred(_) => self.times_bred = self.times_bred.saturating_add(1),
@@ -39,11 +45,17 @@ impl GameStatistics {
         }
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::statistics::on_ticks_elapsed",
+        level = "trace",
+        skip(self)
+    )]
     pub fn on_ticks_elapsed(&mut self, ticks: u64) {
         if ticks <= 10 {
             self.active_ticks = self.active_ticks.saturating_add(ticks);
         } else {
-            self.passive_ticks = self.active_ticks.saturating_add(ticks);
+            self.passive_ticks = self.passive_ticks.saturating_add(ticks);
         }
     }
 }

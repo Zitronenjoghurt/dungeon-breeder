@@ -54,6 +54,12 @@ impl GameState {
         self.statistics.handle_event(event);
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::on_ticks_elapsed",
+        level = "trace",
+        skip(self)
+    )]
     pub fn on_ticks_elapsed(&mut self, ticks: u64) {
         self.statistics.on_ticks_elapsed(ticks);
     }

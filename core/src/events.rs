@@ -19,6 +19,12 @@ impl GameEvents {
         self.queue.drain(..).collect()
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::events::push_event",
+        level = "trace",
+        skip(self)
+    )]
     pub fn push_event(&mut self, event: GameEvent) {
         self.queue.push(event);
     }

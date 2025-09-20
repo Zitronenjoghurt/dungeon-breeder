@@ -36,6 +36,12 @@ impl BreedingState {
 
 // Events
 impl BreedingState {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::breeding::handle_event",
+        level = "trace",
+        skip(self)
+    )]
     pub fn handle_event(&mut self, event: &GameEvent) {
         if let GameEvent::SpecimenBred(event) = event {
             self.on_successful_breed(event.parent_1_id, event.parent_2_id, event.specimen_id);
