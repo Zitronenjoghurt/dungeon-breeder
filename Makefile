@@ -1,4 +1,4 @@
-.PHONY: dev
+.PHONY: trace
 
-dev:
-	cargo watch -x "run"
+trace:
+	cargo run --release --features tracy

@@ -16,6 +16,12 @@ pub struct GameActions {
 }
 
 impl GameActions {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::actions::handle",
+        level = "trace"
+        skip(self, state, events),
+    )]
     pub fn handle(&mut self, state: &mut GameState, events: &mut GameEvents) -> GameActionReport {
         let mut action_report = GameActionReport::default();
 

@@ -10,6 +10,12 @@ pub struct FusionSimulation {
 }
 
 impl FusionSimulation {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::fusion::simulation::simulate",
+        level = "trace",
+        skip(specimen_1, specimen_2)
+    )]
     pub fn simulate(
         specimen_1: &Specimen,
         specimen_2: &Specimen,

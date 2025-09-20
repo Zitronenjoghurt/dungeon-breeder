@@ -3,6 +3,11 @@ name = "dungeon-breeder-app"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+tracy = ["tracing-subscriber", "tracing-tracy"]
+tracing-off = ["dungeon-breeder-core/tracing-off", "tracing/max_level_off", "tracing/release_max_level_off"]
+
 [dependencies]
 anyhow = "1.0.99"
 chrono = { workspace = true }
@@ -20,4 +25,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 strum = { workspace = true }
 sysinfo = { version = "0.37.0", features = ["serde", "windows"] }
+tracing = { workspace = true }
+tracing-subscriber = { version = "0.3.20", features = ["env-filter", "fmt"], optional = true }
+tracing-tracy = { version = "0.11.4", optional = true }
 zstd = { workspace = true }

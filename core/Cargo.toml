@@ -3,6 +3,10 @@ name = "dungeon-breeder-core"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+tracing-off = ["tracing/max_level_off", "tracing/release_max_level_off"]
+
 [dependencies]
 chrono = { workspace = true }
 humantime = { workspace = true }
@@ -12,3 +16,4 @@ serde = { workspace = true }
 strum = { workspace = true }
 strum_macros = { workspace = true }
 thiserror = "2.0.16"
+tracing = { workspace = true }

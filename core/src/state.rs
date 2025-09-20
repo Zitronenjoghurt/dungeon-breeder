@@ -30,10 +30,22 @@ pub struct GameState {
 }
 
 impl GameState {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::tick",
+        level = "trace",
+        skip(self, bus)
+    )]
     pub fn tick(&mut self, bus: &mut GameEvents) {
         self.dungeon.tick(bus, &self.specimen);
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::state::handle_event",
+        level = "trace",
+        skip(self, bus)
+    )]
     pub fn handle_event(&mut self, bus: &mut GameEvents, event: &GameEvent) {
         self.breeding.handle_event(event);
         self.fusion.handle_event(event);

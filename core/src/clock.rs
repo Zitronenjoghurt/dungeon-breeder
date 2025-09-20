@@ -15,6 +15,12 @@ impl Default for Clock {
 }
 
 impl Clock {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::clock::update",
+        level = "trace",
+        skip(self)
+    )]
     pub fn update(&mut self) -> u64 {
         let now = Utc::now();
         let elapsed = now - self.last_tick;

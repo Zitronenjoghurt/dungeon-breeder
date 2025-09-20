@@ -1,4 +1,5 @@
 use crate::app::GameApp;
+use tracing_subscriber::Layer;
 
 mod app;
 mod components;
@@ -11,6 +12,9 @@ mod views;
 mod windows;
 
 fn main() {
+    #[cfg(feature = "tracy")]
+    init_tracing();
+
     let native_options = eframe::NativeOptions {
         renderer: eframe::Renderer::Wgpu,
         viewport: egui::ViewportBuilder::default()
@@ -26,4 +30,17 @@ fn main() {
         Box::new(|cc| Ok(Box::new(GameApp::new(cc).unwrap()))),
     )
     .expect("Failed to run egui application.");
+}
+
+#[cfg(feature = "tracy")]
+fn init_tracing() {
+    use tracing_subscriber::EnvFilter;
+    use tracing_subscriber::prelude::*;
+
+    let filter = EnvFilter::new("")
+        .add_directive("app=trace".parse().unwrap())
+        .add_directive("game=trace".parse().unwrap());
+    tracing_subscriber::registry()
+        .with(tracing_tracy::TracyLayer::default().with_filter(filter))
+        .init();
 }

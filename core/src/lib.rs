@@ -29,6 +29,7 @@ pub struct Game {
 }
 
 impl Game {
+    #[tracing::instrument(target = "game", name = "game::update", level = "trace", skip(self))]
     pub fn update(&mut self) -> GameUpdateReport {
         let now = std::time::Instant::now();
 
@@ -45,8 +46,9 @@ impl Game {
         }
 
         self.state.on_ticks_elapsed(ticks_elapsed);
-
         let time_elapsed = now.elapsed();
+
+        tracing::trace!(target: "game", "Game update: {ticks_elapsed} ticks");
 
         GameUpdateReport {
             action_report,
@@ -55,6 +57,12 @@ impl Game {
         }
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::handle_events",
+        level = "trace",
+        skip(self)
+    )]
     fn handle_events(&mut self) {
         let mut generation = 0;
 
@@ -70,6 +78,12 @@ impl Game {
         }
     }
 
+    #[tracing::instrument(
+        target = "game",
+        name = "game::handle_event",
+        level = "trace",
+        skip(self)
+    )]
     fn handle_event(&mut self, event: GameEvent) {
         self.state.handle_event(&mut self.events, &event);
     }

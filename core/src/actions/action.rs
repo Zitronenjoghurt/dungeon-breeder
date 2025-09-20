@@ -87,6 +87,12 @@ impl GameAction {
 }
 
 impl GameActionHandler for GameAction {
+    #[tracing::instrument(
+        target = "game",
+        name = "game::action::handle",
+        level = "trace"
+        skip(state, bus),
+    )]
     fn handle(self, state: &mut GameState, bus: &mut GameEvents) -> GameResult<()> {
         match self {
             Self::AddCoins(action) => action.handle(state, bus),

@@ -42,6 +42,12 @@ pub struct GameApp {
 }
 
 impl eframe::App for GameApp {
+    #[tracing::instrument(
+        target = "app",
+        name = "app::update",
+        level = "trace"
+        skip(self, ctx, _frame),
+    )]
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint_after(Duration::from_millis(100));
         self.handle_keyboard_inputs(ctx);
@@ -58,6 +64,12 @@ impl eframe::App for GameApp {
         }
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::save",
+        level = "trace"
+        skip(self, storage),
+    )]
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);
     }
@@ -103,6 +115,12 @@ impl GameApp {
         apply_glomzy_theme(ctx);
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::update_game",
+        level = "trace"
+        skip(self),
+    )]
     fn update_game(&mut self) {
         let report = self.game.update();
         for error in report.action_report.errors {
@@ -110,36 +128,72 @@ impl GameApp {
         }
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::update_modals",
+        level = "trace"
+        skip(self, ctx),
+    )]
     fn update_modals(&mut self, ctx: &egui::Context) {
         let mut modal_system = std::mem::take(&mut self.modals);
         modal_system.update(ctx, self);
         self.modals = modal_system;
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::views",
+        level = "trace"
+        skip(self, ctx),
+    )]
     fn update_views(&mut self, ctx: &egui::Context) {
         let mut view_system = std::mem::take(&mut self.views);
         view_system.render(ctx, self);
         self.views = view_system;
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::update_windows",
+        level = "trace"
+        skip(self, ctx),
+    )]
     fn update_windows(&mut self, ctx: &egui::Context) {
         let mut window_system = std::mem::take(&mut self.windows);
         window_system.update(ctx, self);
         self.windows = window_system;
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::update_file_picker",
+        level = "trace"
+        skip(self, ctx),
+    )]
     fn update_file_picker(&mut self, ctx: &egui::Context) {
         let mut file_picker = std::mem::take(&mut self.file_picker);
         file_picker.update(ctx, self);
         self.file_picker = file_picker;
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::handle_keyboard_inputs",
+        level = "trace"
+        skip(self, ctx),
+    )]
     fn handle_keyboard_inputs(&mut self, ctx: &egui::Context) {
         if ctx.input(|i| i.key_pressed(egui::Key::F3)) {
             self.windows.debug.is_open = !self.windows.debug.is_open;
         }
     }
 
+    #[tracing::instrument(
+        target = "app",
+        name = "app::handle_app_action",
+        level = "trace"
+        skip(self, ctx),
+    )]
     fn handle_app_action(&mut self, ctx: &egui::Context, action: AppAction) {
         let result = match action {
             AppAction::SaveAppSnapshot(path) => self.handle_save_app_snapshot(path, ctx),
