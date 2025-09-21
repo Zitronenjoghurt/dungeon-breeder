@@ -11,6 +11,7 @@ tracing-off = ["dungeon-breeder-core/tracing-off", "tracing/max_level_off", "tra
 [dependencies]
 anyhow = "1.0.99"
 chrono = { workspace = true }
+directories = "6.0.0"
 dungeon-breeder-core = { workspace = true }
 eframe = { version = "0.32.1", features = ["persistence", "wgpu"] }
 egui = { version = "0.32.1", features = ["persistence"] }
@@ -29,3 +30,18 @@ tracing = { workspace = true }
 tracing-subscriber = { version = "0.3.20", features = ["env-filter", "fmt"], optional = true }
 tracing-tracy = { version = "0.11.4", optional = true }
 zstd = { workspace = true }
+
+[build-dependencies]
+winresource = "0.1"
+
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+ar = "x86_64-w64-mingw32-gcc-ar"
+
+[package.metadata.bundle]
+name = "Dungeon Breeder"
+identifier = "io.github.Zitronenjoghurt.dungeon-breeder"
+short_description = "An idle game about researching monsters and managing your own dungeon."
+icon = ["assets/icons/icon_512x512.png", "assets/icons/icon_256x256.png", "assets/icons/icon_128x128.png", "assets/icons/icon_64x64.png", "assets/icons/icon_512x512.icns"]
+
+[package.metadata.winresource]
