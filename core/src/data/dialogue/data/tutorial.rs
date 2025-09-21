@@ -10,7 +10,7 @@ pub static DIALOGUE_TUTORIAL: Dialogue = dialogue!(
         CharacterID::Advisor,
         "Do you want to start now?" => [
             dialogue_action!("Yes" => [dialogue_event!(set: GameFlag::TutorialComplete), dialogue_event!(end)]),
-            dialogue_action!("No" => [dialogue_event!(jump: 0)]),
+            dialogue_action!("No" => [dialogue_event!(step)]),
         ]
     ),
     dialogue_entry!(CharacterID::Advisor, "You're stupid." => [

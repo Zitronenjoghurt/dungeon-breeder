@@ -8,7 +8,6 @@ default = []
 tracing-off = ["tracing/max_level_off", "tracing/release_max_level_off"]
 
 [dependencies]
-bitvec = { workspace = true }
 chrono = { workspace = true }
 humantime = { workspace = true }
 rand = { workspace = true }

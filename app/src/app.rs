@@ -12,6 +12,7 @@ use crate::views::{View, ViewID, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::Context;
 use dungeon_breeder_core::Game;
+use eframe::wgpu::rwh::HasWindowHandle;
 use egui::FontDefinitions;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

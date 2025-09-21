@@ -1,4 +1,5 @@
 use crate::app::GameApp;
+use crate::components::game_menu_button::GameMenuButton;
 use crate::components::*;
 use crate::views::{View, ViewID};
 use crate::windows::compendium::{CompendiumWindow, CompendiumWindowState};
@@ -7,6 +8,7 @@ use crate::windows::items::ItemsWindow;
 use crate::windows::specimen::{SpecimenWindow, SpecimenWindowState};
 use crate::windows::statistics::StatisticsWindow;
 use crate::windows::ViewWindow;
+use dungeon_breeder_core::data::flags::GameFlag;
 use egui::{CentralPanel, Context, TopBottomPanel};
 use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
@@ -47,36 +49,47 @@ impl View for GameView {
                     .tooltip("Settings")
                     .ui(ui);
 
-                ToggleButton::new(
-                    &mut self.statistics_window_open,
-                    regular::PROJECTOR_SCREEN_CHART,
-                )
-                .tooltip("Statistics")
-                .ui(ui);
+                GameMenuButton::new(&mut self.statistics_window_open)
+                    .label(regular::PROJECTOR_SCREEN_CHART)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedStatistics))
+                    .tooltip("Statistics")
+                    .ui(ui);
 
                 ui.separator();
 
-                ToggleButton::new(&mut self.compendium_window.is_open, regular::BOOK)
+                GameMenuButton::new(&mut self.compendium_window.is_open)
+                    .label(regular::BOOK)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedCompendium))
                     .tooltip("Compendium")
                     .ui(ui);
 
-                ToggleButton::new(&mut self.specimen_window.is_open, regular::WAREHOUSE)
+                GameMenuButton::new(&mut self.specimen_window.is_open)
+                    .label(regular::WAREHOUSE)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedSpecimenOverview))
                     .tooltip("Specimen")
                     .ui(ui);
 
-                ToggleButton::new(&mut self.items_window_open, regular::TREASURE_CHEST)
+                GameMenuButton::new(&mut self.items_window_open)
+                    .label(regular::TREASURE_CHEST)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedItems))
                     .tooltip("Items")
                     .ui(ui);
 
-                ToggleButton::new(&mut self.dungeon_window.is_open, regular::SWORD)
+                GameMenuButton::new(&mut self.dungeon_window.is_open)
+                    .label(regular::SWORD)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedDungeon))
                     .tooltip("Dungeon")
                     .ui(ui);
 
-                ToggleButton::new(&mut app.windows.breeding.is_open, regular::HEART)
+                GameMenuButton::new(&mut app.windows.breeding.is_open)
+                    .label(regular::HEART)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedBreeding))
                     .tooltip("Breeding")
                     .ui(ui);
 
-                ToggleButton::new(&mut app.windows.fusion.is_open, regular::ARROWS_MERGE)
+                GameMenuButton::new(&mut app.windows.fusion.is_open)
+                    .label(regular::ARROWS_MERGE)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedFusion))
                     .tooltip("Fusion")
                     .ui(ui);
 

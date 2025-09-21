@@ -6,6 +6,7 @@ pub mod compendium;
 pub mod creature;
 pub mod dungeon;
 pub mod enum_select;
+pub mod game_menu_button;
 mod generic_select;
 pub mod item;
 pub mod number_range_dropdown_select;

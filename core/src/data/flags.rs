@@ -6,5 +6,12 @@ use strum_macros::EnumIter;
 )]
 #[repr(u16)]
 pub enum GameFlag {
-    TutorialComplete,
+    TutorialComplete = 0,
+    UnlockedCompendium = 1,
+    UnlockedStatistics = 2,
+    UnlockedSpecimenOverview = 3,
+    UnlockedItems = 4,
+    UnlockedDungeon = 5,
+    UnlockedBreeding = 6,
+    UnlockedFusion = 7,
 }

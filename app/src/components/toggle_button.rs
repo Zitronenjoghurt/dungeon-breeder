@@ -1,10 +1,11 @@
 use crate::components::*;
-use egui::Ui;
+use egui::{Button, Ui};
 
 pub struct ToggleButton<'a> {
     value: &'a mut bool,
     label: &'a str,
     tooltip: Option<&'a str>,
+    enabled: bool,
 }
 
 impl<'a> ToggleButton<'a> {
@@ -13,6 +14,7 @@ impl<'a> ToggleButton<'a> {
             value,
             label,
             tooltip: None,
+            enabled: true,
         }
     }
 
@@ -20,11 +22,16 @@ impl<'a> ToggleButton<'a> {
         self.tooltip = Some(tooltip);
         self
     }
+
+    pub fn enabled(mut self, enabled: bool) -> Self {
+        self.enabled = enabled;
+        self
+    }
 }
 
 impl Component for ToggleButton<'_> {
     fn ui(self, ui: &mut Ui) {
-        let response = ui.selectable_label(*self.value, self.label);
+        let response = ui.add_enabled(self.enabled, Button::selectable(*self.value, self.label));
         if response.clicked() {
             *self.value = !*self.value;
         };
