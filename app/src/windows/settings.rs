@@ -1,6 +1,7 @@
-use crate::systems::settings::{SettingsSystem, UIScale};
+use crate::components::{Component, EnumSelect};
+use crate::systems::settings::SettingsSystem;
 use crate::windows::ViewWindow;
-use egui::{Id, Ui, WidgetText};
+use egui::{Grid, Id, Ui, WidgetText};
 
 pub struct SettingsWindow<'a> {
     is_open: &'a mut bool,
@@ -31,18 +32,15 @@ impl ViewWindow for SettingsWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
-        let mut ui_scale = self.settings.get_ui_scale();
-        egui::ComboBox::from_id_salt("ui_scale")
-            .selected_text(ui_scale.to_string())
-            .show_ui(ui, |ui| {
-                ui.selectable_value(&mut ui_scale, UIScale::XXS, UIScale::XXS.to_string());
-                ui.selectable_value(&mut ui_scale, UIScale::XS, UIScale::XS.to_string());
-                ui.selectable_value(&mut ui_scale, UIScale::S, UIScale::S.to_string());
-                ui.selectable_value(&mut ui_scale, UIScale::M, UIScale::M.to_string());
-                ui.selectable_value(&mut ui_scale, UIScale::L, UIScale::L.to_string());
-                ui.selectable_value(&mut ui_scale, UIScale::XL, UIScale::XL.to_string());
-                ui.selectable_value(&mut ui_scale, UIScale::XXL, UIScale::XXL.to_string());
+        Grid::new("settings_grid")
+            .num_columns(2)
+            .striped(true)
+            .show(ui, |ui| {
+                ui.label("UI Scale");
+                let mut ui_scale = self.settings.get_ui_scale();
+                EnumSelect::new(&mut ui_scale, "settings_ui_scale_select").ui(ui);
+                self.settings.set_ui_scale(ui_scale);
+                ui.end_row();
             });
-        self.settings.set_ui_scale(ui_scale);
     }
 }

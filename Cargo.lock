@@ -836,10 +836,12 @@ dependencies = [
  "serde",
  "serde_json",
  "strum 0.27.2",
+ "strum_macros 0.27.2",
  "sysinfo 0.37.0",
  "tracing",
  "tracing-subscriber",
  "tracing-tracy",
+ "webbrowser",
  "winresource",
  "zstd",
 ]

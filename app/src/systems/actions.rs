@@ -1,4 +1,5 @@
 use crate::app::bug_report::BugReportMetadata;
+use crate::views::ViewID;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 
@@ -13,6 +14,7 @@ pub enum AppAction {
     },
     ReviewBugReport(PathBuf),
     RestoreBugReport,
+    SwitchView(ViewID),
 }
 
 #[derive(Debug, Default)]
@@ -60,5 +62,9 @@ impl AppActions {
 
     pub fn restore_bug_report(&self) {
         self.push_action(AppAction::RestoreBugReport);
+    }
+
+    pub fn switch_view(&self, view: ViewID) {
+        self.push_action(AppAction::SwitchView(view));
     }
 }

@@ -1,6 +1,6 @@
 use crate::app::GameApp;
 use crate::components::*;
-use crate::views::View;
+use crate::views::{View, ViewID};
 use crate::windows::compendium::{CompendiumWindow, CompendiumWindowState};
 use crate::windows::dungeon::{DungeonWindow, DungeonWindowState};
 use crate::windows::items::ItemsWindow;
@@ -31,6 +31,14 @@ impl View for GameView {
 
         TopBottomPanel::top("game_tab_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
+                if ui
+                    .selectable_label(false, regular::HOUSE)
+                    .on_hover_text("Main Menu")
+                    .clicked()
+                {
+                    app.actions.switch_view(ViewID::MainMenu);
+                }
+
                 ToggleButton::new(&mut app.windows.bug_report.is_open, regular::BUG)
                     .tooltip("Bug Report")
                     .ui(ui);

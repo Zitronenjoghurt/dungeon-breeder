@@ -8,7 +8,7 @@ use crate::systems::settings::SettingsSystem;
 use crate::systems::textures::TextureSystem;
 use crate::systems::toasts::ToastSystem;
 use crate::theme::apply_glomzy_theme;
-use crate::views::{View, ViewSystem};
+use crate::views::{View, ViewID, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::Context;
 use dungeon_breeder_core::Game;
@@ -122,6 +122,10 @@ impl GameApp {
         skip(self),
     )]
     fn update_game(&mut self) {
+        if (self.views.current_view() != ViewID::Game) {
+            return;
+        }
+
         let report = self.game.update();
         for error in report.action_report.errors {
             self.toasts.error(error.to_string());
@@ -183,6 +187,10 @@ impl GameApp {
         skip(self, ctx),
     )]
     fn handle_keyboard_inputs(&mut self, ctx: &egui::Context) {
+        if ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
+            self.windows.settings_open = !self.windows.settings_open;
+        }
+
         if ctx.input(|i| i.key_pressed(egui::Key::F3)) {
             self.windows.debug.is_open = !self.windows.debug.is_open;
         }
@@ -204,6 +212,7 @@ impl GameApp {
             }
             AppAction::ReviewBugReport(path) => self.handle_review_bug_report(path),
             AppAction::RestoreBugReport => self.handle_restore_bug_report(ctx),
+            AppAction::SwitchView(view) => self.handle_switch_view(view),
         };
 
         if let Err(error) = result {
@@ -263,6 +272,11 @@ impl GameApp {
             .take_bug_report()
             .context("No bug report loaded for review")?;
         bug_report.snapshot.restore(self, ctx)?;
+        Ok(())
+    }
+
+    fn handle_switch_view(&mut self, view_id: ViewID) -> anyhow::Result<()> {
+        self.views.switch_view(view_id);
         Ok(())
     }
 }

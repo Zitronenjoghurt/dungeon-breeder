@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
+use strum_macros::EnumIter;
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, EnumIter,
+)]
 pub enum UIScale {
     XXS,
     XS,
