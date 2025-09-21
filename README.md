@@ -18,5 +18,6 @@ An idle game about funding your monster research by managing your own dungeon.
 
 ### Assets
 
-- Creatures: https://aekashics.itch.io/aekashics-librarium-librarium-static-batch-megapack
-- Icons: https://phosphoricons.com
+- Characters: TTRPG Legacy Characters by [Ddant1100 on ItchIO](https://ddant1100.itch.io)
+- Creatures: [Librarium Static Battler Megapack](https://aekashics.itch.io/aekashics-librarium-librarium-static-batch-megapack) by [Aekashics on ItchIO](https://aekashics.itch.io)
+- Icons: [Phosphor Icons](https://phosphoricons.com)
