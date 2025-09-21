@@ -4,7 +4,7 @@ use crate::data::config::CONFIG;
 use crate::events::event::GameEvent;
 use crate::events::GameEvents;
 use crate::state::GameState;
-use crate::update_report::GameUpdateReport;
+use crate::update_report::{GameUpdateProgressReport, GameUpdateReport};
 use serde::{Deserialize, Serialize};
 
 pub mod actions;
@@ -15,7 +15,7 @@ mod events;
 mod mechanics;
 pub mod state;
 pub mod types;
-mod update_report;
+pub mod update_report;
 mod utils;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -37,12 +37,13 @@ impl Game {
 
         // Handling events twice here ensures that the events are handled fast
         // AND always after a tick (should multiple ticks be processed in a single update)
-        self.handle_events();
+        let mut progress_report = GameUpdateProgressReport::default();
+        self.handle_events(&mut progress_report);
 
         let ticks_elapsed = self.clock.update();
         for _ in 0..ticks_elapsed {
             self.state.tick(&mut self.events);
-            self.handle_events();
+            self.handle_events(&mut progress_report);
         }
 
         self.state.on_ticks_elapsed(ticks_elapsed);
@@ -52,6 +53,7 @@ impl Game {
 
         GameUpdateReport {
             action_report,
+            progress_report,
             ticks_elapsed,
             time_elapsed,
         }
@@ -63,13 +65,13 @@ impl Game {
         level = "trace",
         skip(self)
     )]
-    fn handle_events(&mut self) {
+    fn handle_events(&mut self, progress_report: &mut GameUpdateProgressReport) {
         let mut generation = 0;
 
         while self.events.has_events() && generation < CONFIG.max_event_generations {
             generation += 1;
             for event in self.events.take_events() {
-                self.handle_event(event);
+                self.handle_event(progress_report, event);
             }
         }
 
@@ -84,7 +86,8 @@ impl Game {
         level = "trace",
         skip(self)
     )]
-    fn handle_event(&mut self, event: GameEvent) {
+    fn handle_event(&mut self, progress_report: &mut GameUpdateProgressReport, event: GameEvent) {
+        progress_report.handle_event(&event);
         self.state.handle_event(&mut self.events, &event);
     }
 }

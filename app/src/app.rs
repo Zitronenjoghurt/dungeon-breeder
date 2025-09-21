@@ -130,6 +130,12 @@ impl GameApp {
         for error in report.action_report.errors {
             self.toasts.error(error.to_string());
         }
+
+        if report.ticks_elapsed > 10 {
+            self.modals
+                .offline_progress
+                .open(report.progress_report, report.ticks_elapsed);
+        }
     }
 
     #[tracing::instrument(
@@ -187,10 +193,6 @@ impl GameApp {
         skip(self, ctx),
     )]
     fn handle_keyboard_inputs(&mut self, ctx: &egui::Context) {
-        if ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
-            self.windows.settings_open = !self.windows.settings_open;
-        }
-
         if ctx.input(|i| i.key_pressed(egui::Key::F3)) {
             self.windows.debug.is_open = !self.windows.debug.is_open;
         }

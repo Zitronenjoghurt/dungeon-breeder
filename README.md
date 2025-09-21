@@ -2,7 +2,7 @@
 
 # Dungeon Breeder
 
-About breeding and fusing stronger and stronger monsters to provide a challenging dungeons for adventurers or something.
+An idle game about funding your monster research by managing your own dungeon.
 
 ## Information
 
@@ -19,3 +19,4 @@ About breeding and fusing stronger and stronger monsters to provide a challengin
 ### Assets
 
 - Creatures: https://aekashics.itch.io/aekashics-librarium-librarium-static-batch-megapack
+- Icons: https://phosphoricons.com

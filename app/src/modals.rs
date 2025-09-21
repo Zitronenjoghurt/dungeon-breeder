@@ -3,6 +3,7 @@ use egui::{Context, Id, Modal, Ui};
 use serde::{Deserialize, Serialize};
 
 pub mod confirm;
+pub mod offline_progress;
 pub mod specimen_selection;
 
 pub trait AppModal {
@@ -33,6 +34,7 @@ pub trait AppModal {
 pub struct ModalSystem {
     #[serde(skip, default)]
     pub confirm: confirm::ConfirmModal,
+    pub offline_progress: offline_progress::OfflineProgressModal,
     pub specimen_selection: specimen_selection::SpecimenSelectionModal,
 }
 
@@ -40,6 +42,7 @@ impl ModalSystem {
     // Will be able to access everything inside AppState besides the ModalSystem itself
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
         self.confirm.update(ctx, app);
+        self.offline_progress.update(ctx, app);
         self.specimen_selection.update(ctx, app);
     }
 }
