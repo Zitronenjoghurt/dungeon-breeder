@@ -1,7 +1,7 @@
-mod data;
-mod entry;
-mod event;
-mod id;
+pub mod data;
+pub mod entry;
+pub mod event;
+pub mod id;
 
 #[derive(Debug)]
 pub struct Dialogue<'a> {

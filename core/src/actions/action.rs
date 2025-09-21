@@ -1,4 +1,5 @@
 use crate::data::creature::id::CreatureID;
+use crate::data::dialogue::id::DialogueID;
 use crate::data::item::id::ItemID;
 use crate::error::GameResult;
 use crate::events::GameEvents;
@@ -8,6 +9,8 @@ use crate::state::GameState;
 mod add_coins;
 mod assign_to_dungeon_layer_slot;
 mod breed;
+mod dialogue_action;
+mod dialogue_trigger;
 mod fuse;
 mod random_specimen;
 mod reset_game_state;
@@ -30,6 +33,8 @@ pub enum GameAction {
     ResetGameState,
     SellItem(sell_item::SellItemAction),
     SpawnSpecimen(spawn_specimen::SpawnSpecimenAction),
+    TakeDialogueAction(dialogue_action::TakeDialogueAction),
+    TriggerDialogue(dialogue_trigger::TriggerDialogueAction),
     UnlockDungeonLayer,
     UnlockDungeonLayerSlot(unlock_dungeon_layer_slot::UnlockDungeonLayerSlotAction),
 }
@@ -79,6 +84,14 @@ impl GameAction {
         Self::SpawnSpecimen(spawn_specimen::SpawnSpecimenAction { new_specimen })
     }
 
+    pub fn take_dialogue_action(action_index: usize) -> Self {
+        Self::TakeDialogueAction(dialogue_action::TakeDialogueAction { action_index })
+    }
+
+    pub fn trigger_dialogue(dialogue_id: DialogueID) -> Self {
+        Self::TriggerDialogue(dialogue_trigger::TriggerDialogueAction { dialogue_id })
+    }
+
     pub fn unlock_dungeon_layer_slot(layer_index: usize) -> Self {
         Self::UnlockDungeonLayerSlot(unlock_dungeon_layer_slot::UnlockDungeonLayerSlotAction {
             layer_index,
@@ -103,6 +116,8 @@ impl GameActionHandler for GameAction {
             Self::ResetGameState => reset_game_state::ResetGameStateAction.handle(state, bus),
             Self::SellItem(action) => action.handle(state, bus),
             Self::SpawnSpecimen(action) => action.handle(state, bus),
+            Self::TakeDialogueAction(action) => action.handle(state, bus),
+            Self::TriggerDialogue(action) => action.handle(state, bus),
             Self::UnlockDungeonLayer => {
                 unlock_dungeon_layer::UnlockDungeonLayerAction.handle(state, bus)
             }

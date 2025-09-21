@@ -1,16 +1,23 @@
+use crate::data::dialogue::event::DialogueEvent;
+use crate::data::dialogue::id::DialogueID;
 use crate::events::event::GameEvent;
 use crate::events::GameEvents;
 use crate::state::breeding::BreedingState;
+use crate::state::dialogue::DialogueState;
 use crate::state::dungeon::Dungeon;
+use crate::state::flags::GameFlags;
 use crate::state::fusion::FusionState;
 use crate::state::item::collection::ItemCollection;
 use crate::state::statistics::GameStatistics;
 use crate::state::treasury::Treasury;
+use rand_distr::num_traits::Saturating;
 use serde::{Deserialize, Serialize};
 use specimen::collection::SpecimenCollection;
 
 pub mod breeding;
+pub mod dialogue;
 pub mod dungeon;
+pub mod flags;
 pub mod fusion;
 pub mod item;
 pub mod specimen;
@@ -20,8 +27,10 @@ mod treasury;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct GameState {
+    pub active_dialogue: Option<DialogueState>,
     pub breeding: BreedingState,
     pub dungeon: Dungeon,
+    pub flags: GameFlags,
     pub fusion: FusionState,
     pub items: ItemCollection,
     pub specimen: SpecimenCollection,
@@ -52,6 +61,42 @@ impl GameState {
         self.items.handle_event(bus, event);
         self.specimen.handle_event(bus, event);
         self.statistics.handle_event(event);
+    }
+
+    pub fn handle_dialogue_events(&mut self, bus: &mut GameEvents, events: &[DialogueEvent]) {
+        let mut to_skip = 0;
+        for event in events {
+            if to_skip > 0 {
+                to_skip -= 1;
+                continue;
+            }
+
+            self.handle_dialogue_event(bus, event);
+            to_skip = event.count_events_skipped(&self.flags);
+
+            if event.should_ignore_following_events() {
+                break;
+            }
+        }
+    }
+
+    pub fn handle_dialogue_event(&mut self, _bus: &mut GameEvents, event: &DialogueEvent) {
+        match event {
+            DialogueEvent::End => self.active_dialogue = None,
+            DialogueEvent::Jump(relative) => {
+                if let Some(dialogue) = &mut self.active_dialogue {
+                    dialogue.index = dialogue.index.saturating_add(*relative as usize);
+                }
+            }
+            DialogueEvent::SetFlag(flag) => self.flags.set(*flag),
+            DialogueEvent::TriggerDialogue(dialogue_id) => self.trigger_dialogue(*dialogue_id),
+            DialogueEvent::Unset(flag) => self.flags.unset(*flag),
+            _ => {}
+        }
+    }
+
+    pub fn trigger_dialogue(&mut self, dialogue_id: DialogueID) {
+        self.active_dialogue = Some(DialogueState::from_dialogue_id(dialogue_id));
     }
 
     #[tracing::instrument(

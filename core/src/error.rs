@@ -1,3 +1,4 @@
+use crate::data::dialogue::id::DialogueID;
 use crate::state::specimen::SpecimenId;
 use thiserror::Error;
 
@@ -11,6 +12,19 @@ pub enum GameError {
     BreedingImpossibleIncompatibleCreatures,
     #[error("Breeding the same specimen with itself is impossible")]
     BreedingImpossibleSameSpecimen,
+    #[error("Dialogue at index '{index}' of dialogue '{dialogue_id}' is out of bounds")]
+    DialogueOutOfBounds {
+        dialogue_id: DialogueID,
+        index: usize,
+    },
+    #[error(
+        "Dialogue action at index '{action_index}' of dialogue '{dialogue_id}' at index '{index}' is out of bounds"
+    )]
+    DialogueActionOutOfBounds {
+        dialogue_id: DialogueID,
+        index: usize,
+        action_index: usize,
+    },
     #[error("Dungeon layer at index '{0}' not found")]
     DungeonLayerNotFound(usize),
     #[error("Dungeon layer slot at layer '{layer}' and index '{slot}' not found")]
@@ -23,6 +37,8 @@ pub enum GameError {
     InsufficientCoins,
     #[error("Insufficient items")]
     InsufficientItems,
+    #[error("No active dialogue")]
+    NoActiveDialogue,
     #[error("Reached dungeon layer limit")]
     ReachedDungeonLayerLimit,
     #[error("Reached dungeon layer slot limit of layer '{0}'")]
@@ -32,6 +48,22 @@ pub enum GameError {
 }
 
 impl GameError {
+    pub fn dialogue_out_of_bounds(dialogue_id: DialogueID, index: usize) -> Self {
+        Self::DialogueOutOfBounds { dialogue_id, index }
+    }
+
+    pub fn dialogue_action_out_of_bounds(
+        dialogue_id: DialogueID,
+        index: usize,
+        action_index: usize,
+    ) -> Self {
+        Self::DialogueActionOutOfBounds {
+            dialogue_id,
+            index,
+            action_index,
+        }
+    }
+
     pub fn dungeon_layer_slot_not_found(layer: usize, slot: usize) -> Self {
         Self::DungeonLayerSlotNotFound { layer, slot }
     }

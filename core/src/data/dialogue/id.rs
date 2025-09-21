@@ -1,6 +1,7 @@
 use crate::data::dialogue::data::*;
 use crate::data::dialogue::Dialogue;
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 use strum_macros::EnumIter;
 
 #[derive(
@@ -15,5 +16,11 @@ impl DialogueID {
         match self {
             DialogueID::Tutorial => &DIALOGUE_TUTORIAL,
         }
+    }
+}
+
+impl Display for DialogueID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
     }
 }

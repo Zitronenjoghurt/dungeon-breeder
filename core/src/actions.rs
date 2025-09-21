@@ -1,6 +1,7 @@
 use crate::actions::action::{GameAction, GameActionHandler};
 use crate::actions::report::GameActionReport;
 use crate::data::creature::id::CreatureID;
+use crate::data::dialogue::id::DialogueID;
 use crate::data::item::id::ItemID;
 use crate::events::GameEvents;
 use crate::state::specimen::{NewSpecimen, SpecimenId};
@@ -92,6 +93,14 @@ impl GameActions {
 
     pub fn spawn_specimen(&self, new_specimen: NewSpecimen) {
         self.push_action(GameAction::spawn_specimen(Box::new(new_specimen)))
+    }
+
+    pub fn take_dialogue_action(&self, action_index: usize) {
+        self.push_action(GameAction::take_dialogue_action(action_index))
+    }
+
+    pub fn trigger_dialogue(&self, dialogue_id: DialogueID) {
+        self.push_action(GameAction::trigger_dialogue(dialogue_id))
     }
 
     pub fn unlock_dungeon_layer(&self) {
