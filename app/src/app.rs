@@ -3,6 +3,7 @@ use crate::app::snapshot::GameAppSnapshot;
 use crate::modals::ModalSystem;
 use crate::systems::actions::{AppAction, AppActions};
 use crate::systems::bug_report_review::BugReportReviewSystem;
+use crate::systems::dialogue::DialogueSystem;
 use crate::systems::file_picker::FilePicker;
 use crate::systems::settings::SettingsSystem;
 use crate::systems::textures::TextureSystem;
@@ -12,7 +13,6 @@ use crate::views::{View, ViewID, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::Context;
 use dungeon_breeder_core::Game;
-use eframe::wgpu::rwh::HasWindowHandle;
 use egui::FontDefinitions;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
@@ -59,6 +59,7 @@ impl eframe::App for GameApp {
         self.update_file_picker(ctx);
         self.settings.update(ctx);
         self.toasts.update(ctx);
+        self.update_dialogue(ctx);
 
         for action in self.actions.take_actions() {
             self.handle_app_action(ctx, action);
@@ -185,6 +186,16 @@ impl GameApp {
         let mut file_picker = std::mem::take(&mut self.file_picker);
         file_picker.update(ctx, self);
         self.file_picker = file_picker;
+    }
+
+    #[tracing::instrument(
+        target = "app",
+        name = "app::update_dialogue",
+        level = "trace"
+        skip(self, ctx),
+    )]
+    fn update_dialogue(&mut self, ctx: &egui::Context) {
+        DialogueSystem::update(ctx, self);
     }
 
     #[tracing::instrument(

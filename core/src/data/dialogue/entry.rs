@@ -1,66 +1,44 @@
-use crate::data::character::id::CharacterID;
-use crate::data::dialogue::event::DialogueEvent;
+use crate::data::avatar::id::AvatarID;
+use crate::data::dialogue::action::DialogueAction;
+use crate::data::dialogue::options::DialogueOptions;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
-pub struct DialogueEntry<'a> {
-    pub character_id: CharacterID,
-    pub text: &'a str,
-    pub actions: &'a [DialogueEntryAction<'a>],
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct DialogueEntry {
+    pub avatar_id: AvatarID,
+    pub avatar_name: Option<String>,
+    pub text: String,
+    pub actions: Vec<DialogueAction>,
+    pub options: DialogueOptions,
 }
 
-#[derive(Debug)]
-pub struct DialogueEntryAction<'a> {
-    pub text: &'a str,
-    pub events: &'a [DialogueEvent],
-}
-
-#[macro_export]
-macro_rules! dialogue_entry {
-    (simple: $char_id:expr, $text:literal) => {
-        $crate::data::dialogue::entry::DialogueEntry {
-            character_id: $char_id,
-            text: $text,
-            actions: &[dialogue_action!(step: "Ok")],
+impl DialogueEntry {
+    pub fn new(avatar_id: AvatarID, text: &str) -> Self {
+        Self {
+            avatar_id,
+            avatar_name: None,
+            text: text.to_string(),
+            actions: Vec::new(),
+            options: DialogueOptions::default(),
         }
-    };
+    }
 
-    (step: $char_id:expr, $text:literal, $continue_text:literal) => {
-        $crate::data::dialogue::entry::DialogueEntry {
-            character_id: $char_id,
-            text: $text,
-            actions: &[dialogue_action!(step: $continue_text)],
-        }
-    };
+    pub fn avatar_name(mut self, name: Option<String>) -> Self {
+        self.avatar_name = name;
+        self
+    }
 
-    ($char_id:expr, $text:literal => [$($action:tt)*]) => {
-        $crate::data::dialogue::entry::DialogueEntry {
-            character_id: $char_id,
-            text: $text,
-            actions: &[$($action)*],
-        }
-    };
-}
+    pub fn step(avatar_id: AvatarID, text: &str) -> Self {
+        Self::new(avatar_id, text).action(DialogueAction::step("Ok"))
+    }
 
-#[macro_export]
-macro_rules! dialogue_action {
-    (step: $text:literal) => {
-        $crate::data::dialogue::entry::DialogueEntryAction {
-            text: $text,
-            events: &[$crate::dialogue_event!(step)],
-        }
-    };
+    pub fn options(mut self, options: DialogueOptions) -> Self {
+        self.options = options;
+        self
+    }
 
-    (jump: $text:literal => $offset:expr) => {
-        $crate::data::dialogue::entry::DialogueEntryAction {
-            text: $text,
-            events: &[$crate::dialogue_event!(jump: $offset)],
-        }
-    };
-
-    ($text:literal => [$($event:expr),* $(,)?]) => {
-        $crate::data::dialogue::entry::DialogueEntryAction {
-            text: $text,
-            events: &[$($event),*],
-        }
-    };
+    pub fn action(mut self, action: DialogueAction) -> Self {
+        self.actions.push(action);
+        self
+    }
 }

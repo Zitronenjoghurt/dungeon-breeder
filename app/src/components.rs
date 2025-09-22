@@ -1,9 +1,11 @@
 use egui::{Ui, Widget};
 
 pub mod asc_desc_button;
+pub mod avatar;
 pub mod bug_report_meta;
 pub mod compendium;
 pub mod creature;
+pub mod dialogue;
 pub mod dungeon;
 pub mod enum_select;
 pub mod game_menu_button;

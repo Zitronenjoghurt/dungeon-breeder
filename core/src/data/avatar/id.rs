@@ -1,7 +1,8 @@
-use crate::data::dialogue::data::*;
-use crate::data::dialogue::Dialogue;
+use crate::data::avatar::data::*;
+use crate::data::avatar::def::AvatarDefinition;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
+use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
 #[derive(
@@ -18,20 +19,24 @@ use strum_macros::EnumIter;
     Deserialize,
     EnumIter,
 )]
-pub enum DialogueID {
+pub enum AvatarID {
     #[default]
-    Tutorial,
+    Advisor,
 }
 
-impl DialogueID {
-    pub fn get_dialogue(self) -> Dialogue {
+impl AvatarID {
+    pub fn iter_def() -> impl Iterator<Item = &'static AvatarDefinition> {
+        Self::iter().map(|id| id.def())
+    }
+
+    pub const fn def(self) -> &'static AvatarDefinition {
         match self {
-            DialogueID::Tutorial => build_tutorial(),
+            Self::Advisor => &AVATAR_ADVISOR,
         }
     }
 }
 
-impl Display for DialogueID {
+impl Display for AvatarID {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self)
     }

@@ -2,6 +2,11 @@ use crate::app::GameApp;
 use crate::components::{Component, ToggleButton};
 use crate::modals::confirm::ConfirmModalOptions;
 use crate::systems::file_picker::FilePickerConfig;
+use crate::windows::debug_windows::bug_report::{BugReportDebugWindow, BugReportDebugWindowState};
+use crate::windows::debug_windows::dialogue::{DialogueDebugWindow, DialogueDebugWindowState};
+use crate::windows::debug_windows::specimen_spawn::{
+    SpecimenSpawnDebugWindow, SpecimenSpawnDebugWindowState,
+};
 use crate::windows::{ViewWindow, WindowSystem};
 use dungeon_breeder_core::data::creature::id::CreatureID;
 use egui::{Id, Ui, WidgetText};
@@ -11,6 +16,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugWindowState {
     pub is_open: bool,
+    pub bug_report: BugReportDebugWindowState,
+    pub dialogue: DialogueDebugWindowState,
+    pub specimen_spawn: SpecimenSpawnDebugWindowState,
 }
 
 pub struct DebugWindow<'a> {
@@ -51,13 +59,15 @@ impl ViewWindow for DebugWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
+        BugReportDebugWindow::new(self.app, &mut self.state.bug_report).show(ui.ctx());
+        DialogueDebugWindow::new(self.app, &mut self.state.dialogue).show(ui.ctx());
+        SpecimenSpawnDebugWindow::new(&mut self.state.specimen_spawn, &self.app.game)
+            .show(ui.ctx());
+
         ui.horizontal(|ui| {
-            ToggleButton::new(&mut self.windows.debug_bug_report.is_open, regular::BUG).ui(ui);
-            ToggleButton::new(
-                &mut self.windows.debug_specimen_spawn.is_open,
-                regular::ALIEN,
-            )
-            .ui(ui);
+            ToggleButton::new(&mut self.state.bug_report.is_open, regular::BUG).ui(ui);
+            ToggleButton::new(&mut self.state.specimen_spawn.is_open, regular::ALIEN).ui(ui);
+            ToggleButton::new(&mut self.state.dialogue.is_open, regular::CHAT).ui(ui);
         });
 
         ui.separator();

@@ -2,12 +2,8 @@ use crate::app::GameApp;
 use crate::windows::breeding::{BreedingWindow, BreedingWindowState};
 use crate::windows::bug_report::{BugReportWindow, BugReportWindowState};
 use crate::windows::debug::{DebugWindow, DebugWindowState};
-use crate::windows::debug_windows::specimen_spawn::{
-    SpecimenSpawnDebugWindow, SpecimenSpawnDebugWindowState,
-};
 use crate::windows::fusion::{FusionWindow, FusionWindowState};
 use crate::windows::settings::SettingsWindow;
-use debug_windows::bug_report::{BugReportDebugWindow, BugReportDebugWindowState};
 use egui::{Context, Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
@@ -71,8 +67,6 @@ pub struct WindowSystem {
     pub breeding: BreedingWindowState,
     pub bug_report: BugReportWindowState,
     pub debug: DebugWindowState,
-    pub debug_bug_report: BugReportDebugWindowState,
-    pub debug_specimen_spawn: SpecimenSpawnDebugWindowState,
     pub fusion: FusionWindowState,
     pub settings_open: bool,
 }
@@ -82,8 +76,6 @@ impl WindowSystem {
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
         BreedingWindow::new(app, &mut self.breeding).show(ctx);
         BugReportWindow::new(app, &mut self.bug_report).show(ctx);
-        BugReportDebugWindow::new(app, &mut self.debug_bug_report).show(ctx);
-        SpecimenSpawnDebugWindow::new(&mut self.debug_specimen_spawn, &app.game).show(ctx);
         FusionWindow::new(app, &mut self.fusion).show(ctx);
         SettingsWindow::new(&mut self.settings_open, &mut app.settings).show(ctx);
 

@@ -27,7 +27,7 @@ mod treasury;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct GameState {
-    pub active_dialogue: Option<DialogueState>,
+    pub active_dialogue: DialogueState,
     pub breeding: BreedingState,
     pub dungeon: Dungeon,
     pub flags: GameFlags,
@@ -71,7 +71,7 @@ impl GameState {
                 continue;
             }
 
-            self.handle_dialogue_event(bus, event);
+            self.handle_dialogue_event(bus, &event);
             to_skip = event.count_events_skipped(&self.flags);
 
             if event.should_ignore_following_events() {
@@ -81,13 +81,8 @@ impl GameState {
     }
 
     pub fn handle_dialogue_event(&mut self, _bus: &mut GameEvents, event: &DialogueEvent) {
+        self.active_dialogue.handle_dialogue_event(event);
         match event {
-            DialogueEvent::End => self.active_dialogue = None,
-            DialogueEvent::Jump(relative) => {
-                if let Some(dialogue) = &mut self.active_dialogue {
-                    dialogue.index = dialogue.index.saturating_add(*relative as usize);
-                }
-            }
             DialogueEvent::SetFlag(flag) => self.flags.set(*flag),
             DialogueEvent::TriggerDialogue(dialogue_id) => self.trigger_dialogue(*dialogue_id),
             DialogueEvent::Unset(flag) => self.flags.unset(*flag),
@@ -96,7 +91,7 @@ impl GameState {
     }
 
     pub fn trigger_dialogue(&mut self, dialogue_id: DialogueID) {
-        self.active_dialogue = Some(DialogueState::from_dialogue_id(dialogue_id));
+        self.active_dialogue = DialogueState::from_dialogue_id(dialogue_id);
     }
 
     #[tracing::instrument(

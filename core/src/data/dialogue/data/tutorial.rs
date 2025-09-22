@@ -1,20 +1,26 @@
-use crate::data::character::id::CharacterID;
+use crate::data::avatar::id::AvatarID;
+use crate::data::dialogue::action::DialogueAction;
+use crate::data::dialogue::event::DialogueEvent;
 use crate::data::dialogue::Dialogue;
 use crate::data::flags::GameFlag;
-use crate::{dialogue, dialogue_action, dialogue_entry, dialogue_event};
 
-pub static DIALOGUE_TUTORIAL: Dialogue = dialogue!(
-    dialogue_entry!(simple: CharacterID::Advisor, "Hello, world!"),
-    dialogue_entry!(simple: CharacterID::Advisor, "This is a test to see if stuff works."),
-    dialogue_entry!(
-        CharacterID::Advisor,
-        "Do you want to start now?" => [
-            dialogue_action!("Yes" => [dialogue_event!(set: GameFlag::TutorialComplete), dialogue_event!(end)]),
-            dialogue_action!("No" => [dialogue_event!(step)]),
-        ]
-    ),
-    dialogue_entry!(CharacterID::Advisor, "You're stupid." => [
-        dialogue_action!("No" => [dialogue_event!(jump: 0)]),
-        dialogue_action!("No doubt" => [dialogue_event!(jump: -1)]),
-    ])
-);
+pub fn build_tutorial() -> Dialogue {
+    Dialogue::builder()
+        .avatar(AvatarID::Advisor)
+        .avatar_name("Some wise being?")
+        .step("Hello, world!")
+        .step("This is a test to see if stuff works.")
+        .entry("Do you want to start now?", |e| {
+            e.action(
+                DialogueAction::new("Yes")
+                    .event(DialogueEvent::SetFlag(GameFlag::TutorialComplete))
+                    .event(DialogueEvent::End),
+            )
+            .action(DialogueAction::step("No"))
+        })
+        .entry("You're stupid.", |e| {
+            e.action(DialogueAction::new("No"))
+                .action(DialogueAction::new("No doubt").event(DialogueEvent::Jump(-1)))
+        })
+        .build()
+}

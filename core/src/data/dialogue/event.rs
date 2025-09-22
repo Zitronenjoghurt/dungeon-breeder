@@ -3,7 +3,7 @@ use crate::data::flags::GameFlag;
 use crate::state::flags::GameFlags;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum DialogueEvent {
     /// Will end the dialogue
     End,
@@ -24,6 +24,10 @@ pub enum DialogueEvent {
 }
 
 impl DialogueEvent {
+    pub fn step() -> Self {
+        DialogueEvent::Jump(1)
+    }
+
     pub fn should_ignore_following_events(&self) -> bool {
         matches!(self, DialogueEvent::Stop)
             | matches!(self, DialogueEvent::Jump(_))
@@ -50,47 +54,4 @@ impl DialogueEvent {
             _ => 0,
         }
     }
-}
-
-#[macro_export]
-macro_rules! dialogue_event {
-    (end) => {
-        $crate::data::dialogue::event::DialogueEvent::End
-    };
-
-    (stop) => {
-        $crate::data::dialogue::event::DialogueEvent::Stop
-    };
-
-    (step) => {
-        $crate::data::dialogue::event::DialogueEvent::Jump(1)
-    };
-
-    (jump: $offset:expr) => {
-        $crate::data::dialogue::event::DialogueEvent::Jump($offset)
-    };
-
-    (set: $flag:expr) => {
-        $crate::data::dialogue::event::DialogueEvent::SetFlag($flag)
-    };
-
-    (unset: $flag:expr) => {
-        $crate::data::dialogue::event::DialogueEvent::Unset($flag)
-    };
-
-    (skip_if: $flag:expr) => {
-        $crate::data::dialogue::event::DialogueEvent::SkipIf(($flag, 1))
-    };
-
-    (skip_if_not: $flag:expr) => {
-        $crate::data::dialogue::event::DialogueEvent::SkipIfNot(($flag, 1))
-    };
-
-    (skip_n_if: ($flag:expr, $n:expr)) => {
-        $crate::data::dialogue::event::DialogueEvent::SkipIf(($flag, $n))
-    };
-
-    (skip_n_if_not: ($flag:expr, $n:expr)) => {
-        $crate::data::dialogue::event::DialogueEvent::SkipIf(($flag, $n))
-    };
 }
