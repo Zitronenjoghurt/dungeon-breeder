@@ -1,9 +1,10 @@
 use crate::components::avatar::portrait::AvatarPortraitSprite;
 use crate::components::Component;
 use crate::systems::textures::TextureSystem;
+use crate::types::font::CustomFont;
 use dungeon_breeder_core::data::dialogue::entry::DialogueEntry;
 use dungeon_breeder_core::Game;
-use egui::{Frame, Ui};
+use egui::{Frame, ScrollArea, Ui};
 
 pub struct DialogueBoxComponent<'a> {
     game: &'a Game,
@@ -29,7 +30,18 @@ impl<'a> DialogueBoxComponent<'a> {
             ui.group(|ui| {
                 ui.set_width(419.0);
                 ui.set_height(134.0);
-                ui.label(&self.entry.text);
+                ScrollArea::vertical()
+                    .min_scrolled_height(134.0)
+                    .show(ui, |ui| {
+                        ui.add(
+                            egui::Label::new(
+                                CustomFont::ComfortaaBold
+                                    .rich(&self.entry.text, 14.0)
+                                    .line_height(Some(20.0)),
+                            )
+                            .wrap(),
+                        );
+                    });
             });
         });
 

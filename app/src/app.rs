@@ -9,6 +9,7 @@ use crate::systems::settings::SettingsSystem;
 use crate::systems::textures::TextureSystem;
 use crate::systems::toasts::ToastSystem;
 use crate::theme::apply_glomzy_theme;
+use crate::types::font::CustomFont;
 use crate::views::{View, ViewID, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::Context;
@@ -79,10 +80,6 @@ impl eframe::App for GameApp {
 
 impl GameApp {
     pub fn new(cc: &eframe::CreationContext) -> anyhow::Result<Self> {
-        let mut fonts = FontDefinitions::default();
-        egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
-        cc.egui_ctx.set_fonts(fonts);
-
         Self::setup_context(&cc.egui_ctx);
 
         #[cfg(debug_assertions)]
@@ -115,6 +112,15 @@ impl GameApp {
 
     fn setup_context(ctx: &egui::Context) {
         apply_glomzy_theme(ctx);
+        Self::setup_fonts(ctx);
+    }
+
+    fn setup_fonts(ctx: &egui::Context) {
+        let mut fonts = FontDefinitions::default();
+        CustomFont::load_all(&mut fonts);
+        CustomFont::ComfortaaRegular.set_as_default(&mut fonts);
+        egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
+        ctx.set_fonts(fonts);
     }
 
     #[tracing::instrument(
