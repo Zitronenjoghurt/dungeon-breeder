@@ -1,6 +1,7 @@
 use crate::data::creature::data::*;
 use crate::data::creature::def::CreatureDefinition;
 use crate::state::item::NewItem;
+use rand::prelude::IteratorRandom;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use strum::IntoEnumIterator;
@@ -29,6 +30,10 @@ pub enum CreatureID {
 }
 
 impl CreatureID {
+    pub fn random() -> Self {
+        Self::iter().choose(&mut rand::rng()).unwrap_or_default()
+    }
+
     pub fn iter_def() -> impl Iterator<Item = &'static CreatureDefinition> {
         Self::iter().map(|id| id.def())
     }

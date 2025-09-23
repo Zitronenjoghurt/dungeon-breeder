@@ -1,5 +1,6 @@
 use crate::data::creature::id::CreatureID;
 use crate::data::dialogue::id::DialogueID;
+use crate::data::flags::GameFlag;
 use crate::data::item::id::ItemID;
 use crate::error::GameResult;
 use crate::events::GameEvents;
@@ -15,6 +16,7 @@ mod fuse;
 mod random_specimen;
 mod reset_game_state;
 mod sell_item;
+mod set_flag;
 mod spawn_specimen;
 mod unlock_dungeon_layer;
 mod unlock_dungeon_layer_slot;
@@ -33,6 +35,7 @@ pub enum GameAction {
     ResetGameState,
     SellItem(sell_item::SellItemAction),
     SpawnSpecimen(spawn_specimen::SpawnSpecimenAction),
+    SetFlag(set_flag::SetFlagAction),
     TakeDialogueAction(dialogue_action::TakeDialogueAction),
     TriggerDialogue(dialogue_trigger::TriggerDialogueAction),
     UnlockDungeonLayer,
@@ -80,6 +83,10 @@ impl GameAction {
         Self::SellItem(sell_item::SellItemAction { item_id, amount })
     }
 
+    pub fn set_flag(flag: GameFlag, value: bool) -> Self {
+        Self::SetFlag(set_flag::SetFlagAction { flag, value })
+    }
+
     pub fn spawn_specimen(new_specimen: Box<NewSpecimen>) -> Self {
         Self::SpawnSpecimen(spawn_specimen::SpawnSpecimenAction { new_specimen })
     }
@@ -115,6 +122,7 @@ impl GameActionHandler for GameAction {
             Self::RandomSpecimen(action) => action.handle(state, bus),
             Self::ResetGameState => reset_game_state::ResetGameStateAction.handle(state, bus),
             Self::SellItem(action) => action.handle(state, bus),
+            Self::SetFlag(action) => action.handle(state, bus),
             Self::SpawnSpecimen(action) => action.handle(state, bus),
             Self::TakeDialogueAction(action) => action.handle(state, bus),
             Self::TriggerDialogue(action) => action.handle(state, bus),

@@ -4,6 +4,7 @@ use crate::modals::confirm::ConfirmModalOptions;
 use crate::systems::file_picker::FilePickerConfig;
 use crate::windows::debug_windows::bug_report::{BugReportDebugWindow, BugReportDebugWindowState};
 use crate::windows::debug_windows::dialogue::{DialogueDebugWindow, DialogueDebugWindowState};
+use crate::windows::debug_windows::flags::{FlagsDebugWindow, FlagsDebugWindowState};
 use crate::windows::debug_windows::specimen_spawn::{
     SpecimenSpawnDebugWindow, SpecimenSpawnDebugWindowState,
 };
@@ -18,6 +19,7 @@ pub struct DebugWindowState {
     pub is_open: bool,
     pub bug_report: BugReportDebugWindowState,
     pub dialogue: DialogueDebugWindowState,
+    pub flags: FlagsDebugWindowState,
     pub specimen_spawn: SpecimenSpawnDebugWindowState,
 }
 
@@ -61,6 +63,7 @@ impl ViewWindow for DebugWindow<'_> {
     fn render_content(&mut self, ui: &mut Ui) {
         BugReportDebugWindow::new(self.app, &mut self.state.bug_report).show(ui.ctx());
         DialogueDebugWindow::new(self.app, &mut self.state.dialogue).show(ui.ctx());
+        FlagsDebugWindow::new(self.app, &mut self.state.flags).show(ui.ctx());
         SpecimenSpawnDebugWindow::new(&mut self.state.specimen_spawn, &self.app.game)
             .show(ui.ctx());
 
@@ -68,6 +71,7 @@ impl ViewWindow for DebugWindow<'_> {
             ToggleButton::new(&mut self.state.bug_report.is_open, regular::BUG).ui(ui);
             ToggleButton::new(&mut self.state.specimen_spawn.is_open, regular::ALIEN).ui(ui);
             ToggleButton::new(&mut self.state.dialogue.is_open, regular::CHAT).ui(ui);
+            ToggleButton::new(&mut self.state.flags.is_open, regular::FLAG).ui(ui);
         });
 
         ui.separator();
@@ -114,6 +118,10 @@ impl ViewWindow for DebugWindow<'_> {
         ui.horizontal(|ui| {
             if ui.button("Random Gonk").clicked() {
                 self.app.game.actions.random_specimen(CreatureID::Gonk);
+            }
+
+            if ui.button("Random Specimen").clicked() {
+                self.app.game.actions.random_specimen(CreatureID::random());
             }
 
             if ui.button("Eat the Rich").clicked() {
