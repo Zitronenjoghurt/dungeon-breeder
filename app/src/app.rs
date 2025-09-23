@@ -118,7 +118,7 @@ impl GameApp {
     fn setup_fonts(ctx: &egui::Context) {
         let mut fonts = FontDefinitions::default();
         CustomFont::load_all(&mut fonts);
-        CustomFont::ComfortaaRegular.set_as_default(&mut fonts);
+        CustomFont::default().set_as_default(&mut fonts);
         egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
         ctx.set_fonts(fonts);
     }

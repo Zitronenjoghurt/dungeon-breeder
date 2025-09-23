@@ -8,6 +8,7 @@ An idle game about funding your monster research by managing your own dungeon.
 
 - **WARNING! This game is not signed yet and will be flagged as dangerous by your operating system. If you trust this
   project please look up how to circumvent these warnings on your sytem.**
+- All provided fonts are 100% open source.
 
 ### Save file path
 
