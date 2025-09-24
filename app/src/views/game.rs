@@ -8,7 +8,7 @@ use crate::windows::items::ItemsWindow;
 use crate::windows::specimen::{SpecimenWindow, SpecimenWindowState};
 use crate::windows::statistics::StatisticsWindow;
 use crate::windows::ViewWindow;
-use dungeon_breeder_core::data::flags::GameFlag;
+use dungeon_breeder_core::types::flag::GameFlag;
 use egui::{CentralPanel, Context, TopBottomPanel};
 use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
@@ -22,15 +22,8 @@ pub struct GameView {
     specimen_window: SpecimenWindowState,
 }
 
-impl View for GameView {
-    fn render(&mut self, ctx: &Context, app: &mut GameApp) {
-        CompendiumWindow::new(app, &mut self.compendium_window).show(ctx);
-        DungeonWindow::new(&mut app.modals, &app.game, &mut self.dungeon_window).show(ctx);
-        ItemsWindow::new(&app.game, &mut self.items_window_open).show(ctx);
-        SpecimenWindow::new(app, &mut self.specimen_window).show(ctx);
-        StatisticsWindow::new(&app.game.state.statistics, &mut self.statistics_window_open)
-            .show(ctx);
-
+impl GameView {
+    pub fn show_top_bar(&mut self, ctx: &Context, app: &mut GameApp) {
         TopBottomPanel::top("game_tab_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if ui
@@ -102,6 +95,21 @@ impl View for GameView {
                 ))
             });
         });
+    }
+}
+
+impl View for GameView {
+    fn render(&mut self, ctx: &Context, app: &mut GameApp) {
+        CompendiumWindow::new(app, &mut self.compendium_window).show(ctx);
+        DungeonWindow::new(&mut app.modals, &app.game, &mut self.dungeon_window).show(ctx);
+        ItemsWindow::new(&app.game, &mut self.items_window_open).show(ctx);
+        SpecimenWindow::new(app, &mut self.specimen_window).show(ctx);
+        StatisticsWindow::new(&app.game.state.statistics, &mut self.statistics_window_open)
+            .show(ctx);
+
+        if app.game.state.flags.get(GameFlag::UnlockedTopBar) {
+            self.show_top_bar(ctx, app);
+        }
 
         CentralPanel::default().show(ctx, |ui| {});
     }

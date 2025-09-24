@@ -1,27 +1,40 @@
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
+use crate::feedback::GameFeedback;
 use crate::state::specimen::SpecimenId;
+use serde::{Deserialize, Serialize};
 
+mod do_specimen_tick_slay_regen;
 mod item_obtained;
 mod item_sold;
 pub mod specimen_bred;
 mod specimen_fused;
 mod specimen_obtained;
 mod specimen_slain;
-mod specimen_tick_slay_regen;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GameEvent {
+    DoFeedback(GameFeedback),
+    DoSpecimenTickSlayRegen(do_specimen_tick_slay_regen::DoSpecimenTickSlayRegenEvent),
     ItemObtained(item_obtained::ItemObtainedEvent),
     ItemSold(item_sold::ItemSoldEvent),
     SpecimenBred(specimen_bred::SpecimenBredEvent),
     SpecimenFused(specimen_fused::SpecimenFusedEvent),
     SpecimenObtained(specimen_obtained::SpecimenObtainedEvent),
     SpecimenSlain(specimen_slain::SpecimenSlainEvent),
-    SpecimenTickSlayRegen(specimen_tick_slay_regen::SpecimenTickSlayRegenEvent),
 }
 
 impl GameEvent {
+    pub fn do_feedback(feedback: GameFeedback) -> Self {
+        GameEvent::DoFeedback(feedback)
+    }
+
+    pub fn do_specimen_tick_slay_regen(specimen_id: SpecimenId, ticks: u64) -> Self {
+        GameEvent::DoSpecimenTickSlayRegen(
+            do_specimen_tick_slay_regen::DoSpecimenTickSlayRegenEvent { specimen_id, ticks },
+        )
+    }
+
     pub fn item_obtained(item_id: ItemID, amount: u64) -> Self {
         GameEvent::ItemObtained(item_obtained::ItemObtainedEvent { item_id, amount })
     }
@@ -67,13 +80,6 @@ impl GameEvent {
             specimen_id,
             creature_id,
             proficiency,
-        })
-    }
-
-    pub fn specimen_tick_slay_regen(specimen_id: SpecimenId, ticks: u64) -> Self {
-        GameEvent::SpecimenTickSlayRegen(specimen_tick_slay_regen::SpecimenTickSlayRegenEvent {
-            specimen_id,
-            ticks,
         })
     }
 }

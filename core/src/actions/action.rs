@@ -1,11 +1,11 @@
 use crate::data::creature::id::CreatureID;
 use crate::data::dialogue::id::DialogueID;
-use crate::data::flags::GameFlag;
 use crate::data::item::id::ItemID;
 use crate::error::GameResult;
 use crate::events::GameEvents;
 use crate::state::specimen::{NewSpecimen, SpecimenId};
 use crate::state::GameState;
+use crate::types::flag::GameFlag;
 
 mod add_coins;
 mod assign_to_dungeon_layer_slot;

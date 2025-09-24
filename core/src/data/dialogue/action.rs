@@ -1,4 +1,5 @@
 use crate::data::dialogue::event::DialogueEvent;
+use crate::events::event::GameEvent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -8,9 +9,9 @@ pub struct DialogueAction {
 }
 
 impl DialogueAction {
-    pub fn new(text: &str) -> Self {
+    pub fn new(text: impl Into<String>) -> Self {
         Self {
-            text: text.to_string(),
+            text: text.into(),
             events: Vec::new(),
         }
     }
@@ -20,7 +21,15 @@ impl DialogueAction {
         self
     }
 
-    pub fn step(text: &str) -> Self {
-        DialogueAction::new(text).event(DialogueEvent::step())
+    pub fn jump(self, amount: i16) -> Self {
+        self.event(DialogueEvent::Jump(amount))
+    }
+
+    pub fn end(self) -> Self {
+        self.event(DialogueEvent::End)
+    }
+
+    pub fn game_event(self, event: GameEvent) -> Self {
+        self.event(DialogueEvent::GameEvent(event))
     }
 }

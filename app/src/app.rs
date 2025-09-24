@@ -13,6 +13,11 @@ use crate::types::font::CustomFont;
 use crate::views::{View, ViewID, ViewSystem};
 use crate::windows::WindowSystem;
 use anyhow::Context;
+use dungeon_breeder_core::feedback::notification::{
+    GameFeedbackNotification, GameFeedbackNotificationType,
+};
+use dungeon_breeder_core::feedback::GameFeedback;
+use dungeon_breeder_core::types::flag::GameFlag;
 use dungeon_breeder_core::Game;
 use egui::FontDefinitions;
 use serde::{Deserialize, Serialize};
@@ -53,7 +58,7 @@ impl eframe::App for GameApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint_after(Duration::from_millis(100));
         self.handle_keyboard_inputs(ctx);
-        self.update_game();
+        self.update_game(ctx);
         self.update_views(ctx);
         self.update_windows(ctx);
         self.update_modals(ctx);
@@ -129,7 +134,7 @@ impl GameApp {
         level = "trace"
         skip(self),
     )]
-    fn update_game(&mut self) {
+    fn update_game(&mut self, ctx: &egui::Context) {
         if (self.views.current_view() != ViewID::Game) {
             return;
         }
@@ -139,7 +144,17 @@ impl GameApp {
             self.toasts.error(error.to_string());
         }
 
-        if report.ticks_elapsed > 10 {
+        for feedback in report.feedback {
+            self.handle_game_feedback(ctx, feedback);
+        }
+
+        if report.ticks_elapsed > 10
+            && self
+                .game
+                .state
+                .flags
+                .get(GameFlag::OfflineProgressionReportEnabled)
+        {
             self.modals
                 .offline_progress
                 .open(report.progress_report, report.ticks_elapsed);
@@ -239,6 +254,15 @@ impl GameApp {
             self.toasts.error(error.to_string());
         }
     }
+
+    fn handle_game_feedback(&mut self, ctx: &egui::Context, feedback: GameFeedback) {
+        match feedback {
+            GameFeedback::CloseApp => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+            GameFeedback::Notification(notification) => {
+                self.handle_feedback_notification(notification);
+            }
+        }
+    }
 }
 
 // App action handlers
@@ -298,5 +322,16 @@ impl GameApp {
     fn handle_switch_view(&mut self, view_id: ViewID) -> anyhow::Result<()> {
         self.views.switch_view(view_id);
         Ok(())
+    }
+}
+
+// App game feedback handlers
+impl GameApp {
+    fn handle_feedback_notification(&mut self, notification: GameFeedbackNotification) {
+        match notification.notification_type {
+            GameFeedbackNotificationType::Info => self.toasts.info(notification.message),
+            GameFeedbackNotificationType::Success => self.toasts.success(notification.message),
+            GameFeedbackNotificationType::Error => self.toasts.error(notification.message),
+        }
     }
 }

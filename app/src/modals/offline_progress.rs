@@ -3,7 +3,7 @@ use crate::components::progress_report::ProgressReportComponent;
 use crate::components::Component;
 use crate::modals::AppModal;
 use crate::utils::formatting::format_seconds;
-use dungeon_breeder_core::update_report::GameUpdateProgressReport;
+use dungeon_breeder_core::update::report::GameUpdateProgressReport;
 use eframe::emath::Align;
 use egui::{Id, Layout, Ui};
 use serde::{Deserialize, Serialize};

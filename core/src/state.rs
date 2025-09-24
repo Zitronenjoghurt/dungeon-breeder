@@ -71,7 +71,7 @@ impl GameState {
                 continue;
             }
 
-            self.handle_dialogue_event(bus, &event);
+            self.handle_dialogue_event(bus, event);
             to_skip = event.count_events_skipped(&self.flags);
 
             if event.should_ignore_following_events() {
@@ -80,9 +80,10 @@ impl GameState {
         }
     }
 
-    pub fn handle_dialogue_event(&mut self, _bus: &mut GameEvents, event: &DialogueEvent) {
+    pub fn handle_dialogue_event(&mut self, bus: &mut GameEvents, event: &DialogueEvent) {
         self.active_dialogue.handle_dialogue_event(event);
         match event {
+            DialogueEvent::GameEvent(game_event) => bus.push_event(game_event.clone()),
             DialogueEvent::SetFlag(flag) => self.flags.set(*flag),
             DialogueEvent::TriggerDialogue(dialogue_id) => self.trigger_dialogue(*dialogue_id),
             DialogueEvent::Unset(flag) => self.flags.unset(*flag),

@@ -1,22 +1,24 @@
 use crate::actions::GameActions;
 use crate::clock::Clock;
 use crate::data::config::CONFIG;
-use crate::data::flags::GameFlag;
 use crate::events::event::GameEvent;
 use crate::events::GameEvents;
+use crate::mechanics::progression::check_progression;
 use crate::state::GameState;
-use crate::update_report::{GameUpdateProgressReport, GameUpdateReport};
 use serde::{Deserialize, Serialize};
+use types::flag::GameFlag;
+use update::report::{GameUpdateProgressReport, GameUpdateReport};
 
 pub mod actions;
 mod clock;
 pub mod data;
 mod error;
 mod events;
+pub mod feedback;
 mod mechanics;
 pub mod state;
 pub mod types;
-pub mod update_report;
+pub mod update;
 mod utils;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -34,30 +36,32 @@ impl Game {
     pub fn update(&mut self) -> GameUpdateReport {
         let now = std::time::Instant::now();
 
-        let action_report = self.actions.handle(&mut self.state, &mut self.events);
+        let mut report = GameUpdateReport {
+            action_report: self.actions.handle(&mut self.state, &mut self.events),
+            ..Default::default()
+        };
 
         // Handling events twice here ensures that the events are handled fast
         // AND always after a tick (should multiple ticks be processed in a single update)
-        let mut progress_report = GameUpdateProgressReport::default();
-        self.handle_events(&mut progress_report);
+        self.handle_events(&mut report);
 
         let ticks_elapsed = self.clock.update();
         for _ in 0..ticks_elapsed {
             self.state.tick(&mut self.events);
-            self.handle_events(&mut progress_report);
+            self.handle_events(&mut report);
         }
 
+        check_progression(&mut self.state);
+
         self.state.on_ticks_elapsed(ticks_elapsed);
+        report.ticks_elapsed = ticks_elapsed;
+
         let time_elapsed = now.elapsed();
+        report.time_elapsed = time_elapsed;
 
         tracing::trace!(target: "game", "Game update: {ticks_elapsed} ticks");
 
-        GameUpdateReport {
-            action_report,
-            progress_report,
-            ticks_elapsed,
-            time_elapsed,
-        }
+        report
     }
 
     #[tracing::instrument(
@@ -66,13 +70,13 @@ impl Game {
         level = "trace",
         skip(self)
     )]
-    fn handle_events(&mut self, progress_report: &mut GameUpdateProgressReport) {
+    fn handle_events(&mut self, report: &mut GameUpdateReport) {
         let mut generation = 0;
 
         while self.events.has_events() && generation < CONFIG.max_event_generations {
             generation += 1;
             for event in self.events.take_events() {
-                self.handle_event(progress_report, event);
+                self.handle_event(report, event);
             }
         }
 
@@ -87,8 +91,8 @@ impl Game {
         level = "trace",
         skip(self)
     )]
-    fn handle_event(&mut self, progress_report: &mut GameUpdateProgressReport, event: GameEvent) {
-        progress_report.handle_event(&event);
+    fn handle_event(&mut self, report: &mut GameUpdateReport, event: GameEvent) {
+        report.handle_event(&event);
         self.state.handle_event(&mut self.events, &event);
     }
 }

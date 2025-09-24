@@ -2,11 +2,11 @@ use crate::actions::action::{GameAction, GameActionHandler};
 use crate::actions::report::GameActionReport;
 use crate::data::creature::id::CreatureID;
 use crate::data::dialogue::id::DialogueID;
-use crate::data::flags::GameFlag;
 use crate::data::item::id::ItemID;
 use crate::events::GameEvents;
 use crate::state::specimen::{NewSpecimen, SpecimenId};
 use crate::state::GameState;
+use crate::types::flag::GameFlag;
 use std::cell::RefCell;
 
 pub mod action;

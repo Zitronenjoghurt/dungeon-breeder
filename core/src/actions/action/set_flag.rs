@@ -1,8 +1,8 @@
 use crate::actions::action::GameActionHandler;
-use crate::data::flags::GameFlag;
 use crate::error::GameResult;
 use crate::events::GameEvents;
 use crate::state::GameState;
+use crate::types::flag::GameFlag;
 
 #[derive(Debug)]
 pub struct SetFlagAction {

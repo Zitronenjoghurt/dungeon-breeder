@@ -1,5 +1,5 @@
 use crate::components::Component;
-use dungeon_breeder_core::update_report::GameUpdateProgressReport;
+use dungeon_breeder_core::update::report::GameUpdateProgressReport;
 use egui::Ui;
 
 mod items;

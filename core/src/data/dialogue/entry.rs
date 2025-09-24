@@ -23,22 +23,65 @@ impl DialogueEntry {
         }
     }
 
-    pub fn avatar_name(mut self, name: Option<String>) -> Self {
-        self.avatar_name = name;
+    pub fn builder() -> DialogueEntryBuilder {
+        DialogueEntryBuilder::new()
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct DialogueEntryBuilder {
+    pub entry: DialogueEntry,
+}
+
+impl DialogueEntryBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn build(self) -> DialogueEntry {
+        self.entry
+    }
+
+    pub fn avatar_id(mut self, avatar_id: AvatarID) -> Self {
+        self.entry.avatar_id = avatar_id;
         self
     }
 
-    pub fn step(avatar_id: AvatarID, text: &str) -> Self {
-        Self::new(avatar_id, text).action(DialogueAction::step("Ok"))
+    pub fn avatar_name(mut self, name: impl Into<String>) -> Self {
+        self.entry.avatar_name = Some(name.into());
+        self
+    }
+
+    pub fn text(mut self, text: impl Into<String>) -> Self {
+        self.entry.text = text.into();
+        self
+    }
+
+    pub fn action(
+        mut self,
+        text: impl Into<String>,
+        f: impl FnOnce(DialogueAction) -> DialogueAction,
+    ) -> Self {
+        let action = f(DialogueAction::new(text));
+        self.entry.actions.push(action);
+        self
+    }
+
+    pub fn add_action(mut self, action: DialogueAction) -> Self {
+        self.entry.actions.push(action);
+        self
     }
 
     pub fn options(mut self, options: DialogueOptions) -> Self {
-        self.options = options;
+        self.entry.options = options;
         self
     }
 
-    pub fn action(mut self, action: DialogueAction) -> Self {
-        self.actions.push(action);
-        self
+    pub fn jump(self, text: impl Into<String>, amount: i16) -> Self {
+        self.action(text, |a| a.jump(amount))
+    }
+
+    pub fn end(self, text: impl Into<String>) -> Self {
+        self.action(text, |a| a.end())
     }
 }

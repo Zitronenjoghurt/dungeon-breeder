@@ -27,6 +27,8 @@ pub enum GameFlag {
     UnlockedDungeon = 5,
     UnlockedBreeding = 6,
     UnlockedFusion = 7,
+    UnlockedTopBar = 8,
+    OfflineProgressionReportEnabled = 9,
 }
 
 impl Display for GameFlag {

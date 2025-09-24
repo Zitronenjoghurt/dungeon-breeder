@@ -278,7 +278,7 @@ impl SpecimenCollection {
             GameEvent::SpecimenSlain(event) => {
                 self.on_specimen_slain(event.specimen_id, event.creature_id)
             }
-            GameEvent::SpecimenTickSlayRegen(event) => {
+            GameEvent::DoSpecimenTickSlayRegen(event) => {
                 self.on_specimen_tick_slay_regen(bus, event.specimen_id, event.ticks)
             }
             _ => {}

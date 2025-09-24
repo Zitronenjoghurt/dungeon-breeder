@@ -1,7 +1,7 @@
 use crate::app::GameApp;
 use crate::components::{Component, EnumSelect};
 use crate::windows::ViewWindow;
-use dungeon_breeder_core::data::flags::GameFlag;
+use dungeon_breeder_core::types::flag::GameFlag;
 use egui::{Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 

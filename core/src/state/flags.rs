@@ -1,4 +1,4 @@
-use crate::data::flags::GameFlag;
+use crate::types::flag::GameFlag;
 use crate::utils::bit_vec::BitVec;
 use serde::{Deserialize, Serialize};
 

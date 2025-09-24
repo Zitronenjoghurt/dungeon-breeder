@@ -1,9 +1,10 @@
 use crate::data::dialogue::id::DialogueID;
-use crate::data::flags::GameFlag;
+use crate::events::event::GameEvent;
 use crate::state::flags::GameFlags;
+use crate::types::flag::GameFlag;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DialogueEvent {
     /// Will end the dialogue
     End,
@@ -21,13 +22,10 @@ pub enum DialogueEvent {
     SkipIfNot((GameFlag, u8)),
     /// Will immediately trigger the given dialogue
     TriggerDialogue(DialogueID),
+    GameEvent(GameEvent),
 }
 
 impl DialogueEvent {
-    pub fn step() -> Self {
-        DialogueEvent::Jump(1)
-    }
-
     pub fn should_ignore_following_events(&self) -> bool {
         matches!(self, DialogueEvent::Stop)
             | matches!(self, DialogueEvent::Jump(_))

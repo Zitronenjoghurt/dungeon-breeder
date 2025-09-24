@@ -74,6 +74,6 @@ impl GameEvents {
     }
 
     pub fn specimen_tick_slay_regen(&mut self, specimen_id: SpecimenId, ticks: u64) {
-        self.push_event(GameEvent::specimen_tick_slay_regen(specimen_id, ticks));
+        self.push_event(GameEvent::do_specimen_tick_slay_regen(specimen_id, ticks));
     }
 }

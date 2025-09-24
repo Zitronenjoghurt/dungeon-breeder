@@ -1,6 +1,6 @@
 use crate::data::avatar::id::AvatarID;
 use crate::data::dialogue::action::DialogueAction;
-use crate::data::dialogue::entry::DialogueEntry;
+use crate::data::dialogue::entry::{DialogueEntry, DialogueEntryBuilder};
 use crate::data::dialogue::options::DialogueOptions;
 use serde::{Deserialize, Serialize};
 
@@ -25,15 +25,6 @@ impl Dialogue {
 
     pub fn builder() -> DialogueBuilder {
         DialogueBuilder::new()
-    }
-
-    pub fn entry(mut self, entry: DialogueEntry) -> Self {
-        self.entries.push(entry);
-        self
-    }
-
-    pub fn step(self, avatar: AvatarID, text: &str) -> Self {
-        self.entry(DialogueEntry::step(avatar, text))
     }
 }
 
@@ -71,15 +62,26 @@ impl DialogueBuilder {
         self
     }
 
-    pub fn entry(mut self, text: &str, f: impl FnOnce(DialogueEntry) -> DialogueEntry) -> Self {
-        let entry = f(DialogueEntry::new(self.avatar_id, text)
-            .avatar_name(self.avatar_name.clone())
-            .options(self.options));
+    pub fn entry(
+        mut self,
+        text: impl Into<String>,
+        f: impl FnOnce(DialogueEntryBuilder) -> DialogueEntryBuilder,
+    ) -> Self {
+        let entry = f(DialogueEntryBuilder::new()
+            .text(text)
+            .avatar_id(self.avatar_id)
+            .avatar_name(self.avatar_name.clone().unwrap_or("???".to_string()))
+            .options(self.options))
+        .build();
         self.entries.push(entry);
         self
     }
 
-    pub fn step(self, text: &str) -> Self {
-        self.entry(text, |e| e.action(DialogueAction::step("Ok")))
+    pub fn step(self, text: impl Into<String>, button: impl Into<String>) -> Self {
+        self.entry(text, |e| e.add_action(DialogueAction::new(button).jump(1)))
+    }
+
+    pub fn end(self, text: impl Into<String>, button: impl Into<String>) -> Self {
+        self.entry(text, |e| e.end(button))
     }
 }
