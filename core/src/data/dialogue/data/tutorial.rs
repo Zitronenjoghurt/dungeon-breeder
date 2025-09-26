@@ -31,7 +31,9 @@ pub fn build_tutorial() -> Dialogue {
                 .jump("Your worst nightmare", 1)
                 .jump("...?", 3)
         })
-        .entry("Have years of study taught me nothing, that you would question my judgment so readily?", |e| e.jump("Yes (idk what that means)", 1))
+        .entry("Have years of study taught me nothing, that you would question my judgment so readily?", |e|
+            e.jump("Yes (idk what that means)", 1)
+        )
         .entry("Then perhaps you have come to the wrong place. The town has no need for those who seek conflict over understanding.", |e| {
             e.action("Ok", |a| {
                 a.game_event(GameEvent::DoFeedback(GameFeedback::CloseApp))

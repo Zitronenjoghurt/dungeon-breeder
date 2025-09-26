@@ -1,7 +1,7 @@
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
 use crate::feedback::GameFeedback;
-use crate::state::specimen::SpecimenId;
+use crate::state::specimen::{NewSpecimen, SpecimenId};
 use serde::{Deserialize, Serialize};
 
 mod do_specimen_tick_slay_regen;
@@ -15,6 +15,7 @@ mod specimen_slain;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GameEvent {
     DoFeedback(GameFeedback),
+    DoSpawnSpecimen(NewSpecimen),
     DoSpecimenTickSlayRegen(do_specimen_tick_slay_regen::DoSpecimenTickSlayRegenEvent),
     ItemObtained(item_obtained::ItemObtainedEvent),
     ItemSold(item_sold::ItemSoldEvent),
@@ -27,6 +28,10 @@ pub enum GameEvent {
 impl GameEvent {
     pub fn do_feedback(feedback: GameFeedback) -> Self {
         GameEvent::DoFeedback(feedback)
+    }
+
+    pub fn do_spawn_specimen(new_specimen: NewSpecimen) -> Self {
+        GameEvent::DoSpawnSpecimen(new_specimen)
     }
 
     pub fn do_specimen_tick_slay_regen(specimen_id: SpecimenId, ticks: u64) -> Self {

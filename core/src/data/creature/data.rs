@@ -6,6 +6,7 @@ use crate::data::item::id::ItemID;
 pub static CREATURE_GONK: CreatureDefinition = CreatureDefinition {
     name: "Gonk",
     max_power: 10,
+    breeding_cooldown: 5,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {
@@ -33,6 +34,7 @@ pub static CREATURE_GONK: CreatureDefinition = CreatureDefinition {
 pub static CREATURE_SLIME: CreatureDefinition = CreatureDefinition {
     name: "Slime",
     max_power: 20,
+    breeding_cooldown: 30,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {
@@ -60,6 +62,7 @@ pub static CREATURE_SLIME: CreatureDefinition = CreatureDefinition {
 pub static CREATURE_BARAGOO: CreatureDefinition = CreatureDefinition {
     name: "Baragoo",
     max_power: 25,
+    breeding_cooldown: 120,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {
@@ -87,6 +90,7 @@ pub static CREATURE_BARAGOO: CreatureDefinition = CreatureDefinition {
 pub static CREATURE_TINKY: CreatureDefinition = CreatureDefinition {
     name: "Tinky",
     max_power: 30,
+    breeding_cooldown: 300,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

@@ -8,6 +8,8 @@ pub mod tier;
 pub struct CreatureDefinition {
     pub name: &'static str,
     pub max_power: u64,
+    /// Max base cooldown in seconds => will be influenced by config and stats
+    pub breeding_cooldown: u64,
     pub tier: CreatureTier,
     pub item_drops: &'static [CreatureItemDrop],
     pub sprite_png: &'static [u8],

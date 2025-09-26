@@ -272,6 +272,9 @@ impl SpecimenCollection {
     )]
     pub fn handle_event(&mut self, bus: &mut GameEvents, event: &GameEvent) {
         match event {
+            GameEvent::DoSpawnSpecimen(specimen) => {
+                self.add_new(bus, specimen.clone());
+            }
             GameEvent::SpecimenBred(event) => self.on_specimen_bred(event),
             GameEvent::SpecimenFused(event) => self.on_specimen_fused(event.creature_id),
             GameEvent::SpecimenObtained(event) => self.on_specimen_obtained(event.specimen_id),

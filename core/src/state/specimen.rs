@@ -5,6 +5,7 @@ use crate::data::creature::id::CreatureID;
 use crate::events::GameEvents;
 use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::timer::Timer;
+use crate::utils::math::f32_interpolate;
 use crate::utils::random::random_normal;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -55,14 +56,29 @@ impl Specimen {
     }
 
     pub fn regeneration_duration_secs(&self) -> u64 {
+        let stat_factor = 1.0
+            - f32_interpolate(
+                CONFIG.regeneration_duration_regeneration_factor_min,
+                CONFIG.regeneration_duration_regeneration_factor_max,
+                self.regeneration,
+            );
+
         (self
             .power()
             .powf(CONFIG.regeneration_duration_power_exponent)
-            * (1.0 - self.regeneration)) as u64
+            * stat_factor) as u64
     }
 
     pub fn breeding_duration_secs(&self) -> u64 {
-        (self.power().powf(CONFIG.breeding_duration_power_exponent) * (1.0 - self.fertility)) as u64
+        let stat_factor = 1.0
+            - f32_interpolate(
+                CONFIG.breeding_duration_fertility_factor_min,
+                CONFIG.breeding_duration_fertility_factor_max,
+                self.fertility,
+            );
+
+        ((self.creature_def().breeding_cooldown as f32).powf(CONFIG.breeding_duration_exponent)
+            * stat_factor) as u64
     }
 
     pub fn name_with_id(&self) -> String {
@@ -174,7 +190,7 @@ impl Specimen {
     }
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct NewSpecimen {
     pub creature_id: CreatureID,
     pub obtain_method: SpecimenObtainMethod,
