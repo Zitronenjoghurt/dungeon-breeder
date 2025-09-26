@@ -6,8 +6,7 @@ use crate::events::GameEvents;
 use crate::mechanics::progression::check_progression;
 use crate::state::GameState;
 use serde::{Deserialize, Serialize};
-use types::flag::GameFlag;
-use update::report::{GameUpdateProgressReport, GameUpdateReport};
+use update::report::GameUpdateReport;
 
 pub mod actions;
 mod clock;
@@ -21,14 +20,29 @@ pub mod types;
 pub mod update;
 mod utils;
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+pub const VERSION_INDEX: u32 = 0;
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Game {
+    pub version: u32,
     pub state: GameState,
     clock: Clock,
     #[serde(skip, default)]
     pub actions: GameActions,
     #[serde(skip, default)]
     events: GameEvents,
+}
+
+impl Default for Game {
+    fn default() -> Self {
+        Self {
+            version: VERSION_INDEX,
+            state: GameState::default(),
+            clock: Clock::default(),
+            actions: GameActions::default(),
+            events: GameEvents::default(),
+        }
+    }
 }
 
 impl Game {

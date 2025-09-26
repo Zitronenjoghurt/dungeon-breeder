@@ -1,5 +1,6 @@
 use crate::data::dialogue::event::DialogueEvent;
 use crate::events::event::GameEvent;
+use crate::types::flag::GameFlag;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -31,5 +32,9 @@ impl DialogueAction {
 
     pub fn game_event(self, event: GameEvent) -> Self {
         self.event(DialogueEvent::GameEvent(event))
+    }
+
+    pub fn set_flag(self, flag: GameFlag) -> Self {
+        self.event(DialogueEvent::SetFlag(flag))
     }
 }

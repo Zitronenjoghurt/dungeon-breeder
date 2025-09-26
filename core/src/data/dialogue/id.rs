@@ -25,9 +25,13 @@ pub enum DialogueID {
 
 impl DialogueID {
     pub fn get_dialogue(self) -> Dialogue {
-        match self {
-            DialogueID::Tutorial => build_tutorial(),
-        }
+        let mut builder = Dialogue::builder();
+
+        builder = match self {
+            DialogueID::Tutorial => build_tutorial(builder),
+        };
+
+        builder.build()
     }
 }
 
