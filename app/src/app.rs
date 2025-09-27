@@ -226,9 +226,15 @@ impl GameApp {
         skip(self, ctx),
     )]
     fn handle_keyboard_inputs(&mut self, ctx: &egui::Context) {
-        if ctx.input(|i| i.key_pressed(egui::Key::F3)) {
-            self.windows.debug.is_open = !self.windows.debug.is_open;
-        }
+        ctx.input(|i| {
+            if i.key_pressed(egui::Key::F3) {
+                if i.key_down(egui::Key::D) {
+                    self.game.actions.debug_dialogue_bg_interactive();
+                } else {
+                    self.windows.debug.is_open = !self.windows.debug.is_open;
+                }
+            }
+        });
     }
 
     #[tracing::instrument(

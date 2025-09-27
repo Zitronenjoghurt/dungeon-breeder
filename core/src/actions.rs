@@ -76,6 +76,10 @@ impl GameActions {
         self.push_action(GameAction::breed(specimen_a, specimen_b))
     }
 
+    pub fn debug_dialogue_bg_interactive(&self) {
+        self.push_action(GameAction::DebugDialogueBgInteractive)
+    }
+
     pub fn fuse(&self, specimen_a: SpecimenId, specimen_b: SpecimenId) {
         self.push_action(GameAction::fuse(specimen_a, specimen_b))
     }

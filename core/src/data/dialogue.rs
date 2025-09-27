@@ -5,6 +5,7 @@ use crate::data::dialogue::options::DialogueOptions;
 use serde::{Deserialize, Serialize};
 
 pub mod action;
+pub mod condition;
 pub mod data;
 pub mod entry;
 pub mod event;

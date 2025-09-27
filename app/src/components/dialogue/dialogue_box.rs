@@ -4,7 +4,7 @@ use crate::systems::textures::TextureSystem;
 use crate::types::font::CustomFont;
 use dungeon_breeder_core::data::dialogue::entry::DialogueEntry;
 use dungeon_breeder_core::Game;
-use egui::{Frame, ScrollArea, Ui};
+use egui::{Button, Frame, ScrollArea, Ui};
 
 pub struct DialogueBoxComponent<'a> {
     game: &'a Game,
@@ -55,7 +55,10 @@ impl<'a> DialogueBoxComponent<'a> {
                     .iter()
                     .enumerate()
                     .for_each(|(i, action)| {
-                        if ui.button(&action.text).clicked() {
+                        let action_enabled = action.conditions_met(&self.game.state);
+                        let button_response =
+                            ui.add_enabled(action_enabled, Button::new(&action.text));
+                        if button_response.clicked() {
                             self.game.actions.take_dialogue_action(i);
                         }
                     });

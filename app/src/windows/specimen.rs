@@ -2,6 +2,7 @@ use crate::app::GameApp;
 use crate::components::state::SpecimenSelectionState;
 use crate::components::{Component, SpecimenOverview};
 use crate::windows::ViewWindow;
+use dungeon_breeder_core::types::flag::GameFlag;
 use egui::{Context, Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
 
@@ -11,6 +12,8 @@ pub struct SpecimenWindowState {
     pub selection_state: SpecimenSelectionState,
     #[serde(skip, default)]
     pub sort_ready: bool,
+    #[serde(skip, default)]
+    pub already_opened: bool,
 }
 
 pub struct SpecimenWindow<'a> {
@@ -38,6 +41,13 @@ impl ViewWindow for SpecimenWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
+        if !self.state.already_opened && open {
+            self.state.already_opened = true;
+            self.app
+                .game
+                .actions
+                .set_flag(GameFlag::HasClickedSpecimenOverview, true);
+        }
         self.state.is_open = open;
     }
 

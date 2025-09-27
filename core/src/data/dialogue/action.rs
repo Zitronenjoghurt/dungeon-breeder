@@ -1,5 +1,7 @@
+use crate::data::dialogue::condition::DialogueCondition;
 use crate::data::dialogue::event::DialogueEvent;
 use crate::events::event::GameEvent;
+use crate::state::GameState;
 use crate::types::flag::GameFlag;
 use serde::{Deserialize, Serialize};
 
@@ -7,6 +9,7 @@ use serde::{Deserialize, Serialize};
 pub struct DialogueAction {
     pub text: String,
     pub events: Vec<DialogueEvent>,
+    pub conditions: Vec<DialogueCondition>,
 }
 
 impl DialogueAction {
@@ -14,11 +17,25 @@ impl DialogueAction {
         Self {
             text: text.into(),
             events: Vec::new(),
+            conditions: Vec::new(),
         }
+    }
+
+    pub fn conditions_met(&self, state: &GameState) -> bool {
+        self.conditions.iter().all(|c| c.check(state))
+    }
+
+    pub fn add_event(&mut self, event: DialogueEvent) {
+        self.events.push(event);
     }
 
     pub fn event(mut self, event: DialogueEvent) -> Self {
         self.events.push(event);
+        self
+    }
+
+    pub fn condition(mut self, condition: DialogueCondition) -> Self {
+        self.conditions.push(condition);
         self
     }
 

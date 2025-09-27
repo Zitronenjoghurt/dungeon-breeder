@@ -10,6 +10,7 @@ use crate::types::flag::GameFlag;
 mod add_coins;
 mod assign_to_dungeon_layer_slot;
 mod breed;
+mod debug_dialogue_bg_interactive;
 mod dialogue_action;
 mod dialogue_trigger;
 mod fuse;
@@ -30,6 +31,7 @@ pub enum GameAction {
     AddCoins(add_coins::AddCoinsAction),
     AssignToDungeonLayerSlot(assign_to_dungeon_layer_slot::AssignToDungeonLayerSlotAction),
     Breed(breed::BreedAction),
+    DebugDialogueBgInteractive,
     Fuse(fuse::FuseAction),
     RandomSpecimen(random_specimen::RandomSpecimenAction),
     ResetGameState,
@@ -118,6 +120,9 @@ impl GameActionHandler for GameAction {
             Self::AddCoins(action) => action.handle(state, bus),
             Self::AssignToDungeonLayerSlot(action) => action.handle(state, bus),
             Self::Breed(action) => action.handle(state, bus),
+            Self::DebugDialogueBgInteractive => {
+                debug_dialogue_bg_interactive::DebugDialogueBgInteractiveAction.handle(state, bus)
+            }
             Self::Fuse(action) => action.handle(state, bus),
             Self::RandomSpecimen(action) => action.handle(state, bus),
             Self::ResetGameState => reset_game_state::ResetGameStateAction.handle(state, bus),

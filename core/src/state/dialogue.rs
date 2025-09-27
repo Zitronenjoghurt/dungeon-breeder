@@ -1,3 +1,4 @@
+use crate::data::dialogue::action::DialogueAction;
 use crate::data::dialogue::entry::DialogueEntry;
 use crate::data::dialogue::event::DialogueEvent;
 use crate::data::dialogue::id::DialogueID;
@@ -30,18 +31,15 @@ impl DialogueState {
         }
     }
 
-    pub fn get_action_events(&self, action_index: usize) -> GameResult<&[DialogueEvent]> {
+    pub fn get_action(&self, action_index: usize) -> GameResult<&DialogueAction> {
         let entry = self.get_entry()?;
-        let action =
-            entry
-                .actions
-                .get(action_index)
-                .ok_or(GameError::dialogue_action_out_of_bounds(
-                    self.index,
-                    action_index,
-                ))?;
-
-        Ok(&action.events)
+        entry
+            .actions
+            .get(action_index)
+            .ok_or(GameError::dialogue_action_out_of_bounds(
+                self.index,
+                action_index,
+            ))
     }
 
     pub fn handle_dialogue_event(&mut self, event: &DialogueEvent) {
@@ -56,5 +54,17 @@ impl DialogueState {
             }
             _ => {}
         }
+    }
+
+    pub fn force_bg_interactive(&mut self) {
+        let Some(dialogue) = &mut self.dialogue else {
+            return;
+        };
+
+        let Some(entry) = dialogue.entries.get_mut(self.index) else {
+            return;
+        };
+
+        entry.options.allow_bg_interactions = true;
     }
 }

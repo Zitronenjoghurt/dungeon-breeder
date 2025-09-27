@@ -1,5 +1,6 @@
 use crate::data::avatar::id::AvatarID;
 use crate::data::dialogue::action::DialogueAction;
+use crate::data::dialogue::event::DialogueEvent;
 use crate::data::dialogue::options::DialogueOptions;
 use serde::{Deserialize, Serialize};
 
@@ -83,5 +84,17 @@ impl DialogueEntryBuilder {
 
     pub fn end(self, text: impl Into<String>) -> Self {
         self.action(text, |a| a.end())
+    }
+
+    pub fn action_text(self, text: impl Into<String>) -> Self {
+        self.action(text, |a| a)
+    }
+
+    /// Will add the event to all actions of this entry
+    pub fn event(mut self, event: DialogueEvent) -> Self {
+        for action in self.entry.actions.iter_mut() {
+            action.add_event(event.clone());
+        }
+        self
     }
 }

@@ -14,9 +14,13 @@ pub enum GameError {
     #[error("Dialogue at index '{0}' is out of bounds")]
     DialogueOutOfBounds(usize),
     #[error(
-        "Dialogue action at index '{action_index}' of dialogue at index '{index}' is out of bounds"
+        "Dialogue action at index '{action_index}' of dialogue entry at index '{index}' is out of bounds"
     )]
     DialogueActionOutOfBounds { index: usize, action_index: usize },
+    #[error(
+        "The conditions of the dialogue action at index '{action_index}' of dialogue entry at index '{index}' are not met"
+    )]
+    DialogueActionConditionNotMet { index: usize, action_index: usize },
     #[error("Dungeon layer at index '{0}' not found")]
     DungeonLayerNotFound(usize),
     #[error("Dungeon layer slot at layer '{layer}' and index '{slot}' not found")]
