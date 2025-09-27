@@ -30,6 +30,8 @@ pub enum GameFlag {
     UnlockedTopBar = 8,
     OfflineProgressionReportEnabled = 9,
     HasClickedSpecimenOverview = 10,
+    HasClickedBreeding = 11,
+    HasClickedFusion = 12,
 }
 
 impl Display for GameFlag {

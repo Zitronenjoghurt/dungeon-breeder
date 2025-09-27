@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 
 mod breeding;
 pub mod bug_report;
+pub mod changelog;
 pub mod compendium;
 pub mod debug;
 pub mod debug_windows;

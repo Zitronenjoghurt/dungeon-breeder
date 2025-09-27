@@ -21,18 +21,21 @@ use strum_macros::EnumIter;
 )]
 pub enum ItemID {
     #[default]
-    Gonkball,
-    GonkCrystal,
-    GonkSoul,
-    SlimyDabs,
-    SlimyJelly,
-    SlimeAmethyst,
-    GooGoo,
-    Goober,
-    RefinedGoober,
-    Tinkofuzz,
-    Tinkosphere,
-    Tinkolite,
+    Gonkball = 0,
+    GonkCrystal = 1,
+    GonkSoul = 2,
+    SlimyDabs = 3,
+    SlimyJelly = 4,
+    SlimeAmethyst = 5,
+    GooGoo = 6,
+    Goober = 7,
+    RefinedGoober = 8,
+    Tinkofuzz = 9,
+    Tinkosphere = 10,
+    Tinkolite = 11,
+    Vegebit = 12,
+    Carrotooth = 13,
+    StinkyCarrot = 14,
 }
 
 impl ItemID {
@@ -54,6 +57,9 @@ impl ItemID {
             Self::Tinkofuzz => &ITEM_TINKOFUZZ,
             Self::Tinkosphere => &ITEM_TINKOSPHERE,
             Self::Tinkolite => &ITEM_TINKOLITE,
+            Self::Vegebit => &ITEM_VEGEBIT,
+            Self::Carrotooth => &ITEM_CARROTOOTH,
+            Self::StinkyCarrot => &ITEM_STINKY_CARROT,
         }
     }
 }

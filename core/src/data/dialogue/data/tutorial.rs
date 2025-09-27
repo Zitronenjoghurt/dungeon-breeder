@@ -123,7 +123,7 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
                 .event(DialogueEvent::SetFlag(GameFlag::UnlockedSpecimenOverview))
                 .event(DialogueEvent::Jump(1)),
         )
-        .entry("The leftmost tool seems to track those peculiar orbs somehow. It displays information about them, though the symbols and numbers it shows are utterly foreign to me.", |e|
+        .entry("The leftward tool seems to track those peculiar orbs somehow. It displays information about them, though the symbols and numbers it shows are utterly foreign to me.", |e|
             e.action("Ok (open the specimen overview)", |a|
                 a.condition(DialogueCondition::FlagSet(GameFlag::HasClickedSpecimenOverview))
                     .jump(1)

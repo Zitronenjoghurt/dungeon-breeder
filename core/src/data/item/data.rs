@@ -46,7 +46,7 @@ pub static ITEM_REFINED_GOOBER: ItemDefinition = ItemDefinition {
 };
 
 pub static ITEM_TINKOFUZZ: ItemDefinition = ItemDefinition {
-    name: "Tinky Fuzz",
+    name: "Tinkofuzz",
     price: 30,
 };
 
@@ -58,4 +58,19 @@ pub static ITEM_TINKOSPHERE: ItemDefinition = ItemDefinition {
 pub static ITEM_TINKOLITE: ItemDefinition = ItemDefinition {
     name: "Tinkolite",
     price: 500,
+};
+
+pub static ITEM_VEGEBIT: ItemDefinition = ItemDefinition {
+    name: "Vegebit",
+    price: 50,
+};
+
+pub static ITEM_CARROTOOTH: ItemDefinition = ItemDefinition {
+    name: "Carrotooth",
+    price: 150,
+};
+
+pub static ITEM_STINKY_CARROT: ItemDefinition = ItemDefinition {
+    name: "Stinky Carrot",
+    price: 1000,
 };

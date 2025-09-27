@@ -22,6 +22,7 @@ use strum_macros::EnumIter;
 pub enum AvatarID {
     #[default]
     Advisor,
+    Mayor,
 }
 
 impl AvatarID {
@@ -32,6 +33,7 @@ impl AvatarID {
     pub const fn def(self) -> &'static AvatarDefinition {
         match self {
             Self::Advisor => &AVATAR_ADVISOR,
+            Self::Mayor => &AVATAR_MAYOR,
         }
     }
 }

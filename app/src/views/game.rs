@@ -26,10 +26,11 @@ impl GameView {
     pub fn show_top_bar(&mut self, ctx: &Context, app: &mut GameApp) {
         TopBottomPanel::top("game_tab_bar").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                if ui
-                    .selectable_label(false, regular::HOUSE)
-                    .on_hover_text("Main Menu")
-                    .clicked()
+                if app.game.state.flags.get(GameFlag::TutorialComplete)
+                    && ui
+                        .selectable_label(false, regular::HOUSE)
+                        .on_hover_text("Main Menu")
+                        .clicked()
                 {
                     app.actions.switch_view(ViewID::MainMenu);
                 }
@@ -50,28 +51,10 @@ impl GameView {
 
                 ui.separator();
 
-                GameMenuButton::new(&mut self.compendium_window.is_open)
-                    .label(regular::BOOK)
-                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedCompendium))
-                    .tooltip("Compendium")
-                    .ui(ui);
-
                 GameMenuButton::new(&mut self.specimen_window.is_open)
-                    .label(regular::WAREHOUSE)
+                    .label(regular::ANDROID_LOGO)
                     .unlocked(app.game.state.flags.get(GameFlag::UnlockedSpecimenOverview))
                     .tooltip("Specimen")
-                    .ui(ui);
-
-                GameMenuButton::new(&mut self.items_window_open)
-                    .label(regular::TREASURE_CHEST)
-                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedItems))
-                    .tooltip("Items")
-                    .ui(ui);
-
-                GameMenuButton::new(&mut self.dungeon_window.is_open)
-                    .label(regular::SWORD)
-                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedDungeon))
-                    .tooltip("Dungeon")
                     .ui(ui);
 
                 GameMenuButton::new(&mut app.windows.breeding.is_open)
@@ -84,6 +67,24 @@ impl GameView {
                     .label(regular::ARROWS_MERGE)
                     .unlocked(app.game.state.flags.get(GameFlag::UnlockedFusion))
                     .tooltip("Fusion")
+                    .ui(ui);
+
+                GameMenuButton::new(&mut self.dungeon_window.is_open)
+                    .label(regular::SWORD)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedDungeon))
+                    .tooltip("Dungeon")
+                    .ui(ui);
+
+                GameMenuButton::new(&mut self.items_window_open)
+                    .label(regular::TREASURE_CHEST)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedItems))
+                    .tooltip("Items")
+                    .ui(ui);
+
+                GameMenuButton::new(&mut self.compendium_window.is_open)
+                    .label(regular::BOOK)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedCompendium))
+                    .tooltip("Compendium")
                     .ui(ui);
 
                 ui.separator();

@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 mod app;
 mod components;
+mod data;
 mod modals;
 mod systems;
 mod theme;

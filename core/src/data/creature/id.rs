@@ -23,10 +23,11 @@ use strum_macros::EnumIter;
 )]
 pub enum CreatureID {
     #[default]
-    Gonk,
-    Slime,
-    Baragoo,
-    Tinky,
+    Gonk = 0,
+    Slime = 1,
+    Baragoo = 2,
+    Tinky = 3,
+    Uggroot = 4,
 }
 
 impl CreatureID {
@@ -44,6 +45,7 @@ impl CreatureID {
             Self::Slime => &CREATURE_SLIME,
             Self::Baragoo => &CREATURE_BARAGOO,
             Self::Tinky => &CREATURE_TINKY,
+            Self::Uggroot => &CREATURE_UGGROOT,
         }
     }
 
