@@ -2,6 +2,7 @@ use crate::components::dungeon::{DungeonComponent, DungeonComponentState};
 use crate::components::Component;
 use crate::modals::ModalSystem;
 use crate::windows::ViewWindow;
+use dungeon_breeder_core::types::flag::GameFlag;
 use dungeon_breeder_core::Game;
 use egui::{Id, Ui, WidgetText};
 use serde::{Deserialize, Serialize};
@@ -10,6 +11,8 @@ use serde::{Deserialize, Serialize};
 pub struct DungeonWindowState {
     pub is_open: bool,
     pub dungeon_component_state: DungeonComponentState,
+    #[serde(skip, default)]
+    pub already_opened: bool,
 }
 
 pub struct DungeonWindow<'a> {
@@ -46,6 +49,13 @@ impl ViewWindow for DungeonWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
+        if !self.state.already_opened && open {
+            self.state.already_opened = true;
+            self.game
+                .actions
+                .set_flag(GameFlag::HasClickedDungeon, true);
+        }
+
         self.state.is_open = open;
     }
 

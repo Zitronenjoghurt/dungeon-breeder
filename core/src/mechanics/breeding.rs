@@ -35,6 +35,7 @@ pub fn breed_specimen(specimen_a: &Specimen, specimen_b: &Specimen) -> GameResul
     let new_specimen = NewSpecimen {
         creature_id: specimen_a.creature_id,
         obtain_method: SpecimenObtainMethod::Breeding,
+        nickname: None,
         strength,
         intelligence,
         vitality,

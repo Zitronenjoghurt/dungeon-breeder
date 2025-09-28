@@ -6,7 +6,7 @@ use crate::data::item::id::ItemID;
 pub static CREATURE_GONK: CreatureDefinition = CreatureDefinition {
     name: "Gonk",
     max_power: 10,
-    breeding_cooldown: 5,
+    breeding_cooldown: 20,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

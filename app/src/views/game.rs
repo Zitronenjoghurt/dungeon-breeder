@@ -1,6 +1,7 @@
 use crate::app::GameApp;
 use crate::components::game_menu_button::GameMenuButton;
 use crate::components::*;
+use crate::utils::formatting::format_number;
 use crate::views::{View, ViewID};
 use crate::windows::compendium::{CompendiumWindow, CompendiumWindowState};
 use crate::windows::dungeon::{DungeonWindow, DungeonWindowState};
@@ -91,7 +92,7 @@ impl GameView {
 
                 ui.label(format!(
                     "{} {}",
-                    app.game.state.treasury.coins(),
+                    format_number(app.game.state.treasury.coins()),
                     regular::COINS
                 ))
             });

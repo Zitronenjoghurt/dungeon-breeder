@@ -15,3 +15,9 @@ pub static AVATAR_MAYOR: AvatarDefinition = AvatarDefinition {
         "../../../../assets/characters/sticker_scholar_human_man_02.png"
     ),
 };
+
+pub static AVATAR_DEVELOPER: AvatarDefinition = AvatarDefinition {
+    sprite_portrait: include_bytes!("../../../../assets/icon_developer.png"),
+    sprite_full: include_bytes!("../../../../assets/icon_developer.png"),
+    sprite_sticker: include_bytes!("../../../../assets/icon_developer.png"),
+};

@@ -6,6 +6,7 @@ use dungeon_breeder_core::data::config::CONFIG;
 use dungeon_breeder_core::state::fusion::simulation::FusionSimulation;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::{Specimen, SpecimenId};
+use dungeon_breeder_core::types::flag::GameFlag;
 use eframe::emath::Align;
 use egui::{Button, Grid, Id, Layout, ProgressBar, RichText, ScrollArea, Ui, Widget, WidgetText};
 use egui_phosphor::regular;
@@ -22,6 +23,8 @@ pub struct FusionWindowState {
     pub simulated_specimen_2: Option<SpecimenId>,
     #[serde(skip, default)]
     pub simulation: Option<FusionSimulation>,
+    #[serde(skip, default)]
+    pub already_opened: bool,
 }
 
 impl<'a> FusionWindowState {
@@ -117,6 +120,14 @@ impl ViewWindow for FusionWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
+        if !self.state.already_opened && open {
+            self.state.already_opened = true;
+            self.app
+                .game
+                .actions
+                .set_flag(GameFlag::HasClickedFusion, true);
+        }
+
         self.state.is_open = open;
     }
 

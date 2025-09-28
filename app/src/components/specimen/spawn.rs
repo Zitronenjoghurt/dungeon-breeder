@@ -65,7 +65,7 @@ impl Component for SpecimenSpawnComponent<'_> {
                 self.game.actions.spawn_specimen(NewSpecimen {
                     breeding_generation: 1,
                     fusion_generation: 1,
-                    ..self.state.new_specimen
+                    ..self.state.new_specimen.clone()
                 })
             }
 

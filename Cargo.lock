@@ -832,6 +832,7 @@ dependencies = [
  "egui_extras",
  "humantime",
  "image",
+ "num-traits",
  "rmp-serde",
  "serde",
  "serde_json",

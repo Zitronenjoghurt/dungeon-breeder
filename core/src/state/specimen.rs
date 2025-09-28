@@ -114,7 +114,7 @@ impl Specimen {
             creature_id: new_specimen.creature_id,
             obtain_method: new_specimen.obtain_method,
             obtained_at: Utc::now(),
-            nickname: None,
+            nickname: new_specimen.nickname,
             strength: new_specimen.strength,
             intelligence: new_specimen.intelligence,
             vitality: new_specimen.vitality,
@@ -194,6 +194,7 @@ impl Specimen {
 pub struct NewSpecimen {
     pub creature_id: CreatureID,
     pub obtain_method: SpecimenObtainMethod,
+    pub nickname: Option<String>,
     pub strength: f32,
     pub intelligence: f32,
     pub vitality: f32,
@@ -209,6 +210,7 @@ impl NewSpecimen {
         NewSpecimen {
             creature_id,
             obtain_method: SpecimenObtainMethod::RandomGeneration,
+            nickname: None,
             strength: random_normal(),
             intelligence: random_normal(),
             vitality: random_normal(),

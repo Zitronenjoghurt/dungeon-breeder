@@ -6,26 +6,36 @@ use strum_macros::EnumIter;
     Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, EnumIter,
 )]
 pub enum UIScale {
-    XXS,
-    XS,
-    S,
+    X0_25,
+    X0_5,
+    X0_75,
+    X1_0,
+    X1_25,
     #[default]
-    M,
-    L,
-    XL,
-    XXL,
+    X1_5,
+    X1_75,
+    X2_0,
+    X2_25,
+    X2_5,
+    X2_75,
+    X3_0,
 }
 
 impl UIScale {
     pub fn as_f32(self) -> f32 {
         match self {
-            UIScale::XXS => 0.25,
-            UIScale::XS => 0.5,
-            UIScale::S => 0.75,
-            UIScale::M => 1.0,
-            UIScale::L => 1.25,
-            UIScale::XL => 1.5,
-            UIScale::XXL => 2.0,
+            Self::X0_25 => 0.25,
+            Self::X0_5 => 0.5,
+            Self::X0_75 => 0.75,
+            Self::X1_0 => 1.0,
+            Self::X1_25 => 1.25,
+            Self::X1_5 => 1.5,
+            Self::X1_75 => 1.75,
+            Self::X2_0 => 2.0,
+            Self::X2_25 => 2.25,
+            Self::X2_5 => 2.5,
+            Self::X2_75 => 2.75,
+            Self::X3_0 => 3.0,
         }
     }
 }
@@ -33,13 +43,18 @@ impl UIScale {
 impl Display for UIScale {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            UIScale::XXS => write!(f, "XXS"),
-            UIScale::XS => write!(f, "XS"),
-            UIScale::S => write!(f, "S"),
-            UIScale::M => write!(f, "M"),
-            UIScale::L => write!(f, "L"),
-            UIScale::XL => write!(f, "XL"),
-            UIScale::XXL => write!(f, "XXL"),
+            Self::X0_25 => write!(f, "x0.25"),
+            Self::X0_5 => write!(f, "x0.5"),
+            Self::X0_75 => write!(f, "x0.75"),
+            Self::X1_0 => write!(f, "x1.0"),
+            Self::X1_25 => write!(f, "x1.25"),
+            Self::X1_5 => write!(f, "x1.5"),
+            Self::X1_75 => write!(f, "x1.75"),
+            Self::X2_0 => write!(f, "x2.0"),
+            Self::X2_25 => write!(f, "x2.25"),
+            Self::X2_5 => write!(f, "x2.5"),
+            Self::X2_75 => write!(f, "x2.75"),
+            Self::X3_0 => write!(f, "x3.0"),
         }
     }
 }

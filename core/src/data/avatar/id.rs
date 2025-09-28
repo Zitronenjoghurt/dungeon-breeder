@@ -23,6 +23,7 @@ pub enum AvatarID {
     #[default]
     Advisor,
     Mayor,
+    Developer,
 }
 
 impl AvatarID {
@@ -34,6 +35,7 @@ impl AvatarID {
         match self {
             Self::Advisor => &AVATAR_ADVISOR,
             Self::Mayor => &AVATAR_MAYOR,
+            Self::Developer => &AVATAR_DEVELOPER,
         }
     }
 }

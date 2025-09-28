@@ -72,6 +72,9 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
             e.jump("Peculiar...", 1)
                 .jump("I don't understand", 1),
         )
+        .entry("Do not worry, researcher. I am sure all that is still raveled in mysteries will soon reveal itself to you.", |e|
+            e.jump("Alright...", 1)
+        )
         .entry("Ah, but where are my manners in these troubled times? I am Aegus, advisor to our mayor, keeper of what little wisdom these old bones still carry.", |e|
             e.jump("Nice to meet you", 1),
         )
@@ -79,17 +82,18 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
         .entry("Your task, should you accept this burden, is to unravel the nature of these orb-like entities. Yet research demands resources, and our town's treasury could not fund a proper feast, let alone scholarly pursuits.", |e|
             e.jump("But I am broke as heck", 1),
         )
-        .entry("Yet perhaps this mutual poverty itself reveals the path forward. The Adventurers' Guild hungers for purpose, for trials to test their mettle. There exists an ancient practice, one might call it... controversial, whereby one constructs labyrinths of challenge, chambers of ordeal where adventurers pay tribute to face their fears... A dungeon.", |e|
+        .entry("Ah, perhaps this mutual poverty itself reveals the path forward. The Adventurers' Guild hungers for purpose, for trials to test their mettle. There exists an ancient practice, one might call it... controversial, whereby one constructs labyrinths of challenge, chambers of ordeal where adventurers pay tribute to face their fears... A dungeon.", |e|
             e.jump("Alright!", 1)
                 .jump("I am a researcher!", 1),
         )
-        .entry("I would not suggest such a perilous undertaking, were it not for a most troubling discovery... these orbs seem inexorably drawn to places of conflict and trial. As if they feed upon the very essence of challenge itself.", |e|
+        .entry("I would not suggest such a perilous undertaking, were it not for a most troubling discovery... these orbs seem drawn to places of conflict and trial. As if they feed upon the very essence of challenge itself.", |e|
             e.action_text("Got it!")
                 .action_text("Fine...")
                 .event(DialogueEvent::SetFlag(GameFlag::UnlockedTopBar))
                 .event(DialogueEvent::GameEvent(GameEvent::DoSpawnSpecimen(NewSpecimen {
                     creature_id: CreatureID::Gonk,
                     obtain_method: SpecimenObtainMethod::Unknown,
+                    nickname: Some("Weird Orb #1".to_string()),
                     strength: 0.73,
                     intelligence: 0.72,
                     vitality: 0.75,
@@ -102,6 +106,7 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
                 .event(DialogueEvent::GameEvent(GameEvent::DoSpawnSpecimen(NewSpecimen {
                     creature_id: CreatureID::Gonk,
                     obtain_method: SpecimenObtainMethod::Unknown,
+                    nickname: Some("Weird Orb #2".to_string()),
                     strength: 0.71,
                     intelligence: 0.75,
                     vitality: 0.73,
@@ -126,7 +131,42 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
         .entry("The leftward tool seems to track those peculiar orbs somehow. It displays information about them, though the symbols and numbers it shows are utterly foreign to me.", |e|
             e.action("Ok (open the specimen overview)", |a|
                 a.condition(DialogueCondition::FlagSet(GameFlag::HasClickedSpecimenOverview))
+                    .set_flag(GameFlag::UnlockedBreeding)
+                    .set_flag(GameFlag::UnlockedFusion)
                     .jump(1)
             )
+        )
+        .entry("Ah, what follows next are especially curious tools... Instruments of transmutation, bearing old symbols of love and convergence, such concepts may prove more practical than they first appear in our search for answers.", |e|
+            e.action("Interesting (investigate the 2 new tools)", |a|
+                a.condition(DialogueCondition::FlagSet(GameFlag::HasClickedBreeding))
+                    .condition(DialogueCondition::FlagSet(GameFlag::HasClickedFusion))
+                    .set_flag(GameFlag::UnlockedDungeon)
+                    .jump(1)
+            )
+        )
+        .entry("Now then, the dungeon itself. This will be your primary concern, I am afraid, since without proper funding, even the most brilliant research withers. I trust you will develop it well.", |e|
+            e.action("Wow! (open the dungeon window)", |a|
+                a.condition(DialogueCondition::FlagSet(GameFlag::HasClickedDungeon))
+                    .jump(1)
+            )
+        )
+        .options(DialogueOptions {
+            allow_bg_interactions: false,
+            position: DialoguePosition::Center,
+        })
+        .entry("You should be adequately prepared now. I have faith you will manage, despite these... unusual circumstances. Should you require guidance, both the mayor and I remain available. Do not hesitate to seek us out.", |e|
+            e.action("Ok", |a|
+                a.set_flag(GameFlag::UnlockedCompendium)
+                    .set_flag(GameFlag::UnlockedItems)
+                    .set_flag(GameFlag::UnlockedStatistics)
+                    .set_flag(GameFlag::TutorialComplete)
+                    .jump(1)
+            )
+        )
+        .avatar(AvatarID::Developer)
+        .avatar_name("Developer")
+        .end(
+            "You completed the tutorial now (this will most likely be subject to change in the future). There is not much to do yet, but I hope you have fun exploring the few different systems that already exist^^ Please do not forget to contact me should you encounter any issues, should it be bugs or other things to improve! c: If you feel adventurous, you can also check out the debug menu with F3, remember though that using this might kill all the fun. Though its useful for testing purposes.",
+            "Let's go!"
         )
 }

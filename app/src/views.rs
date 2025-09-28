@@ -18,6 +18,7 @@ pub trait View {
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct ViewSystem {
+    #[serde(skip, default)]
     current_view: ViewID,
     pub game: game::GameView,
     pub main_menu: main_menu::MainMenuView,

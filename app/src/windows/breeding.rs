@@ -6,6 +6,7 @@ use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::config::CONFIG;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::{Specimen, SpecimenId};
+use dungeon_breeder_core::types::flag::GameFlag;
 use eframe::emath::Align;
 use egui::{Button, Grid, Id, Layout, ProgressBar, RichText, Ui, Widget, WidgetText};
 use egui_phosphor::regular;
@@ -16,6 +17,8 @@ pub struct BreedingWindowState {
     pub is_open: bool,
     pub selected_specimen_1: Option<SpecimenId>,
     pub selected_specimen_2: Option<SpecimenId>,
+    #[serde(skip, default)]
+    pub already_opened: bool,
 }
 
 impl<'a> BreedingWindowState {
@@ -133,6 +136,14 @@ impl ViewWindow for BreedingWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
+        if !self.state.already_opened && open {
+            self.state.already_opened = true;
+            self.app
+                .game
+                .actions
+                .set_flag(GameFlag::HasClickedBreeding, true);
+        }
+
         self.state.is_open = open;
     }
 

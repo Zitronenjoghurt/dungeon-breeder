@@ -71,6 +71,7 @@ pub fn fuse_specimen(specimen_a: &Specimen, specimen_b: &Specimen) -> GameResult
     let new_specimen = NewSpecimen {
         creature_id: selected_creature_id,
         obtain_method: SpecimenObtainMethod::Fusion,
+        nickname: None,
         strength: (avg_strength * strength_factor).clamp(0.0, 1.0),
         intelligence: (avg_intelligence * intelligence_factor).clamp(0.0, 1.0),
         vitality: (avg_vitality * vitality_factor).clamp(0.0, 1.0),

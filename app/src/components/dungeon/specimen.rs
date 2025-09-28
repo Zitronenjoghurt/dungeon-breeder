@@ -1,5 +1,6 @@
 use crate::components::Component;
 use crate::modals::ModalSystem;
+use crate::utils::formatting::format_number;
 use dungeon_breeder_core::state::dungeon::Dungeon;
 use dungeon_breeder_core::Game;
 use egui::ScrollArea;
@@ -57,7 +58,11 @@ impl Component for DungeonSpecimenComponent<'_> {
                                     .actions
                                     .unlock_dungeon_layer_slot(self.selected_layer);
                             }
-                            ui.label(format!("{} {}", unlock_costs, regular::COINS));
+                            ui.label(format!(
+                                "{} {}",
+                                format_number(unlock_costs),
+                                regular::COINS
+                            ));
                         });
                     }
                 }

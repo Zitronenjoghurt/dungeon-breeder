@@ -3,6 +3,7 @@ use crate::components::number_range_dropdown_select::NumberRangeDropdownSelect;
 use crate::components::value_button::ValueButton;
 use crate::components::Component;
 use crate::modals::ModalSystem;
+use crate::utils::formatting::format_number;
 use dungeon_breeder_core::state::dungeon::Dungeon;
 use dungeon_breeder_core::Game;
 use egui_phosphor::regular;
@@ -83,7 +84,11 @@ impl<'a> Component for DungeonComponent<'a> {
                 if ui.button("Unlock new layer").clicked() {
                     self.game.actions.unlock_dungeon_layer();
                 }
-                ui.label(format!("{} {}", unlock_costs, regular::COINS));
+                ui.label(format!(
+                    "{} {}",
+                    format_number(unlock_costs),
+                    regular::COINS
+                ));
             });
         }
 

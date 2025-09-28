@@ -14,6 +14,10 @@ impl DialogueSystem {
             return;
         };
 
+        if app.views.current_view() != crate::views::ViewID::Game {
+            return;
+        }
+
         if !entry.options.allow_bg_interactions {
             let screen_rect = ctx.screen_rect();
             Area::new(Id::new("dialogue_backdrop"))

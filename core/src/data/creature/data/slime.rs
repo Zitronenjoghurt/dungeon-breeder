@@ -6,7 +6,7 @@ use crate::data::item::id::ItemID;
 pub static CREATURE_SLIME: CreatureDefinition = CreatureDefinition {
     name: "Slime",
     max_power: 20,
-    breeding_cooldown: 30,
+    breeding_cooldown: 40,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

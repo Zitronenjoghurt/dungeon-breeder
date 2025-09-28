@@ -81,11 +81,9 @@ impl MainMenuView {
             .id_salt("main_menu_alpha_notice_scroll")
             .max_height(200.0)
             .show(ui, |ui| {
-                ui.label("Thank you for playing my little game!");
+                ui.label("Thank you for playing my little game! I hope you can enjoy it a bit already^^");
                 ui.add_space(10.0);
                 ui.label("It is still in very early development and misses most mayor features. I would greatly appreciate your cooperation through bug reports, feature requests or feedback c:");
-                ui.add_space(10.0);
-                ui.label("I really hope that you enjoy playing my game, hehe");
         });
     }
 

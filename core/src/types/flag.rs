@@ -32,6 +32,7 @@ pub enum GameFlag {
     HasClickedSpecimenOverview = 10,
     HasClickedBreeding = 11,
     HasClickedFusion = 12,
+    HasClickedDungeon = 13,
 }
 
 impl Display for GameFlag {
