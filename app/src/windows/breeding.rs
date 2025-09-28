@@ -1,5 +1,6 @@
 use crate::app::GameApp;
 use crate::components::{Component, SpecimenModalSelection};
+use crate::data::tip::Tip;
 use crate::types::color::ColorConvert;
 use crate::utils::formatting::format_seconds;
 use crate::windows::ViewWindow;
@@ -142,6 +143,7 @@ impl ViewWindow for BreedingWindow<'_> {
                 .game
                 .actions
                 .set_flag(GameFlag::HasClickedBreeding, true);
+            self.app.tips.show_tip(Tip::SpecimenBreedingFusion);
         }
 
         self.state.is_open = open;

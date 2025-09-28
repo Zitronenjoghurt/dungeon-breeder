@@ -7,6 +7,7 @@ use crate::systems::dialogue::DialogueSystem;
 use crate::systems::file_picker::FilePicker;
 use crate::systems::settings::SettingsSystem;
 use crate::systems::textures::TextureSystem;
+use crate::systems::tips::TipsSystem;
 use crate::systems::toasts::ToastSystem;
 use crate::theme::apply_glomzy_theme;
 use crate::types::font::CustomFont;
@@ -35,6 +36,7 @@ pub struct GameApp {
     pub actions: AppActions,
     pub game: Game,
     pub settings: SettingsSystem,
+    pub tips: TipsSystem,
     pub modals: ModalSystem,
     pub views: ViewSystem,
     pub windows: WindowSystem,

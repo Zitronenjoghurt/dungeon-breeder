@@ -18,7 +18,7 @@ mod mechanics;
 pub mod state;
 pub mod types;
 pub mod update;
-mod utils;
+pub mod utils;
 
 pub const VERSION_INDEX: u32 = 0;
 

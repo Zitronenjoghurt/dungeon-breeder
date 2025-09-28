@@ -1,6 +1,7 @@
 use crate::app::GameApp;
 use crate::components::state::SpecimenSelectionState;
 use crate::components::{Component, SpecimenOverview};
+use crate::data::tip::Tip;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::types::flag::GameFlag;
 use egui::{Context, Id, Ui, WidgetText};
@@ -47,6 +48,7 @@ impl ViewWindow for SpecimenWindow<'_> {
                 .game
                 .actions
                 .set_flag(GameFlag::HasClickedSpecimenOverview, true);
+            self.app.tips.show_tip(Tip::SpecimenProficiency);
         }
         self.state.is_open = open;
     }

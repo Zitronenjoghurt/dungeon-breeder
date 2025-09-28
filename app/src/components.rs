@@ -16,6 +16,7 @@ pub mod number_range_dropdown_select;
 pub mod progress_report;
 pub mod specimen;
 pub mod system_info;
+pub mod tips;
 pub mod toggle_button;
 pub mod value_button;
 

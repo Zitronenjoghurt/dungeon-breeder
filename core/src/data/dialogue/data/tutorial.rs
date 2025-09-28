@@ -18,6 +18,20 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
             e.jump("The researcher", 6)
                 .jump("Your worst nightmare", 1)
                 .jump("...?", 5)
+                .action("(Skip Introduction & Tutorial)", |a| {
+                    a.event(gonk_event_1())
+                        .event(gonk_event_2())
+                        .set_flag(GameFlag::UnlockedTopBar)
+                        .set_flag(GameFlag::UnlockedSpecimenOverview)
+                        .set_flag(GameFlag::UnlockedBreeding)
+                        .set_flag(GameFlag::UnlockedFusion)
+                        .set_flag(GameFlag::UnlockedDungeon)
+                        .set_flag(GameFlag::UnlockedCompendium)
+                        .set_flag(GameFlag::UnlockedItems)
+                        .set_flag(GameFlag::UnlockedStatistics)
+                        .set_flag(GameFlag::TutorialComplete)
+                        .end()
+                })
         })
         .entry(
             "Darkness cloaks your intent, wretched fiend. If malice guides your steps, then let the nine hells reclaim what they have spawned!",
@@ -90,32 +104,8 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
             e.action_text("Got it!")
                 .action_text("Fine...")
                 .event(DialogueEvent::SetFlag(GameFlag::UnlockedTopBar))
-                .event(DialogueEvent::GameEvent(GameEvent::DoSpawnSpecimen(NewSpecimen {
-                    creature_id: CreatureID::Gonk,
-                    obtain_method: SpecimenObtainMethod::Unknown,
-                    nickname: Some("Weird Orb #1".to_string()),
-                    strength: 0.73,
-                    intelligence: 0.72,
-                    vitality: 0.75,
-                    agility: 0.78,
-                    regeneration: 0.84,
-                    fertility: 0.82,
-                    breeding_generation: 1,
-                    fusion_generation: 1,
-                })))
-                .event(DialogueEvent::GameEvent(GameEvent::DoSpawnSpecimen(NewSpecimen {
-                    creature_id: CreatureID::Gonk,
-                    obtain_method: SpecimenObtainMethod::Unknown,
-                    nickname: Some("Weird Orb #2".to_string()),
-                    strength: 0.71,
-                    intelligence: 0.75,
-                    vitality: 0.73,
-                    agility: 0.79,
-                    regeneration: 0.72,
-                    fertility: 0.91,
-                    breeding_generation: 1,
-                    fusion_generation: 1,
-                })))
+                .event(gonk_event_1())
+                .event(gonk_event_2())
                 .event(DialogueEvent::Jump(1)),
         )
         .options(DialogueOptions {
@@ -169,4 +159,36 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
             "You completed the tutorial now (this will most likely be subject to change in the future). There is not much to do yet, but I hope you have fun exploring the few different systems that already exist^^ Please do not forget to contact me should you encounter any issues, should it be bugs or other things to improve! c: If you feel adventurous, you can also check out the debug menu with F3, remember though that using this might kill all the fun. Though its useful for testing purposes.",
             "Let's go!"
         )
+}
+
+fn gonk_event_1() -> DialogueEvent {
+    DialogueEvent::GameEvent(GameEvent::DoSpawnSpecimen(NewSpecimen {
+        creature_id: CreatureID::Gonk,
+        obtain_method: SpecimenObtainMethod::Unknown,
+        nickname: Some("Weird Orb #1".to_string()),
+        strength: 0.73,
+        intelligence: 0.72,
+        vitality: 0.75,
+        agility: 0.78,
+        regeneration: 0.84,
+        fertility: 0.82,
+        breeding_generation: 1,
+        fusion_generation: 1,
+    }))
+}
+
+fn gonk_event_2() -> DialogueEvent {
+    DialogueEvent::GameEvent(GameEvent::DoSpawnSpecimen(NewSpecimen {
+        creature_id: CreatureID::Gonk,
+        obtain_method: SpecimenObtainMethod::Unknown,
+        nickname: Some("Weird Orb #2".to_string()),
+        strength: 0.71,
+        intelligence: 0.75,
+        vitality: 0.73,
+        agility: 0.79,
+        regeneration: 0.72,
+        fertility: 0.91,
+        breeding_generation: 1,
+        fusion_generation: 1,
+    }))
 }

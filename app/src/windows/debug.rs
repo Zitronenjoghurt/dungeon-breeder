@@ -9,6 +9,7 @@ use crate::windows::debug_windows::font::{FontDebugWindow, FontDebugWindowState}
 use crate::windows::debug_windows::specimen_spawn::{
     SpecimenSpawnDebugWindow, SpecimenSpawnDebugWindowState,
 };
+use crate::windows::debug_windows::tips::{TipsDebugWindow, TipsDebugWindowState};
 use crate::windows::{ViewWindow, WindowSystem};
 use dungeon_breeder_core::data::creature::id::CreatureID;
 use egui::{Id, Ui, WidgetText};
@@ -23,6 +24,7 @@ pub struct DebugWindowState {
     pub flags: FlagsDebugWindowState,
     pub fonts: FontDebugWindowState,
     pub specimen_spawn: SpecimenSpawnDebugWindowState,
+    pub tips: TipsDebugWindowState,
 }
 
 pub struct DebugWindow<'a> {
@@ -69,6 +71,7 @@ impl ViewWindow for DebugWindow<'_> {
         FontDebugWindow::new(self.app, &mut self.state.fonts).show(ui.ctx());
         SpecimenSpawnDebugWindow::new(&mut self.state.specimen_spawn, &self.app.game)
             .show(ui.ctx());
+        TipsDebugWindow::new(&mut self.state.tips, self.app).show(ui.ctx());
 
         ui.horizontal(|ui| {
             ToggleButton::new(&mut self.state.bug_report.is_open, regular::BUG).ui(ui);
@@ -76,6 +79,7 @@ impl ViewWindow for DebugWindow<'_> {
             ToggleButton::new(&mut self.state.dialogue.is_open, regular::CHAT).ui(ui);
             ToggleButton::new(&mut self.state.flags.is_open, regular::FLAG).ui(ui);
             ToggleButton::new(&mut self.state.fonts.is_open, regular::TEXT_A_UNDERLINE).ui(ui);
+            ToggleButton::new(&mut self.state.tips.is_open, regular::QUESTION).ui(ui);
         });
 
         ui.separator();

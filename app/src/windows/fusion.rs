@@ -1,5 +1,6 @@
 use crate::app::GameApp;
 use crate::components::{Component, SpecimenModalSelection};
+use crate::data::tip::Tip;
 use crate::types::color::ColorConvert;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::config::CONFIG;
@@ -126,6 +127,8 @@ impl ViewWindow for FusionWindow<'_> {
                 .game
                 .actions
                 .set_flag(GameFlag::HasClickedFusion, true);
+            self.app.tips.show_tip(Tip::SpecimenBreedingFusion);
+            self.app.tips.show_tip(Tip::FusionSpecimenProficiency);
         }
 
         self.state.is_open = open;

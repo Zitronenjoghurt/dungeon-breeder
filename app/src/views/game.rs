@@ -8,6 +8,7 @@ use crate::windows::dungeon::{DungeonWindow, DungeonWindowState};
 use crate::windows::items::ItemsWindow;
 use crate::windows::specimen::{SpecimenWindow, SpecimenWindowState};
 use crate::windows::statistics::StatisticsWindow;
+use crate::windows::tips::TipsWindow;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::types::flag::GameFlag;
 use egui::{CentralPanel, Context, TopBottomPanel};
@@ -42,6 +43,11 @@ impl GameView {
 
                 ToggleButton::new(&mut app.windows.settings_open, regular::GEAR)
                     .tooltip("Settings")
+                    .ui(ui);
+
+                GameMenuButton::new(&mut app.tips.is_window_open)
+                    .label(regular::QUESTION)
+                    .tooltip("Hints")
                     .ui(ui);
 
                 GameMenuButton::new(&mut self.statistics_window_open)
@@ -103,11 +109,18 @@ impl GameView {
 impl View for GameView {
     fn render(&mut self, ctx: &Context, app: &mut GameApp) {
         CompendiumWindow::new(app, &mut self.compendium_window).show(ctx);
-        DungeonWindow::new(&mut app.modals, &app.game, &mut self.dungeon_window).show(ctx);
+        DungeonWindow::new(
+            &mut app.modals,
+            &mut app.tips,
+            &app.game,
+            &mut self.dungeon_window,
+        )
+        .show(ctx);
         ItemsWindow::new(&app.game, &mut self.items_window_open).show(ctx);
         SpecimenWindow::new(app, &mut self.specimen_window).show(ctx);
         StatisticsWindow::new(&app.game.state.statistics, &mut self.statistics_window_open)
             .show(ctx);
+        TipsWindow::new(app).show(ctx);
 
         if app.game.state.flags.get(GameFlag::UnlockedTopBar) {
             self.show_top_bar(ctx, app);

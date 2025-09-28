@@ -1,5 +1,4 @@
 pub static PLANNED_FEATURES: &[&str] = &[
-    "Tips/Hint system",
     "Researching specimens",
     "Mayor's permits for dungeon extensions",
     "Limit to offline progression as a gameplay mechanic",

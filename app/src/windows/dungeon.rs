@@ -1,6 +1,8 @@
 use crate::components::dungeon::{DungeonComponent, DungeonComponentState};
 use crate::components::Component;
+use crate::data::tip::Tip;
 use crate::modals::ModalSystem;
+use crate::systems::tips::TipsSystem;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::types::flag::GameFlag;
 use dungeon_breeder_core::Game;
@@ -16,19 +18,22 @@ pub struct DungeonWindowState {
 }
 
 pub struct DungeonWindow<'a> {
-    modal_system: &'a mut ModalSystem,
+    modals: &'a mut ModalSystem,
+    tips: &'a mut TipsSystem,
     game: &'a Game,
     state: &'a mut DungeonWindowState,
 }
 
 impl<'a> DungeonWindow<'a> {
     pub fn new(
-        modal_system: &'a mut ModalSystem,
+        modals: &'a mut ModalSystem,
+        tips: &'a mut TipsSystem,
         game: &'a Game,
         state: &'a mut DungeonWindowState,
     ) -> Self {
         Self {
-            modal_system,
+            modals,
+            tips,
             game,
             state,
         }
@@ -54,6 +59,7 @@ impl ViewWindow for DungeonWindow<'_> {
             self.game
                 .actions
                 .set_flag(GameFlag::HasClickedDungeon, true);
+            self.tips.show_tip(Tip::DungeonSpecimenProficiency);
         }
 
         self.state.is_open = open;
@@ -62,7 +68,7 @@ impl ViewWindow for DungeonWindow<'_> {
     fn render_content(&mut self, ui: &mut Ui) {
         DungeonComponent::new(
             &mut self.state.dungeon_component_state,
-            self.modal_system,
+            self.modals,
             self.game,
             &self.game.state.dungeon,
         )

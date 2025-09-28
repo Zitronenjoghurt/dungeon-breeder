@@ -6,6 +6,9 @@ mod v0_1_0_alpha;
 
 pub struct Changelog {
     pub title: &'static str,
+    pub year: u16,
+    pub month: u8,
+    pub day: u8,
     pub description: &'static str,
     pub added: &'static [&'static str],
     pub changed: &'static [&'static str],
