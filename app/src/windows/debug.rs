@@ -9,6 +9,7 @@ use crate::windows::debug_windows::font::{FontDebugWindow, FontDebugWindowState}
 use crate::windows::debug_windows::specimen_spawn::{
     SpecimenSpawnDebugWindow, SpecimenSpawnDebugWindowState,
 };
+use crate::windows::debug_windows::stats::DebugStatsWindow;
 use crate::windows::debug_windows::tips::{TipsDebugWindow, TipsDebugWindowState};
 use crate::windows::{ViewWindow, WindowSystem};
 use dungeon_breeder_core::data::creature::id::CreatureID;
@@ -19,6 +20,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Default, Serialize, Deserialize)]
 pub struct DebugWindowState {
     pub is_open: bool,
+    pub stats_open: bool,
     pub bug_report: BugReportDebugWindowState,
     pub dialogue: DialogueDebugWindowState,
     pub flags: FlagsDebugWindowState,
@@ -66,6 +68,7 @@ impl ViewWindow for DebugWindow<'_> {
 
     fn render_content(&mut self, ui: &mut Ui) {
         BugReportDebugWindow::new(self.app, &mut self.state.bug_report).show(ui.ctx());
+        DebugStatsWindow::new(self.app, &mut self.state.stats_open).show(ui.ctx());
         DialogueDebugWindow::new(self.app, &mut self.state.dialogue).show(ui.ctx());
         FlagsDebugWindow::new(self.app, &mut self.state.flags).show(ui.ctx());
         FontDebugWindow::new(self.app, &mut self.state.fonts).show(ui.ctx());
@@ -74,6 +77,7 @@ impl ViewWindow for DebugWindow<'_> {
         TipsDebugWindow::new(&mut self.state.tips, self.app).show(ui.ctx());
 
         ui.horizontal(|ui| {
+            ToggleButton::new(&mut self.state.stats_open, regular::CHART_BAR).ui(ui);
             ToggleButton::new(&mut self.state.bug_report.is_open, regular::BUG).ui(ui);
             ToggleButton::new(&mut self.state.specimen_spawn.is_open, regular::ALIEN).ui(ui);
             ToggleButton::new(&mut self.state.dialogue.is_open, regular::CHAT).ui(ui);

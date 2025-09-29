@@ -22,6 +22,7 @@ egui_extras = "0.32.1"
 humantime = { workspace = true }
 image = { version = "0.25.8", default-features = false, features = ["png"] }
 num-traits = { workspace = true }
+ringbuffer = { workspace = true }
 rmp-serde = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

@@ -1,3 +1,4 @@
+use crate::app::performance_info::PerformanceInfo;
 use crate::app::runtime_info::RuntimeInfo;
 use crate::app::snapshot::GameAppSnapshot;
 use crate::app::system_info::SystemInfo;
@@ -17,6 +18,7 @@ pub struct BugReport {
     pub snapshot: GameAppSnapshot,
     pub runtime: RuntimeInfo,
     pub system: SystemInfo,
+    pub performance: PerformanceInfo,
 }
 
 impl BugReport {
@@ -28,12 +30,14 @@ impl BugReport {
         let snapshot = GameAppSnapshot::create(app, ctx)?;
         let runtime = RuntimeInfo::collect(ctx);
         let system = SystemInfo::collect();
+        let performance = app.debug_stats.performance_info();
 
         Ok(Self {
             metadata,
             snapshot,
             runtime,
             system,
+            performance,
         })
     }
 

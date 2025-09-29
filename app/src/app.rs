@@ -3,6 +3,7 @@ use crate::app::snapshot::GameAppSnapshot;
 use crate::modals::ModalSystem;
 use crate::systems::actions::{AppAction, AppActions};
 use crate::systems::bug_report_review::BugReportReviewSystem;
+use crate::systems::debug_stats::DebugStatsSystem;
 use crate::systems::dialogue::DialogueSystem;
 use crate::systems::file_picker::FilePicker;
 use crate::systems::settings::SettingsSystem;
@@ -26,6 +27,7 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 pub mod bug_report;
+pub mod performance_info;
 pub mod runtime_info;
 pub mod snapshot;
 pub mod system_info;
@@ -48,6 +50,8 @@ pub struct GameApp {
     pub file_picker: FilePicker,
     #[serde(skip, default)]
     pub bug_report_review: BugReportReviewSystem,
+    #[serde(skip, default)]
+    pub debug_stats: DebugStatsSystem,
 }
 
 impl eframe::App for GameApp {
@@ -58,6 +62,8 @@ impl eframe::App for GameApp {
         skip(self, ctx, _frame),
     )]
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        let now = std::time::Instant::now();
+
         ctx.request_repaint_after(Duration::from_millis(100));
         self.handle_keyboard_inputs(ctx);
         self.update_game(ctx);
@@ -68,10 +74,14 @@ impl eframe::App for GameApp {
         self.settings.update(ctx);
         self.toasts.update(ctx);
         self.update_dialogue(ctx);
+        self.update_debug_stats();
 
         for action in self.actions.take_actions() {
             self.handle_app_action(ctx, action);
         }
+
+        let elapsed = now.elapsed();
+        self.debug_stats.process_app_update_duration(elapsed);
     }
 
     #[tracing::instrument(
@@ -142,6 +152,8 @@ impl GameApp {
         }
 
         let report = self.game.update();
+        self.debug_stats.process_report(&report);
+
         for error in report.action_report.errors {
             self.toasts.error(error.to_string());
         }
@@ -219,6 +231,16 @@ impl GameApp {
     )]
     fn update_dialogue(&mut self, ctx: &egui::Context) {
         DialogueSystem::update(ctx, self);
+    }
+
+    #[tracing::instrument(
+        target = "app",
+        name = "app::update_debug_stats",
+        level = "trace"
+        skip(self),
+    )]
+    fn update_debug_stats(&mut self) {
+        self.debug_stats.update();
     }
 
     #[tracing::instrument(

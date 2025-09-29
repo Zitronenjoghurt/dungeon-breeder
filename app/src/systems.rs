@@ -1,5 +1,6 @@
 pub mod actions;
 pub mod bug_report_review;
+pub mod debug_stats;
 pub mod dialogue;
 pub mod file_picker;
 pub mod settings;
