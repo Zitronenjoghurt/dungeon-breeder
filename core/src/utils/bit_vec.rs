@@ -44,7 +44,7 @@ impl BitVec {
     }
 
     pub fn iter_xor<'a>(&'a self, other: &'a BitVec) -> impl Iterator<Item = usize> + 'a {
-        let max_len = self.0.len().min(other.0.len());
+        let max_len = self.0.len().max(other.0.len());
         (0..max_len * 8).filter(move |&index| self.get(index) ^ other.get(index))
     }
 }

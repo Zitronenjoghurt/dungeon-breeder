@@ -1,7 +1,7 @@
 use crate::data::creature::id::CreatureID;
 use crate::data::item::id::ItemID;
 use crate::events::event::GameEvent;
-use crate::state::specimen::SpecimenId;
+use crate::state::specimen::{NewSpecimen, SpecimenId};
 
 pub mod event;
 
@@ -27,6 +27,10 @@ impl GameEvents {
     )]
     pub fn push_event(&mut self, event: GameEvent) {
         self.queue.push(event);
+    }
+
+    pub fn do_spawn_specimen(&mut self, specimen: NewSpecimen) {
+        self.push_event(GameEvent::do_spawn_specimen(specimen));
     }
 
     pub fn item_obtained(&mut self, item_id: ItemID, amount: u64) {

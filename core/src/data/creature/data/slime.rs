@@ -7,6 +7,7 @@ pub static CREATURE_SLIME: CreatureDefinition = CreatureDefinition {
     name: "Slime",
     max_power: 20,
     breeding_cooldown: 40,
+    summoning_cooldown: None,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

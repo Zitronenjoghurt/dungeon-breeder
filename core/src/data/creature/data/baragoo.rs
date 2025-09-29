@@ -7,6 +7,7 @@ pub static CREATURE_BARAGOO: CreatureDefinition = CreatureDefinition {
     name: "Baragoo",
     max_power: 25,
     breeding_cooldown: 120,
+    summoning_cooldown: None,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

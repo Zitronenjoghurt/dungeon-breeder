@@ -7,6 +7,7 @@ pub static CREATURE_TINKY: CreatureDefinition = CreatureDefinition {
     name: "Tinky",
     max_power: 30,
     breeding_cooldown: 300,
+    summoning_cooldown: None,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

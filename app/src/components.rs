@@ -1,4 +1,4 @@
-use egui::{Ui, Widget};
+use egui::Ui;
 
 pub mod asc_desc_button;
 pub mod avatar;

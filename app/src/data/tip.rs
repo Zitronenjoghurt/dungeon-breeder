@@ -12,6 +12,7 @@ pub enum Tip {
     SpecimenBreedingFusion = 1,
     DungeonSpecimenProficiency = 2,
     FusionSpecimenProficiency = 3,
+    Summoning = 4,
 }
 
 impl Tip {
@@ -21,6 +22,7 @@ impl Tip {
             Self::SpecimenBreedingFusion => "Specimen Breeding vs. Fusion",
             Self::DungeonSpecimenProficiency => "Proficiency of Specimen in Dungeon",
             Self::FusionSpecimenProficiency => "Proficiency of Specimen in Fusion",
+            Self::Summoning => "Summoning",
         }
     }
 
@@ -37,6 +39,9 @@ impl Tip {
             }
             Self::FusionSpecimenProficiency => {
                 "The higher the proficiency of a specimen, the higher their power. Higher power specimen have an increased chance of fusing into stronger monsters."
+            }
+            Self::Summoning => {
+                "If you should ever run out of specimen to summon or breed, you can summon a specimen in the summoning window."
             }
         }
     }

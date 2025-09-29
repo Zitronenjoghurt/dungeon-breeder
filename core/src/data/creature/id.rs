@@ -39,6 +39,10 @@ impl CreatureID {
         Self::iter().map(|id| id.def())
     }
 
+    pub fn iter_summonable() -> impl Iterator<Item = Self> {
+        Self::iter().filter(|id| id.def().summoning_cooldown.is_some())
+    }
+
     pub const fn def(self) -> &'static CreatureDefinition {
         match self {
             Self::Gonk => &CREATURE_GONK,

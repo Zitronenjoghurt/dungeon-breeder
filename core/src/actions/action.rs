@@ -19,6 +19,7 @@ mod reset_game_state;
 mod sell_item;
 mod set_flag;
 mod spawn_specimen;
+mod summon_creature;
 mod unlock_dungeon_layer;
 mod unlock_dungeon_layer_slot;
 
@@ -38,6 +39,7 @@ pub enum GameAction {
     SellItem(sell_item::SellItemAction),
     SpawnSpecimen(spawn_specimen::SpawnSpecimenAction),
     SetFlag(set_flag::SetFlagAction),
+    SummonCreature(summon_creature::SummonCreatureAction),
     TakeDialogueAction(dialogue_action::TakeDialogueAction),
     TriggerDialogue(dialogue_trigger::TriggerDialogueAction),
     UnlockDungeonLayer,
@@ -93,6 +95,10 @@ impl GameAction {
         Self::SpawnSpecimen(spawn_specimen::SpawnSpecimenAction { new_specimen })
     }
 
+    pub fn summon_creature(creature_id: CreatureID) -> Self {
+        Self::SummonCreature(summon_creature::SummonCreatureAction(creature_id))
+    }
+
     pub fn take_dialogue_action(action_index: usize) -> Self {
         Self::TakeDialogueAction(dialogue_action::TakeDialogueAction { action_index })
     }
@@ -129,6 +135,7 @@ impl GameActionHandler for GameAction {
             Self::SellItem(action) => action.handle(state, bus),
             Self::SetFlag(action) => action.handle(state, bus),
             Self::SpawnSpecimen(action) => action.handle(state, bus),
+            Self::SummonCreature(action) => action.handle(state, bus),
             Self::TakeDialogueAction(action) => action.handle(state, bus),
             Self::TriggerDialogue(action) => action.handle(state, bus),
             Self::UnlockDungeonLayer => {

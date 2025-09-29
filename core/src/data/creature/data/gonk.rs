@@ -7,6 +7,7 @@ pub static CREATURE_GONK: CreatureDefinition = CreatureDefinition {
     name: "Gonk",
     max_power: 10,
     breeding_cooldown: 20,
+    summoning_cooldown: Some(300),
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

@@ -1,3 +1,4 @@
+use crate::data::creature::id::CreatureID;
 use crate::state::specimen::SpecimenId;
 use thiserror::Error;
 
@@ -11,6 +12,17 @@ pub enum GameError {
     BreedingImpossibleIncompatibleCreatures,
     #[error("Breeding the same specimen with itself is impossible")]
     BreedingImpossibleSameSpecimen,
+    #[error("Creature {0} is not summonable")]
+    CreatureNotSummonable(CreatureID),
+    #[error("Creature {0} is not summonable because it is not unlocked yet")]
+    CreatureNotSummonableNotUnlocked(CreatureID),
+    #[error(
+        "Creature {creature_id} is not summonable because it is still on cooldown for {secs_left} seconds"
+    )]
+    CreatureNotSummonableOnCooldown {
+        creature_id: CreatureID,
+        secs_left: u64,
+    },
     #[error("Dialogue at index '{0}' is out of bounds")]
     DialogueOutOfBounds(usize),
     #[error(
@@ -44,6 +56,13 @@ pub enum GameError {
 }
 
 impl GameError {
+    pub fn creature_not_summonable_on_cooldown(creature_id: CreatureID, secs_left: u64) -> Self {
+        Self::CreatureNotSummonableOnCooldown {
+            creature_id,
+            secs_left,
+        }
+    }
+
     pub fn dialogue_out_of_bounds(index: usize) -> Self {
         Self::DialogueOutOfBounds(index)
     }

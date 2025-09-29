@@ -129,6 +129,7 @@ impl ViewWindow for FusionWindow<'_> {
                 .set_flag(GameFlag::HasClickedFusion, true);
             self.app.tips.show_tip(Tip::SpecimenBreedingFusion);
             self.app.tips.show_tip(Tip::FusionSpecimenProficiency);
+            self.app.tips.show_tip(Tip::Summoning);
         }
 
         self.state.is_open = open;

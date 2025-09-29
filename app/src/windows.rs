@@ -19,6 +19,7 @@ pub mod items;
 pub mod settings;
 pub mod specimen;
 pub mod statistics;
+pub mod summon;
 pub mod tips;
 
 pub trait ViewWindow: Sized {

@@ -7,6 +7,7 @@ pub static CREATURE_UGGROOT: CreatureDefinition = CreatureDefinition {
     name: "Uggroot",
     max_power: 45,
     breeding_cooldown: 600,
+    summoning_cooldown: None,
     tier: CreatureTier::Abundant,
     item_drops: &[
         CreatureItemDrop {

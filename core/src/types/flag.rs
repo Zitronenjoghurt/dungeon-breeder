@@ -27,12 +27,13 @@ pub enum GameFlag {
     UnlockedDungeon = 5,
     UnlockedBreeding = 6,
     UnlockedFusion = 7,
-    UnlockedTopBar = 8,
-    OfflineProgressionReportEnabled = 9,
-    HasClickedSpecimenOverview = 10,
-    HasClickedBreeding = 11,
-    HasClickedFusion = 12,
-    HasClickedDungeon = 13,
+    UnlockedSummoning = 8,
+    UnlockedTopBar = 9,
+    OfflineProgressionReportEnabled = 10,
+    HasClickedSpecimenOverview = 11,
+    HasClickedBreeding = 12,
+    HasClickedFusion = 13,
+    HasClickedDungeon = 14,
 }
 
 impl Display for GameFlag {

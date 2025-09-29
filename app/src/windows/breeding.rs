@@ -144,6 +144,7 @@ impl ViewWindow for BreedingWindow<'_> {
                 .actions
                 .set_flag(GameFlag::HasClickedBreeding, true);
             self.app.tips.show_tip(Tip::SpecimenBreedingFusion);
+            self.app.tips.show_tip(Tip::Summoning);
         }
 
         self.state.is_open = open;

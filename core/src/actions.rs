@@ -104,6 +104,10 @@ impl GameActions {
         self.push_action(GameAction::spawn_specimen(Box::new(new_specimen)))
     }
 
+    pub fn summon_creature(&self, creature_id: CreatureID) {
+        self.push_action(GameAction::summon_creature(creature_id))
+    }
+
     pub fn take_dialogue_action(&self, action_index: usize) {
         self.push_action(GameAction::take_dialogue_action(action_index))
     }

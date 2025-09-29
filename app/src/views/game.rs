@@ -8,6 +8,7 @@ use crate::windows::dungeon::{DungeonWindow, DungeonWindowState};
 use crate::windows::items::ItemsWindow;
 use crate::windows::specimen::{SpecimenWindow, SpecimenWindowState};
 use crate::windows::statistics::StatisticsWindow;
+use crate::windows::summon::SummonWindow;
 use crate::windows::tips::TipsWindow;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::types::flag::GameFlag;
@@ -19,6 +20,7 @@ use serde::{Deserialize, Serialize};
 pub struct GameView {
     items_window_open: bool,
     statistics_window_open: bool,
+    summoning_window_open: bool,
     compendium_window: CompendiumWindowState,
     dungeon_window: DungeonWindowState,
     specimen_window: SpecimenWindowState,
@@ -88,6 +90,12 @@ impl GameView {
                     .tooltip("Items")
                     .ui(ui);
 
+                GameMenuButton::new(&mut self.summoning_window_open)
+                    .label(regular::FLAME)
+                    .unlocked(app.game.state.flags.get(GameFlag::UnlockedSummoning))
+                    .tooltip("Summoning")
+                    .ui(ui);
+
                 GameMenuButton::new(&mut self.compendium_window.is_open)
                     .label(regular::BOOK)
                     .unlocked(app.game.state.flags.get(GameFlag::UnlockedCompendium))
@@ -120,6 +128,7 @@ impl View for GameView {
         SpecimenWindow::new(app, &mut self.specimen_window).show(ctx);
         StatisticsWindow::new(&app.game.state.statistics, &mut self.statistics_window_open)
             .show(ctx);
+        SummonWindow::new(app, &mut self.summoning_window_open).show(ctx);
         TipsWindow::new(app).show(ctx);
 
         if app.game.state.flags.get(GameFlag::UnlockedTopBar) {

@@ -9,6 +9,7 @@ use crate::state::flags::GameFlags;
 use crate::state::fusion::FusionState;
 use crate::state::item::collection::ItemCollection;
 use crate::state::statistics::GameStatistics;
+use crate::state::summoning::SummoningState;
 use crate::state::treasury::Treasury;
 use rand_distr::num_traits::Saturating;
 use serde::{Deserialize, Serialize};
@@ -22,6 +23,7 @@ pub mod fusion;
 pub mod item;
 pub mod specimen;
 pub mod statistics;
+mod summoning;
 mod timer;
 mod treasury;
 
@@ -35,6 +37,7 @@ pub struct GameState {
     pub items: ItemCollection,
     pub specimen: SpecimenCollection,
     pub statistics: GameStatistics,
+    pub summoning: SummoningState,
     pub treasury: Treasury,
 }
 

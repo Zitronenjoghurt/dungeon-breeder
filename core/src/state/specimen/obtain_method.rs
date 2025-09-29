@@ -8,6 +8,7 @@ pub enum SpecimenObtainMethod {
     Breeding,
     Fusion,
     RandomGeneration,
+    Summoning,
 }
 
 impl Display for SpecimenObtainMethod {
