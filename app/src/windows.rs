@@ -48,6 +48,7 @@ pub trait ViewWindow: Sized {
         }
 
         let mut is_open = self.is_open();
+        let open_before = is_open;
         egui::Window::new(self.title())
             .id(self.id())
             .open(&mut is_open)
@@ -61,7 +62,10 @@ pub trait ViewWindow: Sized {
         if !is_open {
             self.before_close(ctx);
         }
-        self.set_open(is_open)
+
+        if is_open != open_before {
+            self.set_open(is_open);
+        }
     }
 }
 

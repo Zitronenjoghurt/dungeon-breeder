@@ -42,14 +42,6 @@ impl ViewWindow for SpecimenWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
-        if !self.state.already_opened && open {
-            self.state.already_opened = true;
-            self.app
-                .game
-                .actions
-                .set_flag(GameFlag::HasClickedSpecimenOverview, true);
-            self.app.tips.show_tip(Tip::SpecimenProficiency);
-        }
         self.state.is_open = open;
     }
 
@@ -58,6 +50,15 @@ impl ViewWindow for SpecimenWindow<'_> {
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
+        if !self.state.already_opened {
+            self.state.already_opened = true;
+            self.app
+                .game
+                .actions
+                .set_flag(GameFlag::HasClickedSpecimenOverview, true);
+            self.app.tips.show_tip(Tip::SpecimenProficiency);
+        }
+
         if !self.state.sort_ready {
             self.state.selection_state.sort_dirty();
             self.state.sort_ready = true;

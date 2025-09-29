@@ -36,6 +36,15 @@ pub enum ItemID {
     Vegebit = 12,
     Carrotooth = 13,
     StinkyCarrot = 14,
+    VoidFragment = 15,
+    VoidShard = 16,
+    FocusedVoid = 17,
+    LefkaTush = 18,
+    LefkaFin = 19,
+    LefkaPlate = 20,
+    RockySpike = 21,
+    BoulderedFist = 22,
+    GlowingRedPebbledEye = 23,
 }
 
 impl ItemID {
@@ -60,6 +69,15 @@ impl ItemID {
             Self::Vegebit => &ITEM_VEGEBIT,
             Self::Carrotooth => &ITEM_CARROTOOTH,
             Self::StinkyCarrot => &ITEM_STINKY_CARROT,
+            Self::VoidFragment => &ITEM_VOID_FRAGMENT,
+            Self::VoidShard => &ITEM_VOID_SHARD,
+            Self::FocusedVoid => &ITEM_FOCUSED_VOID,
+            Self::LefkaTush => &ITEM_LEFKA_TUSH,
+            Self::LefkaFin => &ITEM_LEFKA_FIN,
+            Self::LefkaPlate => &ITEM_LEFKA_PLATE,
+            Self::RockySpike => &ITEM_ROCKY_SPIKE,
+            Self::BoulderedFist => &ITEM_BOULDERED_FIST,
+            Self::GlowingRedPebbledEye => &ITEM_GLOWING_RED_PEBBLED_EYE,
         }
     }
 }

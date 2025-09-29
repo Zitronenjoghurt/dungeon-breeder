@@ -54,7 +54,11 @@ impl ViewWindow for DungeonWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
-        if !self.state.already_opened && open {
+        self.state.is_open = open;
+    }
+
+    fn render_content(&mut self, ui: &mut Ui) {
+        if !self.state.already_opened {
             self.state.already_opened = true;
             self.game
                 .actions
@@ -62,10 +66,6 @@ impl ViewWindow for DungeonWindow<'_> {
             self.tips.show_tip(Tip::DungeonSpecimenProficiency);
         }
 
-        self.state.is_open = open;
-    }
-
-    fn render_content(&mut self, ui: &mut Ui) {
         DungeonComponent::new(
             &mut self.state.dungeon_component_state,
             self.modals,

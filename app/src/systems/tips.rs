@@ -35,6 +35,9 @@ impl TipsSystem {
 
     pub fn read_tip(&mut self, tip: Tip) {
         self.read.set(tip as usize);
+        if self.tips_relevant().count() == 0 {
+            self.is_window_open = false;
+        }
     }
 
     pub fn has_read_tip(&self, tip: Tip) -> bool {

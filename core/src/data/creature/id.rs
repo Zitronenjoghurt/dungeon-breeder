@@ -28,6 +28,9 @@ pub enum CreatureID {
     Baragoo = 2,
     Tinky = 3,
     Uggroot = 4,
+    Nihi = 5,
+    Lefkaroria = 6,
+    Borok = 7,
 }
 
 impl CreatureID {
@@ -50,6 +53,9 @@ impl CreatureID {
             Self::Baragoo => &CREATURE_BARAGOO,
             Self::Tinky => &CREATURE_TINKY,
             Self::Uggroot => &CREATURE_UGGROOT,
+            Self::Nihi => &CREATURE_NIHI,
+            Self::Lefkaroria => &CREATURE_LEFKARORIA,
+            Self::Borok => &CREATURE_BOROK,
         }
     }
 

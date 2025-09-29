@@ -121,7 +121,11 @@ impl ViewWindow for FusionWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
-        if !self.state.already_opened && open {
+        self.state.is_open = open;
+    }
+
+    fn render_content(&mut self, ui: &mut Ui) {
+        if !self.state.already_opened {
             self.state.already_opened = true;
             self.app
                 .game
@@ -131,11 +135,6 @@ impl ViewWindow for FusionWindow<'_> {
             self.app.tips.show_tip(Tip::FusionSpecimenProficiency);
             self.app.tips.show_tip(Tip::Summoning);
         }
-
-        self.state.is_open = open;
-    }
-
-    fn render_content(&mut self, ui: &mut Ui) {
         self.update_simulation();
 
         Grid::new("fusion_grid")

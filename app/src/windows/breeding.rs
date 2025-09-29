@@ -137,7 +137,11 @@ impl ViewWindow for BreedingWindow<'_> {
     }
 
     fn set_open(&mut self, open: bool) {
-        if !self.state.already_opened && open {
+        self.state.is_open = open;
+    }
+
+    fn render_content(&mut self, ui: &mut Ui) {
+        if !self.state.already_opened {
             self.state.already_opened = true;
             self.app
                 .game
@@ -147,10 +151,6 @@ impl ViewWindow for BreedingWindow<'_> {
             self.app.tips.show_tip(Tip::Summoning);
         }
 
-        self.state.is_open = open;
-    }
-
-    fn render_content(&mut self, ui: &mut Ui) {
         Grid::new("breeding_grid")
             .num_columns(3)
             .min_col_width(150.0)
