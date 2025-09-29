@@ -1,11 +1,12 @@
 use crate::app::GameApp;
 use crate::components::game_menu_button::GameMenuButton;
 use crate::components::{Component, ToggleButton};
+use crate::types::font::CustomFont;
 use crate::views::{View, ViewID};
 use crate::windows::changelog::{ChangelogWindow, ChangelogWindowState};
 use crate::windows::ViewWindow;
 use crate::VERSION;
-use egui::{CentralPanel, Context, Grid, Label, RichText, ScrollArea, TopBottomPanel};
+use egui::{CentralPanel, Context, Grid, Label, ScrollArea, TopBottomPanel};
 use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
 
@@ -51,7 +52,7 @@ impl MainMenuView {
             ui.add_space(available_height / 8.0);
 
             ui.group(|ui| {
-                ui.heading(RichText::new("Dungeon Breeder").size(50.0));
+                ui.heading(CustomFont::GorditasBold.rich("Dungeon Breeder", 50.0));
                 ui.label(VERSION);
 
                 ui.separator();

@@ -11,8 +11,8 @@ pub enum UIScale {
     X0_75,
     X1_0,
     X1_25,
-    #[default]
     X1_5,
+    #[default]
     X1_75,
     X2_0,
     X2_25,

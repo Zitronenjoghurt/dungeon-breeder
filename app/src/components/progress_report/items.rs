@@ -14,6 +14,7 @@ impl<'a> ProgressReportItemsComponent<'a> {
 
 impl Component for ProgressReportItemsComponent<'_> {
     fn ui(self, ui: &mut Ui) {
+        let width = ui.available_width();
         ui.with_layout(egui::Layout::top_down(egui::Align::Center), |ui| {
             ui.heading("Items obtained");
             ui.group(|ui| {
@@ -21,10 +22,11 @@ impl Component for ProgressReportItemsComponent<'_> {
                 ScrollArea::vertical()
                     .id_salt("progress_report_items_scroll_area")
                     .show(ui, |ui| {
+                        ui.set_width(width);
                         Grid::new("progress_report_items_grid")
                             .num_columns(2)
                             .striped(true)
-                            .min_col_width(ui.available_width() / 2.0)
+                            .min_col_width(width / 2.0)
                             .show(ui, |ui| {
                                 for (item, amount) in &self.report.items {
                                     ui.label(item.def().name);
