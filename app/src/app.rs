@@ -1,5 +1,6 @@
 use crate::app::bug_report::{BugReport, BugReportMetadata};
 use crate::app::snapshot::GameAppSnapshot;
+use crate::app_save_file_path;
 use crate::modals::ModalSystem;
 use crate::systems::actions::{AppAction, AppActions};
 use crate::systems::bug_report_review::BugReportReviewSystem;
@@ -28,6 +29,7 @@ use std::time::Duration;
 
 pub mod bug_report;
 pub mod performance_info;
+mod persistence;
 pub mod runtime_info;
 pub mod snapshot;
 pub mod system_info;
@@ -88,10 +90,13 @@ impl eframe::App for GameApp {
         target = "app",
         name = "app::save",
         level = "trace"
-        skip(self, storage),
+        skip(self, _storage),
     )]
-    fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        eframe::set_value(storage, eframe::APP_KEY, self);
+    fn save(&mut self, _storage: &mut dyn eframe::Storage) {
+        let result = self.save_to_file(&app_save_file_path());
+        if let Err(error) = result {
+            self.toasts.error(error.to_string());
+        }
     }
 }
 
@@ -99,32 +104,11 @@ impl GameApp {
     pub fn new(cc: &eframe::CreationContext) -> anyhow::Result<Self> {
         Self::setup_context(&cc.egui_ctx);
 
-        #[cfg(debug_assertions)]
-        {
-            Ok(cc
-                .storage
-                .and_then(|storage| eframe::get_value::<Self>(storage, eframe::APP_KEY))
-                .unwrap_or_default())
-        }
+        let mut app = Self::default();
+        app.restore_from_file(&app_save_file_path())
+            .context("Failed to restore save")?;
 
-        #[cfg(not(debug_assertions))]
-        {
-            match cc.storage {
-                Some(storage) => match eframe::get_value::<Self>(storage, eframe::APP_KEY) {
-                    Some(app) => Ok(app),
-                    None => {
-                        if storage.get_string(eframe::APP_KEY).is_some() {
-                            Err(anyhow::anyhow!(
-                                "Failed to deserialize app state - corrupted or incompatible format"
-                            ))
-                        } else {
-                            Ok(Self::default())
-                        }
-                    }
-                },
-                None => Ok(Self::default()),
-            }
-        }
+        Ok(app)
     }
 
     fn setup_context(ctx: &egui::Context) {

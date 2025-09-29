@@ -10,7 +10,7 @@ pub struct GameAppSnapshot {
 
 impl GameAppSnapshot {
     pub fn create(app: &GameApp, ctx: &egui::Context) -> anyhow::Result<Self> {
-        let app = rmp_serde::to_vec_named(&app).context("Failed to serialize app")?;
+        let app = app.create_save()?;
         let egui =
             ctx.memory(|mem| rmp_serde::to_vec_named(&mem).context("Failed to serialize egui"))?;
 
@@ -18,8 +18,7 @@ impl GameAppSnapshot {
     }
 
     pub fn restore(&self, game_app: &mut GameApp, ctx: &egui::Context) -> anyhow::Result<()> {
-        let app: GameApp = rmp_serde::from_slice(&self.app).context("Failed to deserialize app")?;
-        *game_app = app;
+        game_app.restore_save(&self.app)?;
 
         if !self.egui.is_empty() {
             ctx.memory_mut(|mem| {

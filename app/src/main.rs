@@ -26,7 +26,7 @@ fn main() {
             .with_title(app_name())
             .with_app_id("io.github.zitronenjoghurt.dungeon-breeder"),
         persist_window: true,
-        persistence_path: Some(save_file_path()),
+        persistence_path: Some(eframe_save_file_path()),
         ..Default::default()
     };
 
@@ -46,12 +46,20 @@ pub fn project_dirs() -> ProjectDirs {
     ProjectDirs::from("io.github", "zitronenjoghurt", "dungeon-breeder").unwrap()
 }
 
-pub fn save_dir_path() -> PathBuf {
+pub fn data_dir_path() -> PathBuf {
     project_dirs().data_dir().to_path_buf()
 }
 
-pub fn save_file_path() -> PathBuf {
-    save_dir_path().join("save.ron")
+pub fn save_dir_path() -> PathBuf {
+    data_dir_path().join("save")
+}
+
+pub fn eframe_save_file_path() -> PathBuf {
+    save_dir_path().join("eframe.dat")
+}
+
+pub fn app_save_file_path() -> PathBuf {
+    save_dir_path().join("app.dat")
 }
 
 #[cfg(feature = "tracy")]

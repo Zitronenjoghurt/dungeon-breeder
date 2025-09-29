@@ -45,6 +45,7 @@ impl AppModal for OfflineProgressModal {
             return;
         };
 
+        let mut should_close = false;
         ui.with_layout(Layout::top_down(Align::Center), |ui| {
             ui.heading("Welcome back!");
             ui.label(format!(
@@ -54,6 +55,14 @@ impl AppModal for OfflineProgressModal {
             ui.separator();
 
             ProgressReportComponent::new(progress).ui(ui);
+
+            if ui.button("Close").clicked() {
+                should_close = true;
+            }
         });
+
+        if should_close {
+            self.close();
+        }
     }
 }
