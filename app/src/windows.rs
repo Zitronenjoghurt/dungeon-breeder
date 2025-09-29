@@ -1,4 +1,5 @@
 use crate::app::GameApp;
+use crate::views::ViewID;
 use crate::windows::breeding::{BreedingWindow, BreedingWindowState};
 use crate::windows::bug_report::{BugReportWindow, BugReportWindowState};
 use crate::windows::debug::{DebugWindow, DebugWindowState};
@@ -81,10 +82,13 @@ pub struct WindowSystem {
 impl WindowSystem {
     // Will be able to access everything inside AppState besides the WindowSystem itself
     pub fn update(&mut self, ctx: &Context, app: &mut GameApp) {
-        BreedingWindow::new(app, &mut self.breeding).show(ctx);
-        BugReportWindow::new(app, &mut self.bug_report).show(ctx);
-        FusionWindow::new(app, &mut self.fusion).show(ctx);
         SettingsWindow::new(&mut self.settings_open, &mut app.settings).show(ctx);
+
+        if app.views.current_view() == ViewID::Game {
+            BreedingWindow::new(app, &mut self.breeding).show(ctx);
+            BugReportWindow::new(app, &mut self.bug_report).show(ctx);
+            FusionWindow::new(app, &mut self.fusion).show(ctx);
+        }
 
         let mut debug = std::mem::take(&mut self.debug);
         DebugWindow::new(app, self, &mut debug).show(ctx);

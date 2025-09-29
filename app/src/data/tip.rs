@@ -41,7 +41,7 @@ impl Tip {
                 "The higher the proficiency of a specimen, the higher their power. Higher power specimen have an increased chance of fusing into stronger monsters."
             }
             Self::Summoning => {
-                "If you should ever run out of specimen to summon or breed, you can summon a specimen in the summoning window."
+                "If you should ever run out of specimen to fuse or breed, you can summon a specimen in the summoning window."
             }
         }
     }

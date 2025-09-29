@@ -12,8 +12,8 @@ An idle game about funding your monster research by managing your own dungeon.
 
 ### Save file path
 
-- MacOS: `~/Library/Application Support/io.github.zitronenjoghurt.dungeon-breeder/save.ron`
-- Windows: `%APPDATA%/Roaming/io.github.zitronenjoghurt.dungeon-breeder/save.ron`
+- MacOS: `~/Library/Application Support/io.github.zitronenjoghurt.dungeon-breeder/`
+- Windows: `%APPDATA%/Roaming/io.github.zitronenjoghurt.dungeon-breeder/`
 
 ## Resources
 

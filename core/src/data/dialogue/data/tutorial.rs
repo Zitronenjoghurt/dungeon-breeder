@@ -160,7 +160,7 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
         .avatar(AvatarID::Developer)
         .avatar_name("Developer")
         .end(
-            "You completed the tutorial now (this will most likely be subject to change in the future). There is not much to do yet, but I hope you have fun exploring the few different systems that already exist^^ Please do not forget to contact me should you encounter any issues, should it be bugs or other things to improve! c: If you feel adventurous, you can also check out the debug menu with F3, remember though that using this might kill all the fun. Though its useful for testing purposes.",
+            "You completed the tutorial now (this will most likely be subject to change in the future). There is not much to do yet and the balancing is most likely pretty off, but I hope you have fun exploring the few different systems that already exist^^ For now you can try to breed and fuse to get all available creatures and use the dungeon to gain as many coins as possible. Please do not forget to contact me should you encounter any issues, should it be bugs or other things to improve! c: If you feel adventurous, you can also check out the debug menu with F3, remember though that using this might kill all the fun. Though its useful for testing purposes.",
             "Let's go!"
         )
 }
