@@ -10,6 +10,7 @@ use crate::windows::debug_windows::specimen_spawn::{
     SpecimenSpawnDebugWindow, SpecimenSpawnDebugWindowState,
 };
 use crate::windows::debug_windows::stats::DebugStatsWindow;
+use crate::windows::debug_windows::time::TimeDebugWindow;
 use crate::windows::debug_windows::tips::{TipsDebugWindow, TipsDebugWindowState};
 use crate::windows::{ViewWindow, WindowSystem};
 use dungeon_breeder_core::data::creature::id::CreatureID;
@@ -21,6 +22,7 @@ use serde::{Deserialize, Serialize};
 pub struct DebugWindowState {
     pub is_open: bool,
     pub stats_open: bool,
+    pub time_open: bool,
     pub bug_report: BugReportDebugWindowState,
     pub dialogue: DialogueDebugWindowState,
     pub flags: FlagsDebugWindowState,
@@ -74,6 +76,7 @@ impl ViewWindow for DebugWindow<'_> {
         FontDebugWindow::new(self.app, &mut self.state.fonts).show(ui.ctx());
         SpecimenSpawnDebugWindow::new(&mut self.state.specimen_spawn, &self.app.game)
             .show(ui.ctx());
+        TimeDebugWindow::new(&self.app.game, &mut self.state.time_open).show(ui.ctx());
         TipsDebugWindow::new(&mut self.state.tips, self.app).show(ui.ctx());
 
         ui.horizontal(|ui| {
@@ -84,6 +87,7 @@ impl ViewWindow for DebugWindow<'_> {
             ToggleButton::new(&mut self.state.flags.is_open, regular::FLAG).ui(ui);
             ToggleButton::new(&mut self.state.fonts.is_open, regular::TEXT_A_UNDERLINE).ui(ui);
             ToggleButton::new(&mut self.state.tips.is_open, regular::QUESTION).ui(ui);
+            ToggleButton::new(&mut self.state.time_open, regular::CLOCK).ui(ui);
         });
 
         ui.separator();

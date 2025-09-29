@@ -29,6 +29,10 @@ impl GameEvents {
         self.queue.push(event);
     }
 
+    pub fn do_skip_time(&mut self, seconds: u64) {
+        self.push_event(GameEvent::do_skip_time(seconds));
+    }
+
     pub fn do_spawn_specimen(&mut self, specimen: NewSpecimen) {
         self.push_event(GameEvent::do_spawn_specimen(specimen));
     }

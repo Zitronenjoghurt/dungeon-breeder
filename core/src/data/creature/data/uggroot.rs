@@ -5,6 +5,7 @@ use crate::data::item::id::ItemID;
 
 pub static CREATURE_UGGROOT: CreatureDefinition = CreatureDefinition {
     name: "Uggroot",
+    flavor_text: "This is the literal definition of a gremlin. Its disgusting, gnarly, and unpleasant. Never leave it alone. Despite its carrot-shaped body, it is NOT edible.",
     max_power: 45,
     breeding_cooldown: 600,
     summoning_cooldown: None,

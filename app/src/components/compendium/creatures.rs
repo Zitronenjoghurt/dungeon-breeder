@@ -1,10 +1,10 @@
 use crate::components::value_button::ValueButton;
 use crate::components::{Component, CreatureSprite};
 use crate::systems::textures::TextureSystem;
-use crate::utils::formatting::format_date;
+use crate::utils::formatting::{format_date, format_number};
 use dungeon_breeder_core::data::creature::id::CreatureID;
 use dungeon_breeder_core::Game;
-use egui::{Grid, ScrollArea};
+use egui::{Grid, Label, ScrollArea};
 use strum::IntoEnumIterator;
 
 pub struct CompendiumCreaturesComponent<'a> {
@@ -62,6 +62,9 @@ impl<'a> CompendiumCreaturesComponent<'a> {
                 ui.set_width(250.0);
 
                 ScrollArea::vertical().show(ui, |ui| {
+                    ui.add(Label::new(self.selected_creature.def().flavor_text).wrap());
+                    ui.separator();
+
                     Grid::new("compendium_creature_info_grid")
                         .num_columns(2)
                         .striped(true)
@@ -101,15 +104,64 @@ impl<'a> CompendiumCreaturesComponent<'a> {
                                 ui.end_row();
 
                                 ui.label("Times slain");
-                                ui.label(format!("{}", entry.times_slain));
+                                ui.label(format_number(entry.times_slain));
                                 ui.end_row();
 
                                 ui.label("Times bred");
-                                ui.label(format!("{}", entry.times_bred));
+                                ui.label(format_number(entry.times_bred));
                                 ui.end_row();
 
                                 ui.label("Times fused");
-                                ui.label(format!("{}", entry.times_fused));
+                                ui.label(format_number(entry.times_fused));
+                                ui.end_row();
+                            });
+
+                        ui.separator();
+
+                        Grid::new("compendium_creature_specimen_stats_grid")
+                            .num_columns(3)
+                            .striped(true)
+                            .min_col_width(80.0)
+                            .max_col_width(80.0)
+                            .show(ui, |ui| {
+                                ui.label("Stat");
+                                ui.label("Min");
+                                ui.label("Max");
+                                ui.end_row();
+
+                                ui.label("PROF");
+                                ui.label(format!("{:.2}%", entry.proficiency.0 * 100.0));
+                                ui.label(format!("{:.2}%", entry.proficiency.1 * 100.0));
+                                ui.end_row();
+
+                                ui.label("STR");
+                                ui.label(format!("{:.2}%", entry.strength.0 * 100.0));
+                                ui.label(format!("{:.2}%", entry.strength.1 * 100.0));
+                                ui.end_row();
+
+                                ui.label("INT");
+                                ui.label(format!("{:.2}%", entry.intelligence.0 * 100.0));
+                                ui.label(format!("{:.2}%", entry.intelligence.1 * 100.0));
+                                ui.end_row();
+
+                                ui.label("VIT");
+                                ui.label(format!("{:.2}%", entry.vitality.0 * 100.0));
+                                ui.label(format!("{:.2}%", entry.vitality.1 * 100.0));
+                                ui.end_row();
+
+                                ui.label("AGI");
+                                ui.label(format!("{:.2}%", entry.agility.0 * 100.0));
+                                ui.label(format!("{:.2}%", entry.agility.1 * 100.0));
+                                ui.end_row();
+
+                                ui.label("REG");
+                                ui.label(format!("{:.2}%", entry.regeneration.0 * 100.0));
+                                ui.label(format!("{:.2}%", entry.regeneration.1 * 100.0));
+                                ui.end_row();
+
+                                ui.label("FERT");
+                                ui.label(format!("{:.2}%", entry.fertility.0 * 100.0));
+                                ui.label(format!("{:.2}%", entry.fertility.1 * 100.0));
                                 ui.end_row();
                             });
                     }

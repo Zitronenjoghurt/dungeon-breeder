@@ -11,6 +11,7 @@ mod add_coins;
 mod assign_to_dungeon_layer_slot;
 mod breed;
 mod debug_dialogue_bg_interactive;
+mod debug_skip_time;
 mod dialogue_action;
 mod dialogue_trigger;
 mod fuse;
@@ -33,6 +34,7 @@ pub enum GameAction {
     AssignToDungeonLayerSlot(assign_to_dungeon_layer_slot::AssignToDungeonLayerSlotAction),
     Breed(breed::BreedAction),
     DebugDialogueBgInteractive,
+    DebugSkipTime(debug_skip_time::DebugSkipTimeAction),
     Fuse(fuse::FuseAction),
     RandomSpecimen(random_specimen::RandomSpecimenAction),
     ResetGameState,
@@ -70,6 +72,10 @@ impl GameAction {
             specimen_a_id: specimen_a,
             specimen_b_id: specimen_b,
         })
+    }
+
+    pub fn debug_skip_time(seconds: u64) -> Self {
+        Self::DebugSkipTime(debug_skip_time::DebugSkipTimeAction { seconds })
     }
 
     pub fn fuse(specimen_a: SpecimenId, specimen_b: SpecimenId) -> Self {
@@ -129,6 +135,7 @@ impl GameActionHandler for GameAction {
             Self::DebugDialogueBgInteractive => {
                 debug_dialogue_bg_interactive::DebugDialogueBgInteractiveAction.handle(state, bus)
             }
+            Self::DebugSkipTime(action) => action.handle(state, bus),
             Self::Fuse(action) => action.handle(state, bus),
             Self::RandomSpecimen(action) => action.handle(state, bus),
             Self::ResetGameState => reset_game_state::ResetGameStateAction.handle(state, bus),

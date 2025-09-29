@@ -4,6 +4,7 @@ use crate::feedback::GameFeedback;
 use crate::state::specimen::{NewSpecimen, SpecimenId};
 use serde::{Deserialize, Serialize};
 
+mod do_skip_time;
 mod do_specimen_tick_slay_regen;
 mod item_obtained;
 mod item_sold;
@@ -15,6 +16,7 @@ mod specimen_slain;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GameEvent {
     DoFeedback(GameFeedback),
+    DoSkipTime(do_skip_time::DoSkipTimeEvent),
     DoSpawnSpecimen(NewSpecimen),
     DoSpecimenTickSlayRegen(do_specimen_tick_slay_regen::DoSpecimenTickSlayRegenEvent),
     ItemObtained(item_obtained::ItemObtainedEvent),
@@ -28,6 +30,10 @@ pub enum GameEvent {
 impl GameEvent {
     pub fn do_feedback(feedback: GameFeedback) -> Self {
         GameEvent::DoFeedback(feedback)
+    }
+
+    pub fn do_skip_time(seconds: u64) -> Self {
+        GameEvent::DoSkipTime(do_skip_time::DoSkipTimeEvent { seconds })
     }
 
     pub fn do_spawn_specimen(new_specimen: NewSpecimen) -> Self {

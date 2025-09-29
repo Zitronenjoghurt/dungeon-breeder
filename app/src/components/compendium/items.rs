@@ -1,6 +1,6 @@
 use crate::components::value_button::ValueButton;
 use crate::components::Component;
-use crate::utils::formatting::format_date;
+use crate::utils::formatting::{format_date, format_number};
 use dungeon_breeder_core::data::item::id::ItemID;
 use dungeon_breeder_core::Game;
 use egui::{Grid, ScrollArea};
@@ -61,7 +61,7 @@ impl<'a> CompendiumItemsComponent<'a> {
                             ui.label("Price");
                             ui.label(format!(
                                 "{} {}",
-                                self.selected_item.def().price,
+                                format_number(self.selected_item.def().price),
                                 regular::COINS
                             ));
                             ui.end_row();
@@ -87,11 +87,11 @@ impl<'a> CompendiumItemsComponent<'a> {
                                 ui.end_row();
 
                                 ui.label("Times obtained");
-                                ui.label(format!("{}", entry.times_obtained));
+                                ui.label(format_number(entry.times_obtained));
                                 ui.end_row();
 
                                 ui.label("Times sold");
-                                ui.label(format!("{}", entry.times_sold));
+                                ui.label(format_number(entry.times_sold));
                                 ui.end_row();
                             });
                     }

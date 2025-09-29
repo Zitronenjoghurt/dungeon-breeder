@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeDelta, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -32,5 +32,9 @@ impl Clock {
             self.last_tick += chrono::Duration::seconds(seconds);
             elapsed.num_seconds() as u64
         }
+    }
+
+    pub fn roll_back(&mut self, seconds: u64) {
+        self.last_tick -= TimeDelta::seconds(seconds as i64);
     }
 }

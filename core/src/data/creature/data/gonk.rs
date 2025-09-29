@@ -5,6 +5,7 @@ use crate::data::item::id::ItemID;
 
 pub static CREATURE_GONK: CreatureDefinition = CreatureDefinition {
     name: "Gonk",
+    flavor_text: "A mysterious orb which, despite its size, seems to brim with the desire for challenge, if you can trust its forever pouty expression.",
     max_power: 10,
     breeding_cooldown: 20,
     summoning_cooldown: Some(300),

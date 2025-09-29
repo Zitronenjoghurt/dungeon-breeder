@@ -80,6 +80,10 @@ impl GameActions {
         self.push_action(GameAction::DebugDialogueBgInteractive)
     }
 
+    pub fn debug_skip_time(&self, seconds: u64) {
+        self.push_action(GameAction::debug_skip_time(seconds))
+    }
+
     pub fn fuse(&self, specimen_a: SpecimenId, specimen_b: SpecimenId) {
         self.push_action(GameAction::fuse(specimen_a, specimen_b))
     }

@@ -30,6 +30,7 @@ impl Component for ItemTable<'_> {
             .column(Column::auto().at_least(50.0))
             .column(Column::auto().at_least(30.0))
             .column(Column::auto().at_least(30.0))
+            .min_scrolled_height(200.0)
             .header(text_height, |mut header| {
                 header.col(|ui| {
                     ui.label("Name");

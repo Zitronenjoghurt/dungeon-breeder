@@ -106,6 +106,10 @@ impl Game {
         skip(self)
     )]
     fn handle_event(&mut self, report: &mut GameUpdateReport, event: GameEvent) {
+        if let GameEvent::DoSkipTime(event) = &event {
+            self.clock.roll_back(event.seconds);
+        }
+
         report.handle_event(&event);
         self.state.handle_event(&mut self.events, &event);
     }

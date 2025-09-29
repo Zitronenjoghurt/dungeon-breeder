@@ -5,6 +5,7 @@ use crate::data::item::id::ItemID;
 
 pub static CREATURE_BARAGOO: CreatureDefinition = CreatureDefinition {
     name: "Baragoo",
+    flavor_text: "A strange clump of goo and goober. Though behind its eyes there seems to be some kind of intelligence.",
     max_power: 25,
     breeding_cooldown: 120,
     summoning_cooldown: None,

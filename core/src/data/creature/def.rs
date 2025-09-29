@@ -7,6 +7,7 @@ pub mod tier;
 #[derive(Debug)]
 pub struct CreatureDefinition {
     pub name: &'static str,
+    pub flavor_text: &'static str,
     pub max_power: u64,
     /// Max base cooldown in seconds => will be influenced by config and stats
     pub breeding_cooldown: u64,
