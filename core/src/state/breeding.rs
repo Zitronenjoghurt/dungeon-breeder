@@ -57,11 +57,16 @@ impl BreedingState {
         for stat in SpecimenStat::iter() {
             let parent_1_value = parent_1.get_stat(&stat);
             let parent_2_value = parent_2.get_stat(&stat);
+            let parent_avg = (parent_1_value + parent_2_value) / 2.0;
             let offspring_value = offspring.get_stat(&stat);
 
             if offspring_value > parent_1_value && offspring_value > parent_2_value {
-                trends.set_stat(&stat, Trend::Upwards);
+                trends.set_stat(&stat, Trend::FarUpwards);
             } else if offspring_value < parent_1_value && offspring_value < parent_2_value {
+                trends.set_stat(&stat, Trend::FarDownwards);
+            } else if offspring_value > parent_avg {
+                trends.set_stat(&stat, Trend::Upwards);
+            } else if offspring_value < parent_avg {
                 trends.set_stat(&stat, Trend::Downwards);
             } else {
                 trends.set_stat(&stat, Trend::Stable);

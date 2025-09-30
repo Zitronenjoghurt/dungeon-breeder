@@ -53,6 +53,12 @@ pub struct ConfigStyles {
     pub color_vitality: ColorRGBA,
     pub color_regeneration: ColorRGBA,
     pub color_fertility: ColorRGBA,
+    pub color_really_good: ColorRGBA,
+    pub color_good: ColorRGBA,
+    pub color_medium: ColorRGBA,
+    pub color_bad: ColorRGBA,
+    pub color_really_bad: ColorRGBA,
+    pub color_insignificant: ColorRGBA,
 }
 
 pub static CONFIG_STYLES: ConfigStyles = ConfigStyles {
@@ -69,6 +75,12 @@ pub static CONFIG_STYLES: ConfigStyles = ConfigStyles {
     color_vitality: COLOR_GREEN,
     color_regeneration: COLOR_PINK_DARK,
     color_fertility: COLOR_PINK,
+    color_really_good: COLOR_LIME,
+    color_good: COLOR_GREEN,
+    color_medium: COLOR_YELLOW,
+    color_bad: COLOR_RED_LIGHT,
+    color_really_bad: COLOR_RED,
+    color_insignificant: COLOR_GRAY,
 };
 
 impl ConfigStyles {

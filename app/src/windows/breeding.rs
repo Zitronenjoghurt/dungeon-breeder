@@ -2,6 +2,7 @@ use crate::app::GameApp;
 use crate::components::{Component, SpecimenModalSelection};
 use crate::data::tip::Tip;
 use crate::types::color::ColorConvert;
+use crate::types::font::CustomFont;
 use crate::utils::formatting::format_seconds;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::config::CONFIG;
@@ -75,20 +76,22 @@ impl<'a> BreedingWindow<'a> {
             .max_col_width(50.0)
             .show(ui, |ui| {
                 for stat in SpecimenStat::iter() {
-                    let label = if let Some(trends) = trends.as_ref() {
+                    if let Some(trends) = trends.as_ref() {
                         let trend = trends.get_stat(&stat);
                         let symbol = match trend {
+                            Trend::FarUpwards => regular::ARROW_SQUARE_UP,
+                            Trend::FarDownwards => regular::ARROW_SQUARE_DOWN,
                             Trend::Upwards => regular::ARROW_SQUARE_UP_RIGHT,
                             Trend::Downwards => regular::ARROW_SQUARE_DOWN_RIGHT,
                             Trend::Stable => regular::MINUS_SQUARE,
                         };
-
-                        format!("{} {}", symbol, stat.short_label())
+                        ui.horizontal(|ui| {
+                            ui.label(RichText::new(symbol).color(trend.get_color().to_egui()));
+                            ui.label(stat.short_label());
+                        });
                     } else {
-                        stat.short_label().to_string()
-                    };
-
-                    ui.label(label);
+                        ui.label(stat.short_label());
+                    }
 
                     let value = specimen.get_stat(&stat);
                     ProgressBar::new(value)
@@ -130,66 +133,68 @@ impl ViewWindow for BreedingWindow<'_> {
             self.app.tips.show_tip(Tip::Summoning);
         }
 
-        Grid::new("breeding_grid")
-            .num_columns(3)
-            .min_col_width(150.0)
-            .max_col_width(150.0)
-            .show(ui, |ui| {
-                ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
-                    ui.group(|ui| {
-                        ui.set_width(150.0);
-                        SpecimenModalSelection::new(
-                            &mut self.app.modals,
-                            &self.app.game.state.specimen,
-                            self.state.selected_specimen_1,
-                            |id, app| {
-                                app.windows.breeding.selected_specimen_1 = id;
-                            },
-                        )
-                        .exclude_on_breeding_cooldown(true)
-                        .exclude_specimen(self.state.selected_specimen_2)
-                        .ui(ui);
+        Grid::new("breeding_grid").num_columns(3).show(ui, |ui| {
+            ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
+                ui.group(|ui| {
+                    ui.set_width(155.0);
 
+                    SpecimenModalSelection::new(
+                        &mut self.app.modals,
+                        &self.app.game.state.specimen,
+                        self.state.selected_specimen_1,
+                        |id, app| {
+                            app.windows.breeding.selected_specimen_1 = id;
+                        },
+                    )
+                    .exclude_on_breeding_cooldown(true)
+                    .exclude_specimen(self.state.selected_specimen_2)
+                    .ui(ui);
+
+                    if let Some(specimen_1) =
+                        self.state.get_specimen_1(&self.app.game.state.specimen)
+                    {
                         ui.separator();
 
-                        if let Some(specimen_1) =
-                            self.state.get_specimen_1(&self.app.game.state.specimen)
+                        let text = if specimen_1.can_breed() {
+                            "Ready!".to_string()
+                        } else {
+                            format_seconds(specimen_1.seconds_till_breed())
+                        };
+
+                        ProgressBar::new(specimen_1.till_breed_progress())
+                            .text(text)
+                            .fill(CONFIG.styles.color_fertility.to_egui())
+                            .corner_radius(1.0)
+                            .ui(ui);
+
+                        ui.separator();
+                    }
+
+                    if let Some(specimen_1) =
+                        self.state.get_specimen_1(&self.app.game.state.specimen)
+                    {
+                        self.show_stats("specimen_1_stats", specimen_1, None, ui);
+                    }
+                });
+            });
+
+            ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
+                ui.group(|ui| {
+                    ui.set_width(160.0);
+
+                    ui.vertical_centered_justified(|ui| {
+                        let button_response = ui.add_enabled(
+                            self.state.can_breed(&self.app.game.state.specimen),
+                            Button::new(CustomFont::SourGummyBold.rich("Breed", 16.0)),
+                        );
+
+                        if button_response.clicked()
+                            && let Some(specimen_1) = self.state.selected_specimen_1
+                            && let Some(specimen_2) = self.state.selected_specimen_2
                         {
-                            let text = if specimen_1.can_breed() {
-                                "Ready!".to_string()
-                            } else {
-                                format_seconds(specimen_1.seconds_till_breed())
-                            };
-
-                            ProgressBar::new(specimen_1.till_breed_progress())
-                                .text(text)
-                                .fill(CONFIG.styles.color_fertility.to_egui())
-                                .corner_radius(1.0)
-                                .ui(ui);
-
-                            ui.separator();
-                        }
-
-                        if let Some(specimen_1) =
-                            self.state.get_specimen_1(&self.app.game.state.specimen)
-                        {
-                            self.show_stats("specimen_1_stats", specimen_1, None, ui);
+                            self.app.game.actions.breed(specimen_1, specimen_2);
                         }
                     });
-                });
-
-                ui.with_layout(Layout::top_down(Align::Center), |ui| {
-                    let button_response = ui.add_enabled(
-                        self.state.can_breed(&self.app.game.state.specimen),
-                        Button::new(RichText::new(regular::HEART).size(25.0)),
-                    );
-
-                    if button_response.clicked()
-                        && let Some(specimen_1) = self.state.selected_specimen_1
-                        && let Some(specimen_2) = self.state.selected_specimen_2
-                    {
-                        self.app.game.actions.breed(specimen_1, specimen_2);
-                    }
 
                     if self.state.selected_specimen_1
                         == self.app.game.state.breeding.last_parent_id_1()
@@ -199,65 +204,67 @@ impl ViewWindow for BreedingWindow<'_> {
                         && let Some(offspring) =
                             self.app.game.state.specimen.get_by_id(offspring_id)
                     {
-                        ui.group(|ui| {
-                            ui.label(format!(
-                                "{} [{}]",
-                                offspring.creature_def().name,
-                                offspring_id
-                            ));
+                        ui.separator();
 
-                            ui.separator();
-
-                            let trends = self.app.game.state.get_breeding_trends();
-                            self.show_stats("offspring_stats", offspring, trends, ui);
-                        });
-                    }
-                });
-
-                ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
-                    ui.group(|ui| {
-                        ui.set_width(150.0);
-                        SpecimenModalSelection::new(
-                            &mut self.app.modals,
-                            &self.app.game.state.specimen,
-                            self.state.selected_specimen_2,
-                            |id, app| {
-                                app.windows.breeding.selected_specimen_2 = id;
-                            },
-                        )
-                        .exclude_on_breeding_cooldown(true)
-                        .exclude_specimen(self.state.selected_specimen_1)
-                        .ui(ui);
+                        ui.label(format!(
+                            "{} [{}]",
+                            offspring.creature_def().name,
+                            offspring_id
+                        ));
 
                         ui.separator();
 
-                        if let Some(specimen_2) =
-                            self.state.get_specimen_2(&self.app.game.state.specimen)
-                        {
-                            let text = if specimen_2.can_breed() {
-                                "Ready!".to_string()
-                            } else {
-                                format_seconds(specimen_2.seconds_till_breed())
-                            };
-
-                            ProgressBar::new(specimen_2.till_breed_progress())
-                                .text(text)
-                                .fill(CONFIG.styles.color_fertility.to_egui())
-                                .corner_radius(1.0)
-                                .ui(ui);
-
-                            ui.separator();
-                        }
-
-                        if let Some(specimen_2) =
-                            self.state.get_specimen_2(&self.app.game.state.specimen)
-                        {
-                            self.show_stats("specimen_2_stats", specimen_2, None, ui);
-                        }
-                    });
+                        let trends = self.app.game.state.get_breeding_trends();
+                        self.show_stats("offspring_stats", offspring, trends, ui);
+                    }
                 });
-
-                ui.end_row();
             });
+
+            ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
+                ui.group(|ui| {
+                    ui.set_width(155.0);
+
+                    SpecimenModalSelection::new(
+                        &mut self.app.modals,
+                        &self.app.game.state.specimen,
+                        self.state.selected_specimen_2,
+                        |id, app| {
+                            app.windows.breeding.selected_specimen_2 = id;
+                        },
+                    )
+                    .exclude_on_breeding_cooldown(true)
+                    .exclude_specimen(self.state.selected_specimen_1)
+                    .ui(ui);
+
+                    if let Some(specimen_2) =
+                        self.state.get_specimen_2(&self.app.game.state.specimen)
+                    {
+                        ui.separator();
+
+                        let text = if specimen_2.can_breed() {
+                            "Ready!".to_string()
+                        } else {
+                            format_seconds(specimen_2.seconds_till_breed())
+                        };
+
+                        ProgressBar::new(specimen_2.till_breed_progress())
+                            .text(text)
+                            .fill(CONFIG.styles.color_fertility.to_egui())
+                            .corner_radius(1.0)
+                            .ui(ui);
+
+                        ui.separator();
+                    }
+
+                    if let Some(specimen_2) =
+                        self.state.get_specimen_2(&self.app.game.state.specimen)
+                    {
+                        self.show_stats("specimen_2_stats", specimen_2, None, ui);
+                    }
+                });
+            });
+
+            ui.end_row();
+        });
     }
 }

@@ -2,6 +2,7 @@ use crate::app::GameApp;
 use crate::components::{Component, SpecimenModalSelection};
 use crate::data::tip::Tip;
 use crate::types::color::ColorConvert;
+use crate::types::font::CustomFont;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::config::CONFIG;
 use dungeon_breeder_core::state::fusion::simulation::FusionSimulation;
@@ -9,8 +10,7 @@ use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::{Specimen, SpecimenId};
 use dungeon_breeder_core::types::flag::GameFlag;
 use eframe::emath::Align;
-use egui::{Button, Grid, Id, Layout, ProgressBar, RichText, ScrollArea, Ui, Widget, WidgetText};
-use egui_phosphor::regular;
+use egui::{Button, Grid, Id, Layout, ProgressBar, ScrollArea, Ui, Widget, WidgetText};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -137,47 +137,48 @@ impl ViewWindow for FusionWindow<'_> {
         }
         self.update_simulation();
 
-        Grid::new("fusion_grid")
-            .num_columns(3)
-            .min_col_width(150.0)
-            .max_col_width(150.0)
-            .show(ui, |ui| {
-                ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
-                    ui.group(|ui| {
-                        ui.set_width(150.0);
-                        SpecimenModalSelection::new(
-                            &mut self.app.modals,
-                            &self.app.game.state.specimen,
-                            self.state.selected_specimen_1,
-                            |id, app| {
-                                app.windows.fusion.selected_specimen_1 = id;
-                            },
-                        )
-                        .exclude_specimen(self.state.selected_specimen_2)
-                        .ui(ui);
+        Grid::new("fusion_grid").num_columns(3).show(ui, |ui| {
+            ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
+                ui.group(|ui| {
+                    ui.set_width(150.0);
+                    SpecimenModalSelection::new(
+                        &mut self.app.modals,
+                        &self.app.game.state.specimen,
+                        self.state.selected_specimen_1,
+                        |id, app| {
+                            app.windows.fusion.selected_specimen_1 = id;
+                        },
+                    )
+                    .exclude_specimen(self.state.selected_specimen_2)
+                    .ui(ui);
 
+                    if let Some(specimen_1) =
+                        self.state.get_specimen_1(&self.app.game.state.specimen)
+                    {
                         ui.separator();
 
-                        if let Some(specimen_1) =
-                            self.state.get_specimen_1(&self.app.game.state.specimen)
+                        self.show_stats("specimen_1_stats", specimen_1, ui);
+                    }
+                });
+            });
+
+            ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
+                ui.group(|ui| {
+                    ui.set_width(160.0);
+
+                    ui.vertical_centered_justified(|ui| {
+                        let button_response = ui.add_enabled(
+                            self.state.can_fuse(&self.app.game.state.specimen),
+                            Button::new(CustomFont::WinkySansBold.rich("Fuse", 16.0)),
+                        );
+
+                        if button_response.clicked()
+                            && let Some(specimen_1) = self.state.selected_specimen_1
+                            && let Some(specimen_2) = self.state.selected_specimen_2
                         {
-                            self.show_stats("specimen_1_stats", specimen_1, ui);
+                            self.app.game.actions.fuse(specimen_1, specimen_2);
                         }
                     });
-                });
-
-                ui.with_layout(Layout::top_down(Align::Center), |ui| {
-                    let button_response = ui.add_enabled(
-                        self.state.can_fuse(&self.app.game.state.specimen),
-                        Button::new(RichText::new(regular::ARROWS_MERGE).size(25.0)),
-                    );
-
-                    if button_response.clicked()
-                        && let Some(specimen_1) = self.state.selected_specimen_1
-                        && let Some(specimen_2) = self.state.selected_specimen_2
-                    {
-                        self.app.game.actions.fuse(specimen_1, specimen_2);
-                    }
 
                     if self
                         .state
@@ -189,35 +190,33 @@ impl ViewWindow for FusionWindow<'_> {
                             .is_some()
                         && let Some(simulation) = &self.state.simulation
                     {
-                        ui.group(|ui| {
-                            ScrollArea::vertical().show(ui, |ui| {
-                                Grid::new("fusion_simulation_grid")
-                                    .num_columns(2)
-                                    .striped(true)
-                                    .min_col_width(75.0)
-                                    .max_col_width(75.0)
-                                    .show(ui, |ui| {
-                                        for (creature_id, probability) in
-                                            simulation.iter_creature_probabilities()
+                        ScrollArea::vertical().show(ui, |ui| {
+                            Grid::new("fusion_simulation_grid")
+                                .num_columns(2)
+                                .striped(true)
+                                .min_col_width(75.0)
+                                .max_col_width(75.0)
+                                .show(ui, |ui| {
+                                    for (creature_id, probability) in
+                                        simulation.iter_creature_probabilities()
+                                    {
+                                        if self
+                                            .app
+                                            .game
+                                            .state
+                                            .specimen
+                                            .compendium()
+                                            .has_unlocked(creature_id)
                                         {
-                                            if self
-                                                .app
-                                                .game
-                                                .state
-                                                .specimen
-                                                .compendium()
-                                                .has_unlocked(creature_id)
-                                            {
-                                                ui.label(creature_id.def().name);
-                                            } else {
-                                                ui.label("???");
-                                            };
+                                            ui.label(creature_id.def().name);
+                                        } else {
+                                            ui.label("???");
+                                        };
 
-                                            ui.label(format!("{:.2}%", probability * 100.0));
-                                            ui.end_row();
-                                        }
-                                    })
-                            });
+                                        ui.label(format!("{:.2}%", probability * 100.0));
+                                        ui.end_row();
+                                    }
+                                })
                         });
                     } else if let Some(last_fusion_result_id) =
                         self.app.game.state.fusion.last_fusion_result_id()
@@ -240,32 +239,33 @@ impl ViewWindow for FusionWindow<'_> {
                         });
                     }
                 });
+            });
 
-                ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
-                    ui.group(|ui| {
-                        ui.set_width(150.0);
-                        SpecimenModalSelection::new(
-                            &mut self.app.modals,
-                            &self.app.game.state.specimen,
-                            self.state.selected_specimen_2,
-                            |id, app| {
-                                app.windows.fusion.selected_specimen_2 = id;
-                            },
-                        )
-                        .exclude_specimen(self.state.selected_specimen_1)
-                        .ui(ui);
+            ui.with_layout(Layout::top_down(Align::LEFT), |ui| {
+                ui.group(|ui| {
+                    ui.set_width(150.0);
+                    SpecimenModalSelection::new(
+                        &mut self.app.modals,
+                        &self.app.game.state.specimen,
+                        self.state.selected_specimen_2,
+                        |id, app| {
+                            app.windows.fusion.selected_specimen_2 = id;
+                        },
+                    )
+                    .exclude_specimen(self.state.selected_specimen_1)
+                    .ui(ui);
 
+                    if let Some(specimen_2) =
+                        self.state.get_specimen_2(&self.app.game.state.specimen)
+                    {
                         ui.separator();
 
-                        if let Some(specimen_2) =
-                            self.state.get_specimen_2(&self.app.game.state.specimen)
-                        {
-                            self.show_stats("specimen_2_stats", specimen_2, ui);
-                        }
-                    });
+                        self.show_stats("specimen_2_stats", specimen_2, ui);
+                    }
                 });
-
-                ui.end_row();
             });
+
+            ui.end_row();
+        });
     }
 }
