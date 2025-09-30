@@ -5,7 +5,7 @@ use crate::components::system_info::SystemInfoComponent;
 use crate::components::{BugReportMetaEdit, Component};
 use crate::systems::file_picker::FilePickerConfig;
 use crate::windows::ViewWindow;
-use egui::{CollapsingHeader, Id, Ui, WidgetText};
+use egui::{CollapsingHeader, Context, Id, Ui, WidgetText};
 use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
 
@@ -44,15 +44,15 @@ impl ViewWindow for BugReportWindow<'_> {
 
     fn set_open(&mut self, open: bool) {
         self.state.is_open = open;
+    }
 
-        if open {
-            self.state.system_info = Some(SystemInfo::collect());
-        } else {
-            self.state.system_info = None;
-        }
+    fn before_close(&mut self, _ctx: &Context) {
+        self.state.system_info = None;
     }
 
     fn render_content(&mut self, ui: &mut Ui) {
+        self.state.system_info = Some(SystemInfo::collect());
+
         BugReportMetaEdit::new(&mut self.state.metadata).ui(ui);
 
         if let Some(system_info) = &self.state.system_info {
