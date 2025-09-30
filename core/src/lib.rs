@@ -20,8 +20,8 @@ pub mod types;
 pub mod update;
 pub mod utils;
 
-pub const VERSION_INDEX: u32 = 0;
-pub const VERSION_NAME: &str = "0.1.0-alpha";
+pub const VERSION_INDEX: u32 = 1;
+pub const VERSION_NAME: &str = "0.2.0-alpha";
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Game {

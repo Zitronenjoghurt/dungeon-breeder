@@ -1,6 +1,7 @@
 use crate::app::GameApp;
 use crate::components::game_menu_button::GameMenuButton;
 use crate::components::{Component, ToggleButton};
+use crate::t;
 use crate::types::font::CustomFont;
 use crate::views::{View, ViewID};
 use crate::windows::changelog::{ChangelogWindow, ChangelogWindowState};
@@ -27,18 +28,18 @@ impl MainMenuView {
             }
 
             ToggleButton::new(&mut app.windows.bug_report.is_open, regular::BUG)
-                .tooltip("Bug Report")
+                .tooltip(&t!("bug-report"))
                 .ui(ui);
 
             ToggleButton::new(&mut app.windows.settings_open, regular::GEAR)
-                .tooltip("Settings")
+                .tooltip(&t!("settings"))
                 .ui(ui);
 
             ui.separator();
 
             GameMenuButton::new(&mut self.changelog.is_open)
                 .label(regular::CLOCK_COUNTER_CLOCKWISE)
-                .tooltip("Changelog")
+                .tooltip(&t!("changelog"))
                 .ui(ui);
         });
     }
@@ -57,7 +58,7 @@ impl MainMenuView {
 
                 ui.separator();
 
-                if ui.button("Play").clicked() {
+                if ui.button(t!("play")).clicked() {
                     self.on_play_clicked(app);
                 }
             });
@@ -76,22 +77,22 @@ impl MainMenuView {
     }
 
     fn render_alpha_notice(&mut self, ui: &mut egui::Ui) {
-        ui.heading("vAlpha Notice");
+        ui.heading(t!("alpha-notice-title"));
         ui.separator();
         ScrollArea::vertical()
             .id_salt("main_menu_alpha_notice_scroll")
             .max_height(200.0)
             .show(ui, |ui| {
-                ui.label("Thank you for playing my little game! I hope you can enjoy it a bit already^^");
+                ui.label(t!("alpha-notice-text-1"));
                 ui.add_space(10.0);
-                ui.label("It is still in very early development and misses most mayor features. I would greatly appreciate your cooperation through bug reports, feature requests or feedback c:");
-        });
+                ui.label(t!("alpha-notice-text-2"));
+            });
     }
 
     fn render_planned_features(&mut self, ui: &mut egui::Ui) {
-        ui.heading("Planned Features");
+        ui.heading(t!("planned-features-title"));
         ui.separator();
-        ui.small("These are some of the features I intend to add before the game reaches 1.0");
+        ui.small(t!("planned-features-description"));
         ui.separator();
         ScrollArea::vertical()
             .id_salt("main_menu_planned_features_scroll")
@@ -102,7 +103,8 @@ impl MainMenuView {
                     .show(ui, |ui| {
                         for feature in crate::data::planned_features::PLANNED_FEATURES {
                             ui.add(
-                                Label::new(format!("{} {}", regular::DOT_OUTLINE, *feature)).wrap(),
+                                Label::new(format!("{} {}", regular::DOT_OUTLINE, t!(*feature)))
+                                    .wrap(),
                             );
                             ui.end_row();
                         }

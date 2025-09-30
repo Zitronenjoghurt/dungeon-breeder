@@ -1,0 +1,24 @@
+alpha-notice-title = Alpha Notice
+alpha-notice-text-1 = Thank you for playing my little game! I hope you can enjoy it a bit already^^
+alpha-notice-text-2 = It is still in very early development and misses most mayor features. I would greatly appreciate your cooperation through bug reports, feature requests or feedback c:
+
+planned-features-title = Planned Features
+planned-features-description = These are some of the features I intend to add before the game reaches 1.0
+planned-feature-research = Researching specimens
+planned-feature-permits = Mayor's permits for dungeon extensions
+planned-feature-offline-limit = Limit to offline progression as a gameplay mechanic
+planned-feature-traits = Specimen traits & abilities
+planned-feature-exhaustion = Exhaustion mechanic for specimen
+planned-feature-crafting = Deeper item system & crafting
+planned-feature-quests = Quests & Achievements
+planned-feature-farming = Farming system
+planned-feature-capacity = Limit to max specimen capacity
+planned-feature-hell = Hell (you might be able to send specimen there)
+planned-feature-unlock-info = Unlocking parts of the currently visible info through progression
+planned-feature-adventurers = Adventurer character slay in the dungeon
+planned-feature-more-specimen = More specimen
+planned-feature-online = Online server
+planned-feature-localization = Localization
+planned-feature-discord = Discord RPC integration
+planned-feature-experience = Specimen gain experience?
+planned-feature-buildings = Dungeon buildings?

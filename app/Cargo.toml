@@ -1,6 +1,6 @@
 [package]
 name = "dungeon-breeder-app"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 
 [features]
@@ -19,9 +19,11 @@ egui-file-dialog = "0.11.0"
 egui-notify = "0.20.0"
 egui-phosphor = { version = "0.10.0", default-features = false, features = ["regular"] }
 egui_extras = "0.32.1"
+fluent-templates = "0.13.1"
 humantime = { workspace = true }
 image = { version = "0.25.8", default-features = false, features = ["png"] }
 num-traits = { workspace = true }
+once_cell = { workspace = true }
 ringbuffer = { workspace = true }
 rmp-serde = { workspace = true }
 serde = { workspace = true }

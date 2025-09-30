@@ -6,6 +6,7 @@ use std::path::PathBuf;
 mod app;
 mod components;
 mod data;
+mod localization;
 mod modals;
 mod systems;
 mod theme;

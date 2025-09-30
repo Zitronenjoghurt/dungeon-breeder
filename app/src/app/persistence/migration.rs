@@ -43,6 +43,10 @@ impl PersistenceMetadata {
 // Load app with migrations
 impl PersistenceMetadata {
     pub fn load_app(&self) -> anyhow::Result<GameApp> {
+        if self.version < VERSION_INDEX {
+            return Ok(GameApp::default());
+        }
+
         let mut app = GameApp::default();
         app.restore_from_file(&app_save_file_path())
             .context("Failed to restore save")?;
