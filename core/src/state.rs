@@ -2,6 +2,7 @@ use crate::data::dialogue::event::DialogueEvent;
 use crate::data::dialogue::id::DialogueID;
 use crate::events::event::GameEvent;
 use crate::events::GameEvents;
+use crate::state::breeding::stat_trends::BreedingStatTrends;
 use crate::state::breeding::BreedingState;
 use crate::state::dialogue::DialogueState;
 use crate::state::dungeon::Dungeon;
@@ -106,5 +107,12 @@ impl GameState {
     )]
     pub fn on_ticks_elapsed(&mut self, ticks: u64) {
         self.statistics.on_ticks_elapsed(ticks);
+    }
+}
+
+// Inter-mechanic helpers
+impl GameState {
+    pub fn get_breeding_trends(&self) -> Option<BreedingStatTrends> {
+        self.breeding.get_stat_trends(&self.specimen)
     }
 }

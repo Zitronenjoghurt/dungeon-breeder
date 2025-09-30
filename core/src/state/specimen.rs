@@ -5,6 +5,7 @@ use crate::data::creature::id::CreatureID;
 use crate::events::GameEvents;
 use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::timer::Timer;
+use crate::types::specimen_stat::SpecimenStat;
 use crate::utils::math::f32_interpolate;
 use crate::utils::random::random_normal;
 use chrono::{DateTime, Utc};
@@ -45,6 +46,18 @@ impl Specimen {
 
     pub fn proficiency(&self) -> f32 {
         (self.strength + self.intelligence + self.vitality + self.agility) / 4.0
+    }
+
+    pub fn get_stat(&self, specimen_stat: &SpecimenStat) -> f32 {
+        match specimen_stat {
+            SpecimenStat::Proficiency => self.proficiency(),
+            SpecimenStat::Strength => self.strength,
+            SpecimenStat::Intelligence => self.intelligence,
+            SpecimenStat::Agility => self.agility,
+            SpecimenStat::Vitality => self.vitality,
+            SpecimenStat::Regeneration => self.regeneration,
+            SpecimenStat::Fertility => self.fertility,
+        }
     }
 
     pub fn power(&self) -> f32 {

@@ -26,6 +26,10 @@ impl Component for ProgressReportItemsComponent<'_> {
                             .striped(true)
                             .min_col_width(ui.available_width() / 2.0)
                             .show(ui, |ui| {
+                                ui.label("Item");
+                                ui.label("Amount");
+                                ui.end_row();
+
                                 for (item, amount) in &self.report.items {
                                     ui.label(item.def().name);
                                     ui.label(amount.to_string());

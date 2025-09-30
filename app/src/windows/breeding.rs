@@ -5,13 +5,17 @@ use crate::types::color::ColorConvert;
 use crate::utils::formatting::format_seconds;
 use crate::windows::ViewWindow;
 use dungeon_breeder_core::data::config::CONFIG;
+use dungeon_breeder_core::state::breeding::stat_trends::BreedingStatTrends;
 use dungeon_breeder_core::state::specimen::collection::SpecimenCollection;
 use dungeon_breeder_core::state::specimen::{Specimen, SpecimenId};
 use dungeon_breeder_core::types::flag::GameFlag;
+use dungeon_breeder_core::types::specimen_stat::SpecimenStat;
+use dungeon_breeder_core::types::trend::Trend;
 use eframe::emath::Align;
 use egui::{Button, Grid, Id, Layout, ProgressBar, RichText, Ui, Widget, WidgetText};
 use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
+use strum::IntoEnumIterator;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct BreedingWindowState {
@@ -58,67 +62,42 @@ impl<'a> BreedingWindow<'a> {
         Self { app, state }
     }
 
-    fn show_stats(&self, id: &str, specimen: &Specimen, ui: &mut Ui) {
+    fn show_stats(
+        &self,
+        id: &str,
+        specimen: &Specimen,
+        trends: Option<BreedingStatTrends>,
+        ui: &mut Ui,
+    ) {
         Grid::new(id)
             .num_columns(2)
-            .min_col_width(45.0)
-            .max_col_width(45.0)
+            .min_col_width(50.0)
+            .max_col_width(50.0)
             .show(ui, |ui| {
-                ui.label("PROF");
-                ProgressBar::new(specimen.proficiency())
-                    .fill(CONFIG.styles.color_proficiency.to_egui())
-                    .corner_radius(1.0)
-                    .text(format!("{:.2}%", specimen.proficiency() * 100.0))
-                    .ui(ui);
-                ui.end_row();
+                for stat in SpecimenStat::iter() {
+                    let label = if let Some(trends) = trends.as_ref() {
+                        let trend = trends.get_stat(&stat);
+                        let symbol = match trend {
+                            Trend::Upwards => regular::ARROW_SQUARE_UP_RIGHT,
+                            Trend::Downwards => regular::ARROW_SQUARE_DOWN_RIGHT,
+                            Trend::Stable => regular::MINUS_SQUARE,
+                        };
 
-                ui.label("STR");
-                ProgressBar::new(specimen.strength)
-                    .fill(CONFIG.styles.color_strength.to_egui())
-                    .corner_radius(1.0)
-                    .text(format!("{:.2}%", specimen.strength * 100.0))
-                    .ui(ui);
-                ui.end_row();
+                        format!("{} {}", symbol, stat.short_label())
+                    } else {
+                        stat.short_label().to_string()
+                    };
 
-                ui.label("INT");
-                ProgressBar::new(specimen.intelligence)
-                    .fill(CONFIG.styles.color_intelligence.to_egui())
-                    .corner_radius(1.0)
-                    .text(format!("{:.2}%", specimen.intelligence * 100.0))
-                    .ui(ui);
-                ui.end_row();
+                    ui.label(label);
 
-                ui.label("AGI");
-                ProgressBar::new(specimen.agility)
-                    .fill(CONFIG.styles.color_agility.to_egui())
-                    .corner_radius(1.0)
-                    .text(format!("{:.2}%", specimen.agility * 100.0))
-                    .ui(ui);
-                ui.end_row();
-
-                ui.label("VIT");
-                ProgressBar::new(specimen.vitality)
-                    .fill(CONFIG.styles.color_vitality.to_egui())
-                    .corner_radius(1.0)
-                    .text(format!("{:.2}%", specimen.vitality * 100.0))
-                    .ui(ui);
-                ui.end_row();
-
-                ui.label("REG");
-                ProgressBar::new(specimen.regeneration)
-                    .fill(CONFIG.styles.color_regeneration.to_egui())
-                    .corner_radius(1.0)
-                    .text(format!("{:.2}%", specimen.regeneration * 100.0))
-                    .ui(ui);
-                ui.end_row();
-
-                ui.label("FERT");
-                ProgressBar::new(specimen.fertility)
-                    .fill(CONFIG.styles.color_fertility.to_egui())
-                    .corner_radius(1.0)
-                    .text(format!("{:.2}%", specimen.fertility * 100.0))
-                    .ui(ui);
-                ui.end_row();
+                    let value = specimen.get_stat(&stat);
+                    ProgressBar::new(value)
+                        .fill(stat.get_color().to_egui())
+                        .corner_radius(1.0)
+                        .text(format!("{:.2}%", value * 100.0))
+                        .ui(ui);
+                    ui.end_row();
+                }
             });
     }
 }
@@ -194,7 +173,7 @@ impl ViewWindow for BreedingWindow<'_> {
                         if let Some(specimen_1) =
                             self.state.get_specimen_1(&self.app.game.state.specimen)
                         {
-                            self.show_stats("specimen_1_stats", specimen_1, ui);
+                            self.show_stats("specimen_1_stats", specimen_1, None, ui);
                         }
                     });
                 });
@@ -229,7 +208,8 @@ impl ViewWindow for BreedingWindow<'_> {
 
                             ui.separator();
 
-                            self.show_stats("offspring_stats", offspring, ui);
+                            let trends = self.app.game.state.get_breeding_trends();
+                            self.show_stats("offspring_stats", offspring, trends, ui);
                         });
                     }
                 });
@@ -272,7 +252,7 @@ impl ViewWindow for BreedingWindow<'_> {
                         if let Some(specimen_2) =
                             self.state.get_specimen_2(&self.app.game.state.specimen)
                         {
-                            self.show_stats("specimen_2_stats", specimen_2, ui);
+                            self.show_stats("specimen_2_stats", specimen_2, None, ui);
                         }
                     });
                 });
