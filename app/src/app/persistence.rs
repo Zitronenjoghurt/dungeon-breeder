@@ -2,6 +2,8 @@ use crate::app::GameApp;
 use anyhow::Context;
 use std::path::Path;
 
+pub mod migration;
+
 impl GameApp {
     pub fn create_save(&self) -> anyhow::Result<Vec<u8>> {
         let uncompressed = rmp_serde::to_vec_named(self).context("Failed to serialize app")?;

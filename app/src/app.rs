@@ -1,4 +1,5 @@
 use crate::app::bug_report::{BugReport, BugReportMetadata};
+use crate::app::persistence::migration::PersistenceMetadata;
 use crate::app::snapshot::GameAppSnapshot;
 use crate::app_save_file_path;
 use crate::modals::ModalSystem;
@@ -44,6 +45,7 @@ pub struct GameApp {
     pub modals: ModalSystem,
     pub views: ViewSystem,
     pub windows: WindowSystem,
+    pub persistence_metadata: PersistenceMetadata,
     #[serde(skip, default)]
     pub textures: TextureSystem,
     #[serde(skip, default)]
@@ -93,6 +95,11 @@ impl eframe::App for GameApp {
         skip(self, _storage),
     )]
     fn save(&mut self, _storage: &mut dyn eframe::Storage) {
+        let result = self.persistence_metadata.save();
+        if let Err(error) = result {
+            self.toasts.error(error.to_string());
+        }
+
         let result = self.save_to_file(&app_save_file_path());
         if let Err(error) = result {
             self.toasts.error(error.to_string());
@@ -104,11 +111,8 @@ impl GameApp {
     pub fn new(cc: &eframe::CreationContext) -> anyhow::Result<Self> {
         Self::setup_context(&cc.egui_ctx);
 
-        let mut app = Self::default();
-        app.restore_from_file(&app_save_file_path())
-            .context("Failed to restore save")?;
-
-        Ok(app)
+        let persistence_meta = PersistenceMetadata::load()?;
+        persistence_meta.load_app()
     }
 
     fn setup_context(ctx: &egui::Context) {

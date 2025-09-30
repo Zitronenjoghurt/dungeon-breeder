@@ -68,16 +68,18 @@ impl Component for SpecimenSelection<'_> {
                 self.state.sort_dirty();
             }
 
-            SortedSpecimenTable::new(
-                &self.app.game.state.specimen,
-                &self.state.sorted_ids,
-                &mut self.state.options.selected_specimen_id,
-            )
-            .max_height(500.0)
-            .column_config(self.state.columns)
-            .selection_enabled(self.selection_enabled)
-            .is_double_clicked(self.is_double_clicked)
-            .ui(ui);
+            ui.group(|ui| {
+                SortedSpecimenTable::new(
+                    &self.app.game.state.specimen,
+                    &self.state.sorted_ids,
+                    &mut self.state.options.selected_specimen_id,
+                )
+                .max_height(600.0)
+                .column_config(self.state.columns)
+                .selection_enabled(self.selection_enabled)
+                .is_double_clicked(self.is_double_clicked)
+                .ui(ui);
+            })
         });
     }
 }

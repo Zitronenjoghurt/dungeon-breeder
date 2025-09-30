@@ -5,7 +5,7 @@ use crate::types::font::CustomFont;
 use crate::views::{View, ViewID};
 use crate::windows::changelog::{ChangelogWindow, ChangelogWindowState};
 use crate::windows::ViewWindow;
-use crate::VERSION;
+use dungeon_breeder_core::VERSION_NAME;
 use egui::{CentralPanel, Context, Grid, Label, ScrollArea, TopBottomPanel};
 use egui_phosphor::regular;
 use serde::{Deserialize, Serialize};
@@ -53,7 +53,7 @@ impl MainMenuView {
 
             ui.group(|ui| {
                 ui.heading(CustomFont::GorditasBold.rich("Dungeon Breeder", 50.0));
-                ui.label(VERSION);
+                ui.label(VERSION_NAME);
 
                 ui.separator();
 

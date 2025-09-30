@@ -1,5 +1,6 @@
 use crate::app::GameApp;
 use directories::ProjectDirs;
+use dungeon_breeder_core::VERSION_NAME;
 use std::path::PathBuf;
 
 mod app;
@@ -12,8 +13,6 @@ mod types;
 mod utils;
 mod views;
 mod windows;
-
-pub const VERSION: &str = "v0.1.0-alpha";
 
 fn main() {
     #[cfg(feature = "tracy")]
@@ -39,7 +38,7 @@ fn main() {
 }
 
 pub fn app_name() -> String {
-    format!("Dungeon Breeder {}", VERSION)
+    format!("Dungeon Breeder {}", VERSION_NAME)
 }
 
 pub fn project_dirs() -> ProjectDirs {
@@ -60,6 +59,10 @@ pub fn eframe_save_file_path() -> PathBuf {
 
 pub fn app_save_file_path() -> PathBuf {
     save_dir_path().join("app.dat")
+}
+
+pub fn meta_save_file_path() -> PathBuf {
+    save_dir_path().join("meta.dat")
 }
 
 #[cfg(feature = "tracy")]
