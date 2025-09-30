@@ -100,7 +100,7 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
         )
         .entry("Ah, perhaps this mutual poverty itself reveals the path forward. The Adventurers' Guild hungers for purpose, for trials to test their mettle. There exists an ancient practice, one might call it... controversial, whereby one constructs labyrinths of challenge, chambers of ordeal where adventurers pay tribute to face their fears... A dungeon.", |e|
             e.jump("Alright!", 1)
-                .jump("I am a researcher!", 1),
+                .jump("But I am a researcher!", 1),
         )
         .entry("I would not suggest such a perilous undertaking, were it not for a most troubling discovery... these orbs seem drawn to places of conflict and trial. As if they feed upon the very essence of challenge itself.", |e|
             e.action_text("Got it!")
@@ -160,7 +160,7 @@ pub fn build_tutorial(builder: DialogueBuilder) -> DialogueBuilder {
         .avatar(AvatarID::Developer)
         .avatar_name("Developer")
         .end(
-            "You completed the tutorial now (this will most likely be subject to change in the future). There is not much to do yet and the balancing is most likely pretty off, but I hope you have fun exploring the few different systems that already exist^^ For now you can try to breed and fuse to get all available creatures and use the dungeon to gain as many coins as possible. Please do not forget to contact me should you encounter any issues, should it be bugs or other things to improve! c: If you feel adventurous, you can also check out the debug menu with F3, remember though that using this might kill all the fun. Though its useful for testing purposes.",
+            "You completed the tutorial now! There is not much to do yet and the balancing is most likely pretty off, but I hope you have fun exploring the few different systems that already exist^^ For now you can try to breed and fuse to get all available creatures and use the dungeon to gain as many coins as possible. Please do not forget to contact me should you encounter any issues, should it be bugs or other things to improve! c: If you feel adventurous, you can also check out the debug menu with F3, remember though that using this might kill all the fun. Though its useful for testing purposes.",
             "Let's go!"
         )
 }

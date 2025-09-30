@@ -25,6 +25,6 @@ pub fn random_normal_combination(a: f32, b: f32) -> f32 {
     (a * random_normal()) + (b * random_normal())
 }
 
-pub fn random_normal_combination_01(a: f32, b: f32) -> f32 {
-    ((a * random_normal()) + (b * random_normal())).clamp(0.0, 1.0)
+pub fn random_normal_combination_01(a: f32, b: f32, bias_factor: f32) -> f32 {
+    ((a * random_normal()) + (b * random_normal()) * bias_factor).clamp(0.0, 1.0)
 }

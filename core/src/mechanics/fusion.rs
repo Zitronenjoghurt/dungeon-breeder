@@ -16,7 +16,9 @@ pub fn check_specimen_can_fuse(specimen_1: &Specimen, specimen_2: &Specimen) -> 
 }
 
 pub fn generate_fusion_power(specimen_a: &Specimen, specimen_b: &Specimen) -> f32 {
-    (specimen_a.power() + specimen_b.power()) * random_normal()
+    (specimen_a.power() + specimen_b.power())
+        * random_normal()
+        * CONFIG.fusion_power_base_bias_factor
 }
 
 pub fn determine_fusion_candidates(fusion_power: f32) -> Vec<CreatureID> {

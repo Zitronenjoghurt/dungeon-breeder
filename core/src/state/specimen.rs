@@ -65,7 +65,8 @@ impl Specimen {
     }
 
     pub fn slay_duration_secs(&self) -> u64 {
-        self.power().powf(CONFIG.slay_duration_power_exponent) as u64
+        let base = self.power().powf(CONFIG.slay_duration_power_exponent);
+        (base * CONFIG.slay_duration_base_bias_factor) as u64
     }
 
     pub fn regeneration_duration_secs(&self) -> u64 {
@@ -76,10 +77,12 @@ impl Specimen {
                 self.regeneration,
             );
 
-        (self
+        let base = self
             .power()
             .powf(CONFIG.regeneration_duration_power_exponent)
-            * stat_factor) as u64
+            * stat_factor;
+
+        (base * CONFIG.regeneration_duration_base_bias_factor) as u64
     }
 
     pub fn breeding_duration_secs(&self) -> u64 {

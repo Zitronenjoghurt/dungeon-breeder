@@ -6,7 +6,7 @@ use crate::data::item::id::ItemID;
 pub static CREATURE_LEFKARORIA: CreatureDefinition = CreatureDefinition {
     name: "Lefkaroria",
     flavor_text: "A shark-like creature which can float through the air like its weightless. It homes in on its prey like a torpedo.",
-    max_power: 100,
+    max_power: 250,
     breeding_cooldown: 3000,
     summoning_cooldown: None,
     tier: CreatureTier::Abundant,

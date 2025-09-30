@@ -6,7 +6,7 @@ use crate::data::item::id::ItemID;
 pub static CREATURE_SLIME: CreatureDefinition = CreatureDefinition {
     name: "Slime",
     flavor_text: "This seems like just a boring amalgamation of slimy substance, but its actually quite resilient. It appears to be able to thrive in any environment.",
-    max_power: 20,
+    max_power: 25,
     breeding_cooldown: 40,
     summoning_cooldown: None,
     tier: CreatureTier::Abundant,

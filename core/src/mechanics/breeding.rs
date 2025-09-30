@@ -1,3 +1,4 @@
+use crate::data::config::CONFIG;
 use crate::error::{GameError, GameResult};
 use crate::state::specimen::obtain_method::SpecimenObtainMethod;
 use crate::state::specimen::{NewSpecimen, Specimen};
@@ -23,14 +24,12 @@ pub fn check_specimen_can_breed(specimen_1: &Specimen, specimen_2: &Specimen) ->
 pub fn breed_specimen(specimen_a: &Specimen, specimen_b: &Specimen) -> GameResult<NewSpecimen> {
     check_specimen_can_breed(specimen_a, specimen_b)?;
 
-    let strength = random_normal_combination_01(specimen_a.strength, specimen_b.strength);
-    let intelligence =
-        random_normal_combination_01(specimen_a.intelligence, specimen_b.intelligence);
-    let vitality = random_normal_combination_01(specimen_a.vitality, specimen_b.vitality);
-    let agility = random_normal_combination_01(specimen_a.agility, specimen_b.agility);
-    let regeneration =
-        random_normal_combination_01(specimen_a.regeneration, specimen_b.regeneration);
-    let fertility = random_normal_combination_01(specimen_a.fertility, specimen_b.fertility);
+    let strength = breed_stats(specimen_a.strength, specimen_b.strength);
+    let intelligence = breed_stats(specimen_a.intelligence, specimen_b.intelligence);
+    let vitality = breed_stats(specimen_a.vitality, specimen_b.vitality);
+    let agility = breed_stats(specimen_a.agility, specimen_b.agility);
+    let regeneration = breed_stats(specimen_a.regeneration, specimen_b.regeneration);
+    let fertility = breed_stats(specimen_a.fertility, specimen_b.fertility);
 
     let new_specimen = NewSpecimen {
         creature_id: specimen_a.creature_id,
@@ -50,4 +49,15 @@ pub fn breed_specimen(specimen_a: &Specimen, specimen_b: &Specimen) -> GameResul
     };
 
     Ok(new_specimen)
+}
+
+fn breed_stats(a: f32, b: f32) -> f32 {
+    let avg = (a + b) / 2.0;
+    let bias = avg * (CONFIG.breeding_base_bias_factor - 1.0) + 1.0;
+
+    if a == 1.0 && b == 1.0 {
+        1.0
+    } else {
+        random_normal_combination_01(a, b, bias)
+    }
 }

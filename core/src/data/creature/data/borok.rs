@@ -6,7 +6,7 @@ use crate::data::item::id::ItemID;
 pub static CREATURE_BOROK: CreatureDefinition = CreatureDefinition {
     name: "Borok",
     flavor_text: "Despite its appearance, it is not dangerous if you dont threaten it. They like brutally fighting with each other for fun and are loyal protectors to whoever they deem worthy of being their master.",
-    max_power: 150,
+    max_power: 400,
     breeding_cooldown: 6000,
     summoning_cooldown: None,
     tier: CreatureTier::Abundant,

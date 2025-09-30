@@ -32,6 +32,8 @@ impl Component for SpecimenInfo<'_> {
                             Grid::new("specimen_info_grid")
                                 .num_columns(2)
                                 .striped(true)
+                                .min_col_width(145.0)
+                                .max_col_width(145.0)
                                 .show(ui, |ui| {
                                     ui.label("ID");
                                     ui.label(specimen.id.to_string());
@@ -159,7 +161,7 @@ impl Component for SpecimenInfo<'_> {
                                         ui.end_row();
 
                                         ui.label("Last bred at");
-                                        ui.label(last_bred.to_string());
+                                        ui.label(format_date(last_bred));
                                         ui.end_row();
                                     }
 

@@ -6,7 +6,7 @@ use crate::data::item::id::ItemID;
 pub static CREATURE_TINKY: CreatureDefinition = CreatureDefinition {
     name: "Tinky",
     flavor_text: "A fluffy fluffball which seems to enjoy having the crystal on its forehead rubbed. Touching its antenna feels strangely soothing (its unknown if this has any side effects).",
-    max_power: 30,
+    max_power: 60,
     breeding_cooldown: 300,
     summoning_cooldown: None,
     tier: CreatureTier::Abundant,
