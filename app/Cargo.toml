@@ -44,7 +44,7 @@ ar = "x86_64-w64-mingw32-gcc-ar"
 
 [package.metadata.bundle]
 name = "Dungeon Breeder"
-identifier = "io.github.Zitronenjoghurt.dungeon-breeder"
+identifier = "io.github.zitronenjoghurt.dungeon-breeder"
 short_description = "An idle game about funding your monster research by managing your own dungeon."
 icon = ["assets/icons/icon_512x512.png", "assets/icons/icon_256x256.png", "assets/icons/icon_128x128.png", "assets/icons/icon_64x64.png", "assets/icons/icon_512x512.icns"]
 

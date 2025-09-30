@@ -23,7 +23,8 @@ fn main() {
         viewport: egui::ViewportBuilder::default()
             .with_maximized(true)
             .with_title(app_name())
-            .with_app_id("io.github.zitronenjoghurt.dungeon-breeder"),
+            .with_app_id("io.github.zitronenjoghurt.dungeon-breeder")
+            .with_icon(load_icon()),
         persist_window: true,
         persistence_path: Some(eframe_save_file_path()),
         ..Default::default()
@@ -63,6 +64,20 @@ pub fn app_save_file_path() -> PathBuf {
 
 pub fn meta_save_file_path() -> PathBuf {
     save_dir_path().join("meta.dat")
+}
+
+fn load_icon() -> egui::IconData {
+    let icon_bytes = include_bytes!("../../assets/icons/icon_512x512.png");
+    let image = image::load_from_memory(icon_bytes)
+        .expect("Failed to load icon")
+        .into_rgba8();
+    let (width, height) = image.dimensions();
+
+    egui::IconData {
+        rgba: image.into_raw(),
+        width,
+        height,
+    }
 }
 
 #[cfg(feature = "tracy")]
